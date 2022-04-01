@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/app",
+    "module": "esnext",
+    "target": "es5",
+    "types": ["node"],
+    "paths": {
+      "typeorm": ["../node_modules/typeorm/typeorm-model-shim.js"]
+    }
+  },
+  "exclude": [
+    "src/test.ts",
+    "**/*.spec.ts",
+    "dist",
+    "app-builds",
+    "node_modules"
+  ]
+}

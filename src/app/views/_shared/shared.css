@@ -1,0 +1,101 @@
+.app-header {
+    position: relative !important;
+}
+
+.app-body {
+    display: inherit !important;
+}
+
+cui-breadcrumb a {
+    pointer-events: none;
+}
+
+.container,
+.container-fluid {
+    width: 100%;
+    padding-right: 0px;
+    padding-left: 0px;
+    margin-right: 0px;
+    margin-left: 0px;
+}
+
+table.dataTable tbody th,
+table.dataTable tbody td {
+    padding: 2px;
+}
+
+table.dataTable,
+table.dataTable th,
+table.dataTable td {
+    box-sizing: inherit !important;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 0px solid !important;
+}
+
+.dataTables_processing {
+    top: 0% !important;
+    background: #3a4248 !important;
+    color: #f2f8f8 !important;
+}
+
+
+/*autocomplete*/
+
+.ng-autocomplete {
+    width: auto !important;
+}
+
+.autocomplete-container .input-container input {
+    line-height: 30px !important;
+    height: 30px !important;
+}
+
+.autocomplete-container {
+    height: 30px !important;
+}
+
+@media only screen and (max-width: 600px) {
+    .modal-content.modal-form {
+        width: 100%;
+    }
+    google-map,
+    google-map .map-container {
+        width: 100% !important;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .modal-content.modal-form {
+        width: 130%;
+        left: -15%;
+    }
+    google-map,
+    google-map .map-container {
+        width: 100% !important;
+    }
+}
+
+@media only screen and (min-width: 1024px) {
+    .modal-content.modal-form {
+        width: 130%;
+        left: -15%;
+    }
+    google-map,
+    google-map .map-container {
+        width: 100% !important;
+    }
+}
+
+@media only screen and (min-width: 1200px) {
+    .modal-content.modal-form {
+        width: 160%;
+        left: -30%;
+    }
+    google-map,
+    google-map .map-container {
+        width: 200% !important;
+    }
+}

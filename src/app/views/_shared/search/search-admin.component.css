@@ -1,0 +1,9 @@
+.search-admin.card {
+    margin-bottom: 0rem !important;
+    background: transparent !important;
+    border: 0px !important;
+}
+
+.search-admin.card .card-header {
+    background: transparent !important;
+}

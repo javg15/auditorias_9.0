@@ -1,0 +1,6 @@
+<div *ngIf="errors?.length > 0" class="validation-summary">
+    <p>Favor de revisar los siguientes errores:</p>
+    <ul>
+        <li *ngFor="let error of errors">{{ error }}</li>
+    </ul>
+</div>

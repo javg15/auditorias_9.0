@@ -1,0 +1,89 @@
+<div class="app-body">
+    <main class="d-flex align-items-center">
+        <div class="container">
+            <form #dataForm="ngForm" (ngSubmit)="submitAction(dataForm)">
+                <input type="hidden" name="action" value="{{ actionForm }}">
+                <div class="form-group">
+                    <input type="hidden" [(ngModel)]="record.id" class="form-control" name="ID">
+                </div>
+                <!-- Nav tabs -->
+                <tabset>
+                    <tab heading="Credenciales">
+                        <div class="row">
+                            <div class="form-group col-sm-4">
+                                <div class="form-group">
+                                    <label for="username">Numero de empleado</label>
+                                    <input type="text" [(ngModel)]="record.username" class="form-control" name="Numero de empleado" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-4">
+                                <div class="form-group">
+                                    <label for="passActual">Contraseña actual</label>
+                                    <input type="password" [(ngModel)]="passActual" class="form-control" name="Contraseña actual">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-4">
+                                <div class="form-group">
+                                    <label for="pass">Nueva Contraseña</label>
+                                    <input type="password" [(ngModel)]="pass" class="form-control" name="Contraseña">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-4">
+                                <div class="form-group">
+                                    <label for="passConfirm">Repetir contraseña</label>
+                                    <input type="password" [(ngModel)]="passConfirm" class="form-control" name="Repetir contraseña">
+                                </div>
+                            </div>
+                        </div>
+                    </tab>
+                    <!--<tab heading="Perfil">
+                        <div class="row">
+                            <div class="form-group col-sm-4">
+                                <label for="archivo">Archivo .jpg .png (fotografía)  </label>
+                                <form-upload (onLoaded)="onLoadedFile($event)" [actionForm]="actionForm" [idFile]="record.id_archivos_avatar"></form-upload>
+                                <br/>
+                                <br/>
+
+                                <list-upload></list-upload>
+                            </div>
+                        </div>
+                    </tab>-->
+                </tabset>
+                <div class="row">
+                    &nbsp;
+                </div>
+                <app-validation-summary [form]="dataForm"></app-validation-summary>
+                <!-- [disabled]="!dataForm.form.valid" -->
+                <button *ngIf="actionForm!=='ver'" type="submit" [disabled]='userFormIsPending | async' class="btn btn-primary">
+                  <div *ngIf="userFormIsPending | async; else elseBlock"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Procesando...</span></div>
+                  <ng-template #elseBlock>Guardar</ng-template>
+                </button>
+            </form>
+        </div>
+    </main>
+</div>
+
+<div bsModal #successModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-success" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">&nbsp;</h5>
+            </div>
+            <div class="modal-body">
+                <p>Acción realizada satisfactoriamente</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="successModal.hide()">Cerrar</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
