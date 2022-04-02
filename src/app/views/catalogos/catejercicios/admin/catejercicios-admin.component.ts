@@ -47,7 +47,7 @@ export class CatejerciciosAdminComponent implements OnInit {
 
   ngOnInit(): void {
     console.log("userdata=>",this.route.snapshot.data.userdata.data[0].cabeceras)
-    this.headersAdmin = this.route.snapshot.data.userdata.data[0].cabeceras;
+    this.headersAdmin = JSON.parse(this.route.snapshot.data.userdata.data[0].cabeceras);
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -55,7 +55,7 @@ export class CatejerciciosAdminComponent implements OnInit {
       serverSide: true,
       processing: true,
       //destroy : true,s
-      
+
       searching: false,
       info: true,
       language: {
