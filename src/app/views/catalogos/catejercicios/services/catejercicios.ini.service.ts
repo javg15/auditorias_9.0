@@ -12,9 +12,6 @@ export class CatejerciciosIniService implements Resolve<Observable<any>>{
   constructor(private ds: CatejerciciosService) { }
 
   async resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    return await this.ds.getHeaders().then(
-      take(1),
-      map(userdata => userdata)
-    )
+    return await this.ds.getHeaders()
   }
 }

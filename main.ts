@@ -14,9 +14,10 @@ function createWindow() {
         width: 800, 
         height: 600, 
         webPreferences: {
+            //webSecurity: false,
             nodeIntegration: true,
             enableRemoteModule: true,
-            allowRunningInsecureContent: (serve) ? true : false,
+            //allowRunningInsecureContent: (serve) ? true : false,
         },
     });
     win.maximize();

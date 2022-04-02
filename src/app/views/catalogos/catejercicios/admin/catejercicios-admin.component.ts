@@ -46,16 +46,16 @@ export class CatejerciciosAdminComponent implements OnInit {
     ) {     }
 
   ngOnInit(): void {
-    this.headersAdmin = JSON.parse(
-      '[{"data":"id","name":"0","title":"ID"},{"data":"clave","name":"0","title":"Clave"},{"data":"descripción","name":"","title":"Descripción"},{"data":"ejercicio","name":"","title":"Ejercicio"},{"data":"acciones","name":"","title":"Acciones"}]'
-    );
+    console.log("userdata=>",this.route.snapshot.data.userdata.data[0].cabeceras)
+    this.headersAdmin = this.route.snapshot.data.userdata.data[0].cabeceras;
 
     this.dtOptions = {
       pagingType: 'full_numbers',
       pageLength: 3,
       serverSide: true,
       processing: true,
-      //destroy : true,
+      //destroy : true,s
+      
       searching: false,
       info: true,
       language: {
