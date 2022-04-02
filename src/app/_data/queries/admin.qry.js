@@ -1,6 +1,6 @@
 const gral = require('../general.js')
 
-exports.getAdmin = async(__Q, _parametros, connection) => {
+exports.getAdmin = (__Q, _parametros, connection) => {
 
     let _modo = gral.getParams(_parametros, 'modo') !== null && gral.getParams(_parametros, 'modo') !== undefined ? gral.getParams(_parametros, 'modo') : 0,
         _id = gral.getParams(_parametros, 'id') !== null && gral.getParams(_parametros, 'id') !== undefined ? gral.getParams(_parametros, 'id') : 0,
@@ -55,8 +55,8 @@ exports.getAdmin = async(__Q, _parametros, connection) => {
         _sdato = _sdatos.split('|')[_i - 1];
 
         if (_scampo > 0 && _sdato != '') {
-            __scampo = await connection.query(`SELECT a.campo FROM searchcampos as a WHERE a.id = ?`, _scampo);
-            __soperador = await connection.query(`SELECT a.operador FROM searchoperador as a WHERE a.id = ?`, _soperador);
+            //__scampo = await connection.query(`SELECT a.campo FROM searchcampos as a WHERE a.id = ?`, _scampo);
+            //__soperador = await connection.query(`SELECT a.operador FROM searchoperador as a WHERE a.id = ?`, _soperador);
 
             // SET _CS=CONCAT(' AND (a.',__scampo,' ',REPLACE(__soperador,'$data',_sdato),')');
 

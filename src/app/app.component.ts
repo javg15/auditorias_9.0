@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
 
   // constructor(private router: Router) { }
   constructor(private tokenStorageService: TokenStorageService) { 
-    console.log("iniciado")
+    
   }
 
   ngOnInit(): void {

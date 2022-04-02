@@ -17,20 +17,19 @@ export class CatejerciciosService {
   que estará disponible en toda la clase del servicio.
   Se define como public, para que sea accesible desde los componentes necesarios */
   constructor(private dbSvc: DatabaseService) { 
-    this.dbSvc.connection.then((c) => {
-      this.conn=c;
-      console.log("Database Connection Successful=>",this.conn);
-    })
+    
   }
 
-  getHeaders(): Promise<Observable<any>>  {
-
+  async getHeaders(): Promise<Observable<any>>  {
     return this.getAdmin(
-      { solocabeceras: 1, opcionesAdicionales: { raw: 0 } });
+      { solocabeceras: 1, opcionesAdicionales: { raw: 0 } }
+    );
+    
+    
   }
 
   async getAdmin(dataTablesParameters: any): Promise<Observable<any>> {
-    console.log("headers=>")
+    
     try {
       
       let req:any = dataTablesParameters,
@@ -42,8 +41,6 @@ export class CatejerciciosService {
           query = qa.getAdmin('SELECT 0 AS ID,0 AS Clave,"" AS "Descripción"' +
               ',"" AS Ejercicio ' +
               ',"" AS Acciones', '&modo=10&id_usuario=0',this.conn);
-
-          this.conn.query(query)
             
       } else {
           query = qa.getAdmin('SELECT a.id AS ID ' +
@@ -57,15 +54,21 @@ export class CatejerciciosService {
               "&ordencampo=" + req.columns[req.order[0].column].data +
               "&ordensentido=" + req.order[0].dir,this.conn)
           
-          /*this.dbSvc.connection
-              .then((c) => {
-                c.query(query)
-              })
-              .then(d=>{
-                datos=d;
-              })*/
-          this.conn.query(query)
       }
+      console.log("query=>",await this.dbSvc.connection)
+      this.conn= await this.dbSvc.connection;
+      console.log("this.conn=>",this.conn)
+      datos=await this.conn.query(query)
+      console.log("datos=>",datos)
+      
+
+      /*this.dbSvc
+              .connection
+              .then(function (c) {
+                datos=c.query(query)
+                console.log("datos=>",datos)
+              })
+              */
 
       var columnNames = (datos.length > 0 ? Object.keys(datos[0]).map(function(key) {
           return key;
@@ -84,10 +87,17 @@ export class CatejerciciosService {
         recordsFiltered: (datos.length > 0 ? parseInt(datos[0].total_count) : 0),
         data: datos,
         columnNames: columnNames
-      }).pipe();
+      });
     } catch (err) {
         throw err;
     }
+    /*return of({
+      draw: 1,
+      recordsTotal: 10,
+      recordsFiltered: 100,
+      data: ["uno"],
+      columnNames: ["uno"]
+    });*/
   }
 
   /*getItems(): Observable<any> {

@@ -15,7 +15,7 @@ export class DatabaseService {
       type: 'sqlite',
       database: 'sqlite3.db',
       entities: [User],
-      synchronize: true,
+      synchronize: false,
       logging: 'all'
     };
     this.connection = createConnection(this.options);

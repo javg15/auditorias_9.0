@@ -11,8 +11,7 @@ import { CatejerciciosService } from '../services/catejercicios.service';
 import { environment } from '../../../../../../src/environments/environment';
 import { Catejercicios } from '../../../../_data/_models/catejercicios';
 
-declare var $: any;
-declare var jQuery: any;
+
 
 @Component({
   selector: 'app-catejercicios-admin',
@@ -43,12 +42,13 @@ export class CatejerciciosAdminComponent implements OnInit {
 
   catejerciciosList: Catejercicios[];
 
-  constructor(private catejerciciosService: CatejerciciosService, private route: ActivatedRoute) { }
+  constructor(private catejerciciosService: CatejerciciosService, private route: ActivatedRoute,
+    ) {     }
 
   ngOnInit(): void {
-    console.log('component initialized');
-    /*console.log("this.route.snapshot.data.userdata.data[0]=>",this.route.snapshot.data.userdata.data[0])
-    this.headersAdmin = JSON.parse(this.route.snapshot.data.userdata.data[0].cabeceras);
+    this.headersAdmin = JSON.parse(
+      '[{"data":"id","name":"0","title":"ID"},{"data":"clave","name":"0","title":"Clave"},{"data":"descripción","name":"","title":"Descripción"},{"data":"ejercicio","name":"","title":"Ejercicio"},{"data":"acciones","name":"","title":"Acciones"}]'
+    );
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -75,12 +75,12 @@ export class CatejerciciosAdminComponent implements OnInit {
       },
       // Use this attribute to enable the responsive extension
       responsive: true,
-      ajax: (dataTablesParameters: any, callback) => {
+      ajax: async (dataTablesParameters: any, callback) => {
         this.dtOptionsAdicional.raw++;
         dataTablesParameters.opcionesAdicionales = this.dtOptionsAdicional;
-
-        this.catejerciciosService.getAdmin(dataTablesParameters).subscribe(resp => {
-          
+        console.log("rrrrrrrrrr=>")
+        await this.catejerciciosService.getAdmin(dataTablesParameters).then(function(resp:any){
+          console.log("resp=>",resp)
           this.ColumnNames = resp.columnNames;
           this.Members = resp.data;
           this.NumberOfMembers = resp.data.length;
@@ -98,7 +98,7 @@ export class CatejerciciosAdminComponent implements OnInit {
       columns: this.headersAdmin,
       columnDefs: [{ "visible": false, "searchable": false, "targets": 0 }
         , { "width": "5%", "targets": 1 }]
-    };*/
+    };
 
   }
 
