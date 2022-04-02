@@ -20,7 +20,7 @@ export class CatejerciciosService {
     
   }
 
-  async getHeaders(): Promise<Observable<any>>  {
+  async getHeaders(): Promise<any>  {
     return this.getAdmin(
       { solocabeceras: 1, opcionesAdicionales: { raw: 0 } }
     );
@@ -28,7 +28,7 @@ export class CatejerciciosService {
     
   }
 
-  async getAdmin(dataTablesParameters: any): Promise<Observable<any>> {
+  async getAdmin(dataTablesParameters: any): Promise<any> {
     
     try {
       
@@ -81,13 +81,13 @@ export class CatejerciciosService {
               columnNames.splice(i);
       }
 
-      return of({
+      return {
         draw: req.opcionesAdicionales.raw,
         recordsTotal: (datos.length > 0 ? parseInt(datos[0].total_count) : 0),
         recordsFiltered: (datos.length > 0 ? parseInt(datos[0].total_count) : 0),
         data: datos,
         columnNames: columnNames
-      });
+      };
     } catch (err) {
         throw err;
     }

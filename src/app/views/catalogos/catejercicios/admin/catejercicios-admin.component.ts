@@ -79,18 +79,19 @@ export class CatejerciciosAdminComponent implements OnInit {
         this.dtOptionsAdicional.raw++;
         dataTablesParameters.opcionesAdicionales = this.dtOptionsAdicional;
         console.log("rrrrrrrrrr=>")
+        var self = this;
         await this.catejerciciosService.getAdmin(dataTablesParameters).then(function(resp:any){
-          console.log("resp=>",resp)
-          this.ColumnNames = resp.columnNames;
-          this.Members = resp.data;
-          this.NumberOfMembers = resp.data.length;
+          console.log("resp=>",resp.columnNames)
+          self.ColumnNames = resp.columnNames;
+          self.Members = resp.data;
+          self.NumberOfMembers = resp.data.length;
           $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
           callback({
             recordsTotal: resp.recordsTotal,
             recordsFiltered: resp.recordsFiltered,
             data: []
           });
-          if (this.NumberOfMembers > 0) {
+          if (self.NumberOfMembers > 0) {
             $('.dataTables_empty').css('display', 'none');
           }
         });
