@@ -1,11 +1,21 @@
 
 import { Injectable } from '@angular/core';
-import { Catejercicios } from '../../../../_data/_models/catejercicios';
-import { Observable, of } from 'rxjs';
-import {DatabaseService} from '../../../../_data/database.service';
-import {Connection} from 'typeorm';
+import { Catejercicios } from 'src/app/_data/_models/catejercicios';
 
-import qa from "../../../../_data/queries/admin.qry.js";
+import {DatabaseService} from 'src/app/_data/database.service';
+import {Connection} from 'typeorm';
+import { AdminQry } from 'src/app/_data/queries/admin.qry'; 
+const gral = require('src/app/_data/general.js')
+const mensajesValidacion = require("src/app/_data/config/validate.config");
+
+let Validator = require('fastest-validator');
+/* create an instance of the validator */
+let dataValidator = new Validator({
+    useNewCustomCheckerFunction: true, // using new version
+    messages: mensajesValidacion
+});
+
+
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +26,7 @@ export class CatejerciciosService {
   /* En el constructor creamos el objeto http de la clase HttpClient,
   que estará disponible en toda la clase del servicio.
   Se define como public, para que sea accesible desde los componentes necesarios */
-  constructor(private dbSvc: DatabaseService) { 
+  constructor(private dbSvc: DatabaseService,private qa:AdminQry) { 
     
   }
 
@@ -30,6 +40,7 @@ export class CatejerciciosService {
 
   async getAdmin(dataTablesParameters: any): Promise<any> {
     
+    this.conn= await this.dbSvc.connection;
     try {
       
       let req:any = dataTablesParameters,
@@ -38,15 +49,15 @@ export class CatejerciciosService {
       //const rawData = DB().query(`SELECT * FROM catejercicios where id=?`, [1]);
       
       if (req.solocabeceras == 1) {
-          query = qa.getAdmin('SELECT 0 AS ID,0 AS Clave,"" AS "Descripción"' +
+          query = await this.qa.getAdmin('SELECT 0 AS ID,"" AS "Descripción"' +
               ',"" AS Ejercicio ' +
               ',"" AS Acciones', '&modo=10&id_usuario=0',this.conn);
             
       } else {
-          query = qa.getAdmin('SELECT a.id AS ID ' +
+          query = await this.qa.getAdmin('SELECT a.id AS ID ' +
               ',a.descripcion AS "Descripción" ' +
               ',a.ejercicio AS Ejercicio ' +
-              ',"" AS Acciones ' +
+              ',a.state AS Acciones ' +
               'FROM catejercicios AS a',
               "&modo=0&id_usuario=0" +
               "&inicio=" + (req.start!==null && req.start!==undefined ? req.start : 0) + "&largo=" + (req.length!==null && req.length!==undefined ? req.length : 0) +
@@ -55,11 +66,15 @@ export class CatejerciciosService {
               "&ordensentido=" + req.order[0].dir,this.conn)
           
       }
-      console.log("query=>",await this.dbSvc.connection)
-      this.conn= await this.dbSvc.connection;
-      console.log("this.conn=>",this.conn)
-      datos=await this.conn.query(query)
-      console.log("datos=>",datos)
+      
+      
+      datos=await this.conn.query(query);
+      if (req.solocabeceras != 1) {
+        for(let i=0;i<datos.length;i++){
+          datos[i]["Acciones"]=this.qa.getAcciones(0,"todo",datos[i]["Acciones"]);
+        }
+      }
+      
       
 
       /*this.dbSvc
@@ -100,13 +115,98 @@ export class CatejerciciosService {
     });*/
   }
 
-  /*getItems(): Observable<any> {
-    try {
-      return of({ datos : DB().query("SELECT * FROM catejercicios")}).pipe();
-    } catch (err) {
-        throw err;
+  /* El siguiente método lee los datos de un registro seleccionado para edición. */
+  async getRecord(id: any): Promise<any> {
+    
+    this.conn= await this.dbSvc.connection;
+    const rep = await this.conn.manager.getRepository(Catejercicios)
+    const Catejercicio=await rep.findOne({    id: id })
+    if (!Catejercicio) {
+        return { message: "Catejercicio Not found." };
     }
-  }*/
+    return Catejercicio;
+  }
+
+  /* El siguiente método graba un registro nuevo, o uno editado. */
+  async setRecord(dataPack, actionForm): Promise<any>  {
+
+    Object.keys(dataPack).forEach(function(key) {
+      if (key.indexOf("id_", 0) >= 0 
+            || key.indexOf("ejercicio", 0) >= 0) {
+          if (dataPack[key] != '')
+              dataPack[key] = parseInt(dataPack[key]);
+      }
+      if (key.indexOf("clave", 0) >= 0) {
+          dataPack[key] = dataPack[key].toString();
+      }
+      if (typeof dataPack[key] == 'number' && isNaN(parseFloat(dataPack[key]))) {
+          dataPack[key] = null;
+      }
+    })
+
+    /* customer validator shema */
+    const dataVSchema = {
+        /*first_name: { type: "string", min: 1, max: 50, pattern: namePattern },*/
+
+        id: { type: "number" },
+        descripcion: { type: "string", min: 5, max: 100 },
+        ejercicio: { type: "number", 
+          custom(value, errors) {
+              if ((value <= 1900 || value>=2050)) errors.push({ type: "required" })
+              return value; // Sanitize: remove all special chars except numbers
+          }
+       },
+    };
+
+    var vres:any = true;
+    if (actionForm.toUpperCase() == "NUEVO" ||
+        actionForm.toUpperCase() == "EDITAR") {
+        vres = await dataValidator.validate(dataPack, dataVSchema);
+    }
+
+    /* validation failed */
+    if (!(vres === true)) {
+        let errors = {},
+            item;
+
+        for (const index in vres) {
+            item = vres[index];
+
+            errors[item.field] = item.message;
+        }
+
+        return {
+            "error": true,
+            "message": errors
+        };
+    }
+
+
+    //buscar si existe el registro y almacenarlo
+    this.conn= await this.dbSvc.connection;
+    const rep = await this.conn.manager.getRepository(Catejercicios)
+    const catejercicios =  await rep.findOne({    id: dataPack.id })
+    dataPack.state = gral.GetStatusSegunAccion(actionForm);
+
+    if (!catejercicios) {
+        delete dataPack.id;
+        
+        try{
+          const self=await rep.insert(dataPack)
+        
+          console.log("self.id=>", Number(self.identifiers[0].id))
+                // here self is your instance, but updated
+          return { message: "success", id: Number(self.identifiers[0].id) };
+        }catch(err){
+            return { error: true, message: [err.errors[0].message] };
+        };
+    } else {
+
+      await rep.update(dataPack.id, dataPack)
+      // here self is your instance, but updated
+      return { message: "success", id: dataPack.id };
+    }
+  }
 
   // array de modales
   public add(modal: any) {

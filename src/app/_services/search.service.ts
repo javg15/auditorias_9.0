@@ -1,6 +1,8 @@
 import { Injectable, ɵConsole } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {DatabaseService} from 'src/app/_data/database.service';
+import {Connection} from 'typeorm';
 /* Importamos los environments, para determinar la URL base de las API's */
 import { environment } from '../../../src/environments/environment';
 
@@ -15,18 +17,41 @@ const httpOptions = {
 export class SearchService {
 
   public API_URL = environment.APIS_URL;
+  private conn:Connection;
 
-  constructor(private http: HttpClient) { }
+  constructor(private dbSvc: DatabaseService,private http: HttpClient) { }
 
-  getSearchcampos(nombreModulo: string): Observable<any> {
-    return this.http.post(this.API_URL + '/shared/getSearchcampos', {
-      nombreModulo: nombreModulo
-    }, httpOptions);
+  async getSearchcampos(nombreModulo: string): Promise<any> {
+
+    this.conn= await this.dbSvc.connection;
+    const query = "SELECT s.id,s.etiqueta as idesc,s.orden,s.edicion " +
+        ",s.campo " +
+        "FROM searchcampos as s " +
+        "LEFT JOIN modulos AS m ON s.id_modulos=m.id " +
+        "WHERE s.state='A' AND upper(m.ruta)=UPPER(?) " +
+        "ORDER BY s.orden";
+      
+    const datos = await this.conn.query(query,[nombreModulo]);
+
+    //console.log(JSON.stringify(respuesta));
+    return {
+      data: datos
+    };
   }
 
-  getSearchoperadores(id_campo: number): Observable<any> {
-    return this.http.post(this.API_URL + '/shared/getSearchoperadores', {
-      id_campo: id_campo
-    }, httpOptions);
+  async getSearchoperadores(id_campo: number): Promise<any> {
+    this.conn= await this.dbSvc.connection;
+    const query = "SELECT so.id,so.etiqueta as idesc,so.orden " +
+        "FROM searchoperador AS so " +
+        "    INNER JOIN searchcampos AS sc ON so.tipo =sc.tipo " +
+        "WHERE so.state='A' AND sc.id=? " +
+        "ORDER BY so.orden,so.etiqueta";
+      
+    const datos = await this.conn.query(query,[id_campo]);
+
+    //console.log(JSON.stringify(respuesta));
+    return {
+      data: datos
+    };
   }
 }

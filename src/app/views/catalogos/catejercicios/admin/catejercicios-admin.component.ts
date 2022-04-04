@@ -46,12 +46,12 @@ export class CatejerciciosAdminComponent implements OnInit {
     ) {     }
 
   ngOnInit(): void {
-    console.log("userdata=>",this.route.snapshot.data.userdata.data[0].cabeceras)
+    
     this.headersAdmin = JSON.parse(this.route.snapshot.data.userdata.data[0].cabeceras);
 
     this.dtOptions = {
       pagingType: 'full_numbers',
-      pageLength: 3,
+      pageLength: 10,
       serverSide: true,
       processing: true,
       //destroy : true,s
@@ -78,10 +78,10 @@ export class CatejerciciosAdminComponent implements OnInit {
       ajax: async (dataTablesParameters: any, callback) => {
         this.dtOptionsAdicional.raw++;
         dataTablesParameters.opcionesAdicionales = this.dtOptionsAdicional;
-        console.log("rrrrrrrrrr=>")
+        
         var self = this;
         await this.catejerciciosService.getAdmin(dataTablesParameters).then(function(resp:any){
-          console.log("resp=>",resp.columnNames)
+        
           self.ColumnNames = resp.columnNames;
           self.Members = resp.data;
           self.NumberOfMembers = resp.data.length;
@@ -94,6 +94,7 @@ export class CatejerciciosAdminComponent implements OnInit {
           if (self.NumberOfMembers > 0) {
             $('.dataTables_empty').css('display', 'none');
           }
+          
         });
       },
       columns: this.headersAdmin,

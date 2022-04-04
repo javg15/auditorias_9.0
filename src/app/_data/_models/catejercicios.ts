@@ -10,4 +10,7 @@ export class Catejercicios {
 
     @Column()
     descripcion: string;
+
+    @Column()
+    state: string;
 }

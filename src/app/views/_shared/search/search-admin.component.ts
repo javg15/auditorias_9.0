@@ -1,5 +1,9 @@
 import { Component, ElementRef, Input, OnInit, ViewChild, OnDestroy, Output, EventEmitter} from '@angular/core';
 import { SearchService } from '../../../_services/search.service';
+import {DatabaseService} from 'src/app/_data/database.service';
+import {Connection} from 'typeorm';
+import * as moment from 'moment';
+
 import { NgSelect2Module } from 'ng-select2';
 
 declare var $: any;
@@ -14,6 +18,8 @@ declare var jQuery: any;
 export class SearchAdminComponent implements OnInit {
   @Input() nombreModulo: string;
   @Output() buscarEvent = new EventEmitter<any>();
+  
+  private conn:Connection;
 
   isCollapsed: boolean = true;
   itemsCampos: Array<any> = [{id: 0, idesc: '', orden: 0}];
@@ -54,19 +60,19 @@ export class SearchAdminComponent implements OnInit {
                         ]
   tipoOptions:Array<number>= [0,0,0,0,0];
 
-  constructor(private searchService: SearchService) {
+  constructor(private searchService: SearchService,private dbSvc: DatabaseService) {
   }
 
-  ngOnInit(): void {
-
-    this.searchService.getSearchcampos(this.nombreModulo).subscribe(resp => {
+  async ngOnInit(): Promise<void> {
+    this.conn= await this.dbSvc.connection;
+    await this.searchService.getSearchcampos(this.nombreModulo).then(resp => {
       for (let i = 0; i < resp.data.length; i++) {
         this.itemsCampos.push({
           id: resp.data[i].id,
           idesc: resp.data[i].idesc,
           orden: resp.data[i].orden,
           edicion:resp.data[i].edicion,
-          valores:resp.data[i].valores,
+          valores:(resp.data[i].edicion==1 ? this.getSearchValores(this.nombreModulo,resp.data[i].campo) : ''),
         });
       }
     });
@@ -78,6 +84,27 @@ export class SearchAdminComponent implements OnInit {
 
   }
 
+  async getSearchValores(_modulo:string,_campo:string):Promise<any>{
+    let _respuesta="",	_i =0;
+	
+    if (_modulo.toLowerCase()=='categorias'){
+      if (_campo.toLowerCase()=='anio'){
+        
+        for(_i=2019; _i<=moment().year();_i++){
+          _respuesta+=','+'{"id":"'+_i+'","text":"'+_i+'"}';
+        }
+        
+        if(_respuesta.length>0){
+            _respuesta=_respuesta.substring(1);
+        }
+      }
+      else if (_campo.toLowerCase()=='id_tiponomina')
+        _respuesta=await this.conn.query('SELECT group_concat(\'{"id":"\' || m.id || \'","text":"\' || m.descripcion || \'"}\',\',\') '
+          + 'FROM catejercicios as m');
+    }
+	  return  '[' + _respuesta + ']';
+  }
+
   collapsed(event: any): void {
     // console.log(event);
   }
@@ -86,7 +113,7 @@ export class SearchAdminComponent implements OnInit {
     // console.log(event);
   }
 
-  onSelectCampos(idx, id_campo) {
+  async onSelectCampos(idx, id_campo) {
     this.itemsOperadores[idx] = [{id: 0, idesc: '', orden: 0}];
     this.tipoEdicion[idx]=this.itemsCampos.find(a=>a.id==id_campo).edicion;
     this.valorBuscar[idx]="";
@@ -94,7 +121,7 @@ export class SearchAdminComponent implements OnInit {
       this.comboCat[idx]=JSON.parse(this.itemsCampos.find(a=>a.id==id_campo).valores);
     }
 
-    this.searchService.getSearchoperadores(id_campo).subscribe(resp => {
+    await this.searchService.getSearchoperadores(id_campo).then(resp => {
       for (let i = 0; i < resp.data.length; i++) {
         if(i==0){
           this.selectedItemsOperadores[idx].id=resp.data[0].id;

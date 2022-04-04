@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Connection, ConnectionOptions, createConnection} from 'typeorm';
-import {User} from './_models/user';
+import {Catejercicios} from './_models/catejercicios';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,8 @@ export class DatabaseService {
   constructor() {
     this.options = {
       type: 'sqlite',
-      database: 'sqlite3.db',
-      entities: [User],
+      database: 'src/app/_data/sqlite3.db',
+      entities: [Catejercicios],
       synchronize: false,
       logging: 'all'
     };
