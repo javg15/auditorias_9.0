@@ -4,8 +4,6 @@ import {DatabaseService} from 'src/app/_data/database.service';
 import {Connection} from 'typeorm';
 import * as moment from 'moment';
 
-import { NgSelect2Module } from 'ng-select2';
-
 declare var $: any;
 declare var jQuery: any;
 
@@ -51,28 +49,22 @@ export class SearchAdminComponent implements OnInit {
                             ,[{id:"---------",text:"----------"}]
                             ,[{id:"---------",text:"----------"}]
                             ,[{id:"---------",text:"----------"}]];
-  options0: Array<any>=[{},{},{},{},{}]
-  options1: Array<any>=[{multiple: true, closeOnSelect: false, width: '300'},
-                        {multiple: true, closeOnSelect: false, width: '300'},
-                        {multiple: true, closeOnSelect: false, width: '300'},
-                        {multiple: true, closeOnSelect: false, width: '300'},
-                        {multiple: true, closeOnSelect: false, width: '300'},
-                        ]
-  tipoOptions:Array<number>= [0,0,0,0,0];
+  
+    tipoOptions:Array<number>= [0,0,0,0,0];
 
   constructor(private searchService: SearchService,private dbSvc: DatabaseService) {
   }
 
   async ngOnInit(): Promise<void> {
     this.conn= await this.dbSvc.connection;
-    await this.searchService.getSearchcampos(this.nombreModulo).then(resp => {
+    await this.searchService.getSearchcampos(this.nombreModulo).then(async resp => {
       for (let i = 0; i < resp.data.length; i++) {
         this.itemsCampos.push({
           id: resp.data[i].id,
           idesc: resp.data[i].idesc,
           orden: resp.data[i].orden,
           edicion:resp.data[i].edicion,
-          valores:(resp.data[i].edicion==1 ? this.getSearchValores(this.nombreModulo,resp.data[i].campo) : ''),
+          valores:(resp.data[i].edicion==1 ? await this.getSearchValores(this.nombreModulo,resp.data[i].campo) : ''),
         });
       }
     });
@@ -87,20 +79,34 @@ export class SearchAdminComponent implements OnInit {
   async getSearchValores(_modulo:string,_campo:string):Promise<any>{
     let _respuesta="",	_i =0;
 	
-    if (_modulo.toLowerCase()=='categorias'){
+    if (_modulo.toLowerCase()=='auditorias'){
       if (_campo.toLowerCase()=='anio'){
         
         for(_i=2019; _i<=moment().year();_i++){
-          _respuesta+=','+'{"id":"'+_i+'","text":"'+_i+'"}';
+          _respuesta+=','+'{"value":"'+_i+'","label":"'+_i+'"}';
         }
         
         if(_respuesta.length>0){
             _respuesta=_respuesta.substring(1);
         }
       }
-      else if (_campo.toLowerCase()=='id_tiponomina')
-        _respuesta=await this.conn.query('SELECT group_concat(\'{"id":"\' || m.id || \'","text":"\' || m.descripcion || \'"}\',\',\') '
-          + 'FROM catejercicios as m');
+      else if (_campo.toLowerCase()=='id_catservidores')
+        await this.conn.query('SELECT group_concat(\'{"value":"\' || m.id || \'","label":"\' || m.nombre || \'"}\',\',\') AS data '
+          + 'FROM catservidores as m').then((datos)=>{
+            _respuesta=(datos.length>0 ? datos[0].data : '')
+          });
+      else if (_campo.toLowerCase()=='id_catresponsables')
+          await this.conn.query('SELECT group_concat(\'{"value":"\' || m.id || \'","label":"\' || m.nombre || \'"}\',\',\') AS data '
+            + 'FROM catresponsables as m').then((datos)=>{
+              _respuesta=(datos.length>0 ? datos[0].data : '')
+            });
+    }
+    else if (_modulo.toLowerCase()=='catentidades'){
+      if (_campo.toLowerCase()=='id_catresponsables')
+        await this.conn.query('SELECT group_concat(\'{"value":"\' || m.id || \'","label":"\' || m.nombre || \'"}\',\',\') AS data '
+          + 'FROM catresponsables as m').then((datos)=>{
+            _respuesta=(datos.length>0 ? datos[0].data : '')
+          });
     }
 	  return  '[' + _respuesta + ']';
   }
@@ -118,6 +124,7 @@ export class SearchAdminComponent implements OnInit {
     this.tipoEdicion[idx]=this.itemsCampos.find(a=>a.id==id_campo).edicion;
     this.valorBuscar[idx]="";
     if(this.tipoEdicion[idx]==1){//combo
+      console.log("this.itemsCampos=>",this.itemsCampos.find(a=>a.id==id_campo))
       this.comboCat[idx]=JSON.parse(this.itemsCampos.find(a=>a.id==id_campo).valores);
     }
 
@@ -137,7 +144,7 @@ export class SearchAdminComponent implements OnInit {
   }
 
   onSelectOperador(idx, id_operador){
-    if(id_operador==19)//id=19->'incluye' de la tabla searchoperador
+    if(id_operador==16)//id=19->'incluye' de la tabla searchoperador
       this.tipoOptions[idx]=1
     else
       this.tipoOptions[idx]=0

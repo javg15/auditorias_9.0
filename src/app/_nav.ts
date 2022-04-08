@@ -4,11 +4,11 @@ export const navItems = [
     title: true,
     name: 'Theme'
   },*/
-  /*{
-    name: 'Prueba',
-    url: '/prueba',
-    icon: 'icon-drop'
-  },*/
+  {
+    name: 'Auditorías',
+    url: '/auditorias',
+    icon: 'icon-puzzle',
+  },
   {
     name: 'Catalogos',
     url: '/catalogos',
@@ -17,27 +17,27 @@ export const navItems = [
       {
         name: 'Ejercicios',
         url: '/catalogos/ejercicios',
-        icon: 'icon-puzzle'
+        
       },
       {
         name: 'Entidades',
         url: '/catalogos/entidades',
-        icon: 'icon-puzzle'
+        
       },
       {
         name: 'Responsables',
         url: '/catalogos/responsables',
-        icon: 'icon-puzzle'
+        
       },
       {
         name: 'Servidores',
         url: '/catalogos/servidores',
-        icon: 'icon-puzzle'
+        
       },
       {
         name: 'Tipos de auditoría',
         url: '/catalogos/tiposauditoria',
-        icon: 'icon-puzzle'
+        
       },
     ]
   },

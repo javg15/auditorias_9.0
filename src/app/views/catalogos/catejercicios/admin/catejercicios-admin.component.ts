@@ -2,13 +2,12 @@
 import { Component, OnInit, Input, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { DataTablesResponse } from '../../../../classes/data-tables-response';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 
 import { CatejerciciosService } from '../services/catejercicios.service';
 
-import { environment } from '../../../../../../src/environments/environment';
+import { environment } from 'src/environments/environment';
 import { Catejercicios } from '../../../../_data/_models/catejercicios';
 
 

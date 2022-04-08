@@ -14,7 +14,7 @@ import { DetailsUploadFisicoComponent } from './upload_fisico/details-uploadFisi
 import { FormUploadFisicoComponent } from './upload_fisico/form-uploadFisico.component';
 import { ListUploadFisicoComponent } from './upload_fisico/list-uploadFisico.component';
 import { LoginModalComponent } from './login/login-modal.component';
-import { NgSelect2Module } from 'ng-select2';
+import { Select2Module } from 'ng-select2-component';
 
 @NgModule({
   imports: [
@@ -22,7 +22,7 @@ import { NgSelect2Module } from 'ng-select2';
     CollapseModule,
     FormsModule,
     ModalModule,
-    NgSelect2Module
+    Select2Module
   ],
   declarations: [
     SearchAdminComponent,

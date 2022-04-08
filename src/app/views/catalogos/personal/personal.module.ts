@@ -10,8 +10,6 @@ import { PersonalRoutingModule } from './personal-routing.module';
 
 
 import { DataTablesModule } from 'angular-datatables';
-import { NgSelect2Module } from 'ng-select2';
-
 
 // Dropdowns Component
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
@@ -28,7 +26,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     DataTablesModule,
     ModalModule.forRoot(),
     TabsModule.forRoot(),
-    NgSelect2Module,
+    
     BsDropdownModule.forRoot(),
     SharedModule
   ],

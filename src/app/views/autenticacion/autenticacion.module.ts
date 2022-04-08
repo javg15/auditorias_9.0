@@ -12,7 +12,6 @@ import { UsuariosFormComponent } from './usuarios/form/usuarios-form.component';
 import { UsuariosFormdirectComponent } from './usuarios/formdirect/usuarios-formdirect.component';
 
 import { DataTablesModule } from 'angular-datatables';
-import { NgSelect2Module } from 'ng-select2';
 
 
 // Tabs Component
@@ -27,7 +26,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     ModalModule.forRoot(),
     SharedModule,
     TabsModule.forRoot(),
-    NgSelect2Module
+    
   ],
   declarations: [
     UsuariosAdminComponent,

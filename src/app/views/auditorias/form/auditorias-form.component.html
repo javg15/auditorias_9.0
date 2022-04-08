@@ -1,0 +1,184 @@
+<div bsModal #basicModal="bs-modal" [config]="{ backdrop: 'static', keyboard: false}" class="modal fade right" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-full-height modal-right" role="document">
+        <div class="modal-content modal-form">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">{{ tituloForm }}</h4>
+
+                <button type="button" class="close pull-right" aria-label="Close" (click)="close()">
+                  <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form #dataForm="ngForm" (ngSubmit)="submitAction(dataForm)">
+                    <input type="hidden" name="action" value="{{ actionForm }}">
+                    <div class="form-group">
+
+                        <input type="hidden" [(ngModel)]="record.id" class="form-control" name="ID">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="id_catentidades">Entidad</label>
+                                <select2 [overlay]="true" [(ngModel)]="record.id_catentidades" [data]="catentidadesCat" name="Entidad" resettable> </select2>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-8">
+                            <div class="form-group">
+                                <label for="nombre">Nombre</label>
+                                <input type="text" [(ngModel)]="record.nombre" class="form-control" name="Nombre">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="oficio">Oficio</label>
+                                <input type="text" [(ngModel)]="record.oficio" class="form-control" name="Oficio">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="numero">Numero</label>
+                                <input type="text" [(ngModel)]="record.numero" class="form-control" name="Numero">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="id_catejercicios">Ejercicio</label>
+                                <select2 [overlay]="true" [(ngModel)]="record.id_catejercicios" [data]="catejerciciosCat" name="Ejercicio" resettable> </select2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="fecha">Fecha</label>
+                                <input type="text" [(ngModel)]="record.fecha" class="form-control" name="Fecha">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="periodoini">Periodo inicial</label>
+                                <input type="text" [(ngModel)]="record.periodoini" class="form-control" name="Periodo inicial">
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="periodofin">Periodo final</label>
+                                <input type="text" [(ngModel)]="record.periodofin" class="form-control" name="Periodo final">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="id_cattipoauditoria">Tipo de auditoría</label>
+                                <select2 [overlay]="true" [(ngModel)]="record.id_cattipoauditoria" [data]="cattipoauditoriaCat" name="Tipo de auditoría" resettable> </select2>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="id_catservidores">Servidor público</label>
+                                <select2 [overlay]="true" [(ngModel)]="record.id_catservidores" [data]="catservidoresCat" name="Servidor público" resettable> </select2>
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="id_catresponsables">Rresponsable</label>
+                                <select2 [overlay]="true" [(ngModel)]="record.id_catresponsables" [data]="catresponsablesCat" name="Responsable" resettable> </select2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="marcolegal">Marco legal</label>
+                                <input type="text" [(ngModel)]="record.marcolegal" class="form-control" name="Marco legal">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div *ngIf="actionForm!=='nuevo'">
+                        <app-header-admin id="header-admin-2" [nombreModulo]="nombreModulo" (agregarEvent)="openModal('custom-modal-2','nuevo',0,record.id)">
+                        </app-header-admin>
+                    </div>
+                    <div class="row">
+                        &nbsp;
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-12 mx-auto">
+                            <table id="tblAuditoriasdetalle" datatable [dtOptions]="dtOptions" class="table table-striped table-bordered row-border hover" width="100%">
+                                <tbody>
+                                    <tr *ngFor="let member of Members">
+                                        <ng-container *ngFor="let col of ColumnNames;index as i">
+                                            <div *ngIf="col=='acciones'; else elseBlock">
+                                                <!--<td><img src="assets/{{ member[col] }}" width="50" /></td>-->
+                                                <td>
+                                                    <div *ngFor="let boton of member[col].split(',')" style="display: contents;">
+                                                        <button *ngIf="boton=='ver'" class="btn btn-brand btn-sm mr-1 btn-instagram" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-2','ver',member.id,member.id_categoria)">
+                                                      <i class="fa fa-search"></i>
+                                                  </button>
+                                                        <button *ngIf="boton=='editar'" class="btn btn-brand btn-sm mr-1 btn-spotify" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-2','editar',member.id,member.id_categoria)">
+                                                      <i class="fa fa-edit"></i>
+                                                  </button>
+                                                        <button *ngIf="boton=='eliminar'" class="btn btn-brand btn-sm mr-1 btn-reddit" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-2','eliminar',member.id)">
+                                                      <i class="fa fa-trash"></i>
+                                                  </button>
+                                                    </div>
+                                                </td>
+                                            </div>
+                                            <ng-template #elseBlock>
+                                                <ng-container *ngIf="col!='id';else elseBlock2">
+                                                    <td>{{ member[col] }}</td>
+                                                </ng-container>
+                                            </ng-template>
+                                            <ng-template #elseBlock2></ng-template>
+                                        </ng-container>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        &nbsp;
+                    </div>
+                    <app-validation-summary [form]="dataForm"></app-validation-summary>
+                    <!-- [disabled]="!dataForm.form.valid" -->
+                    <button *ngIf="actionForm!=='ver'" type="submit" [disabled]='userFormIsPending | async' class="btn btn-primary">
+                      <div *ngIf="userFormIsPending | async; else elseBlock"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Procesando...</span></div>
+                      <ng-template #elseBlock>{{ botonAccion }}</ng-template>
+                    </button>
+                </form>
+            </div>
+            <!-- <h2>Diagnostic Info</h2>
+            <div [innerHtml]="diagnosticValidate"></div>-->
+        </div>
+    </div>
+</div>
+
+<div bsModal #successModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-success" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">&nbsp;</h5>
+            </div>
+            <div class="modal-body">
+                <p>Acción realizada satisfactoriamente</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="successModal.hide()">Cerrar</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<app-auditoriasdetalle-form id="custom-modal-2" (redrawEvent)="reDraw($event)">
+    <!--<input type="hidden" [(ngModel)]="idItem" />-->
+</app-auditoriasdetalle-form>

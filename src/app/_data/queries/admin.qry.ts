@@ -96,12 +96,17 @@ export class AdminQry {
             _sdato = _sdatos.split('|')[_i - 1];
     
             if (_scampo > 0 && _sdato != '') {
-                __scampo = await connection.query("SELECT a.campo FROM searchcampos as a WHERE a.id = ?", _scampo,);
-                __soperador = await connection.query("SELECT a.operador FROM searchoperador as a WHERE a.id = ?", _soperador);
+                __scampo='',__soperador='';
+                await connection.query("SELECT a.campo FROM searchcampos as a WHERE a.id = ?", _scampo).then((data)=>{
+                    if(data.length>0) __scampo=data[0].campo
+                });
+                await connection.query("SELECT a.operador FROM searchoperador as a WHERE a.id = ?", _soperador).then((data)=>{
+                    if(data.length>0) __soperador=data[0].operador
+                });
     
                 // SET _CS=CONCAT(' AND (a.',__scampo,' ',REPLACE(__soperador,'$data',_sdato),')');
     
-                if (__soperador.indexOf('POSITION') >= 0)
+                if (__soperador.indexOf('INSTR') >= 0)
                     __CS = __CS + ' AND (' + __soperador.replace('$field', __scampo).replace('$data', _sdato) + ')';
                 else if (__scampo.indexOf('fn_idesc') >= 0) // funciones
                     __CS = __CS + ' AND (' + __scampo.replace('$value', _sdato) + ' ' + __soperador.replace('$data', _sdato) + ')';
