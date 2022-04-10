@@ -11,10 +11,7 @@ export class AuditoriasIniService implements Resolve <Observable<any>>{
 
   constructor(private ds: AuditoriasService) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot){
-    return this.ds.getHeaders().pipe(
-      take(1),
-      map(userdata => userdata)
-    )
+  async resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    return await this.ds.getHeaders()
   }
 }

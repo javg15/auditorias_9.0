@@ -214,6 +214,14 @@ export class CatentidadesService {
     }
   }
 
+  async getCatalogo(): Promise<any> {
+    
+    this.conn= await this.dbSvc.connection;
+    return await this.conn.query("SELECT id,nombrecorto as text,id as value,nombrecorto as label "
+      +"FROM catentidades ORDER BY nombrecorto");
+    
+  }
+
   // array de modales
   public add(modal: any) {
     this.modals.push(modal);

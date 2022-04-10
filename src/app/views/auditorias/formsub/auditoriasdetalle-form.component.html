@@ -18,38 +18,39 @@
                     <div class="row">
                         <div class="form-group col-sm-3">
                             <div class="form-group">
-                                <label for="id_cattipohorasdocente">Tipo de hora</label>
-                                <ng-select2 [(ngModel)]="record.id_cattipohorasdocente" [data]="cattipohorasdocenteCat" [allowClear]="true" width="100%" name="Tipo de hora">
-                                </ng-select2>
-                                <!--<select id="selectPlantel" class="form-control" [(ngModel)]="record.id_categorias" name="Categorías">
-                            <option *ngFor="let col of categoriasCat" [value]="col.id">{{ col.clave + " - " + (col.denominacion!=null?col.denominacion:".") }}</option>
-                          </select>-->
+                                <label for="punto">Punto</label>
+                                <input type="text" [(ngModel)]="record.punto" class="form-control" name="Punto">
                             </div>
                         </div>
 
 
-                        <div class="form-group col-sm-3">
+                        <div class="form-group col-sm-9">
                             <div class="form-group">
-                                <label for="id_semestre_ini">Semestre de inicio</label>
-                                <ng-select2 [(ngModel)]="record.id_semestre_ini" [data]="semestreCat" [allowClear]="true" width="100%" name="Semestre de inicio">
-                                </ng-select2>
+                                <label for="observacion">Observación</label>
+                                <textarea [(ngModel)]="record.observacion" rows="5" cols="50" class="form-control" name="Observación">
+                                </textarea>
                             </div>
                         </div>
-                        <div class="form-group col-sm-3">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
                             <div class="form-group">
-                                <label for="id_catquincena_ini">Quincena inicial</label>
-                                <ng-select2 [(ngModel)]="record.id_catquincena_ini" [data]="catquincenaCat" [allowClear]="true" width="100%" name="Quincena inicial">
-                                </ng-select2>
+                                <label for="id_catresponsables">Responsable</label>
+                                <select2 [overlay]="true" [(ngModel)]="record.id_catresponsables" [data]="id_catresponsablesCat" name="Responsable" resettable> </select2>
                             </div>
                         </div>
-                        <div class="form-group col-sm-3">
+                        <div class="form-group col-sm-4">
                             <div class="form-group">
-                                <label for="id_catquincena_fin">Quincena final</label>
-                                <ng-select2 [(ngModel)]="record.id_catquincena_fin" [data]="catquincenaCat" [allowClear]="true" width="100%" name="Quincena final">
-                                </ng-select2>
+                                <label for="fechaobservacion">Fecha de observación</label>
+                                <input type="date" [(ngModel)]="record.fechaobservacion" class="form-control" name="Fecha de observación">
                             </div>
                         </div>
-
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="fechalimite">Fecha límite</label>
+                                <input type="date" [(ngModel)]="record.fechalimite" class="form-control" name="Fecha límite">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row">

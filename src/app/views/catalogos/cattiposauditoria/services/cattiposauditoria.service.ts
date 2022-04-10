@@ -34,8 +34,6 @@ export class CattiposauditoriaService {
     return this.getAdmin(
       { solocabeceras: 1, opcionesAdicionales: { raw: 0 } }
     );
-    
-    
   }
 
   async getAdmin(dataTablesParameters: any): Promise<any> {
@@ -72,16 +70,6 @@ export class CattiposauditoriaService {
           datos[i]["Acciones"]=this.qa.getAcciones(0,"todo",datos[i]["Acciones"]);
         }
       }
-      
-      
-
-      /*this.dbSvc
-              .connection
-              .then(function (c) {
-                datos=c.query(query)
-                console.log("datos=>",datos)
-              })
-              */
 
       var columnNames = (datos.length > 0 ? Object.keys(datos[0]).map(function(key) {
           return key;
@@ -104,13 +92,6 @@ export class CattiposauditoriaService {
     } catch (err) {
         throw err;
     }
-    /*return of({
-      draw: 1,
-      recordsTotal: 10,
-      recordsFiltered: 100,
-      data: ["uno"],
-      columnNames: ["uno"]
-    });*/
   }
 
   /* El siguiente método lee los datos de un registro seleccionado para edición. */
@@ -198,6 +179,14 @@ export class CattiposauditoriaService {
       // here self is your instance, but updated
       return { message: "success", id: dataPack.id };
     }
+  }
+
+  async getCatalogo(): Promise<any> {
+    
+    this.conn= await this.dbSvc.connection;
+    return await this.conn.query("SELECT id,nombre as text,id as value,nombre as label "
+      +"FROM cattiposauditoria ORDER BY nombre");
+    
   }
 
   // array de modales

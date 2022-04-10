@@ -1,5 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Connection, ConnectionOptions, createConnection} from 'typeorm';
+import {Auditorias} from './_models/auditorias';
+import {Auditoriasdetalle} from './_models/auditoriasdetalle';
 import {Catejercicios} from './_models/catejercicios';
 import {Catentidades} from './_models/catentidades';
 import {Catresponsables} from './_models/catresponsables';
@@ -22,7 +24,7 @@ export class DatabaseService {
     this.options = {
       type: 'sqlite',
       database: (serve ? path.join(__dirname, `/data/sqlite3.db`) : './src/data/sqlite3.db'),
-      entities: [Catejercicios,Catentidades,Catresponsables,Catservidores,Cattiposauditoria],
+      entities: [Catejercicios,Catentidades,Catresponsables,Catservidores,Cattiposauditoria,Auditorias,Auditoriasdetalle],
       synchronize: false,
       logging: 'all'
     };

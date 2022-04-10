@@ -51,64 +51,61 @@ export class AuditoriasAdminComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.headersAdmin = JSON.parse(this.route.snapshot.data.userdata.cabeceras);
 
-      this.dtOptions = {
-        pagingType: 'full_numbers',
-        pageLength: 10,
-        serverSide: true,
-        processing: true,
-        //destroy : true,
-        searching : false,
-        info: true,
-        language: {
-          emptyTable: '',
-          zeroRecords: 'No hay coincidencias',
-          lengthMenu: 'Mostrar _MENU_ elementos',
-          search: 'Buscar:',
-          info: 'De _START_ a _END_ de _TOTAL_ elementos',
-          infoEmpty: 'De 0 a 0 de 0 elementos',
-          infoFiltered: '(filtrados de _MAX_ elementos totales)',
-          paginate: {
-            first: 'Prim.',
-            last: 'Últ.',
-            next: 'Sig.',
-            previous: 'Ant.'
-          },
+    this.headersAdmin = JSON.parse(this.route.snapshot.data.userdata.data[0].cabeceras);
+
+    this.dtOptions = {
+      pagingType: 'full_numbers',
+      pageLength: 10,
+      serverSide: true,
+      processing: true,
+      //destroy : true,s
+
+      searching: false,
+      info: true,
+      language: {
+        emptyTable: '',
+        zeroRecords: 'No hay coincidencias',
+        lengthMenu: 'Mostrar _MENU_ elementos',
+        search: 'Buscar:',
+        info: 'De _START_ a _END_ de _TOTAL_ elementos',
+        infoEmpty: 'De 0 a 0 de 0 elementos',
+        infoFiltered: '(filtrados de _MAX_ elementos totales)',
+        paginate: {
+          first: 'Prim.',
+          last: 'Últ.',
+          next: 'Sig.',
+          previous: 'Ant.'
         },
-        // Use this attribute to enable the responsive extension
-        responsive: true,
-        ajax: (dataTablesParameters: any, callback) => {
-          this.dtOptionsAdicional.raw++;
-          dataTablesParameters.opcionesAdicionales = this.dtOptionsAdicional;
-
-          this.auditoriasService.http
-            .post<any>(
-              // this.API_URL + '/a6b_apis/read_records_dt.php',
-              this.API_URL + '/auditorias/getAdmin',
-              dataTablesParameters, {}
-            ).subscribe(resp => {
-
-              this.ColumnNames = resp.columnNames;
-              this.Members = resp.data;
-              this.NumberOfMembers = resp.data.length;
-              $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
-              callback({
-                recordsTotal: resp.recordsTotal,
-                recordsFiltered: resp.recordsFiltered,
-                data: []
-              });
-              if (this.NumberOfMembers > 0) {
-                $('.dataTables_empty').css('display', 'none');
-              }
-            }
-          );
-        },
-        columns: this.headersAdmin,
-        columnDefs:[{"visible": false, "targets": 0}, //state
-                //{"width": "5%", "targets": 1}
-              ]
-      };
+      },
+      // Use this attribute to enable the responsive extension
+      responsive: true,
+      ajax: async (dataTablesParameters: any, callback) => {
+        this.dtOptionsAdicional.raw++;
+        dataTablesParameters.opcionesAdicionales = this.dtOptionsAdicional;
+        
+        var self = this;
+        await this.auditoriasService.getAdmin(dataTablesParameters).then(function(resp:any){
+        
+          self.ColumnNames = resp.columnNames;
+          self.Members = resp.data;
+          self.NumberOfMembers = resp.data.length;
+          $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
+          callback({
+            recordsTotal: resp.recordsTotal,
+            recordsFiltered: resp.recordsFiltered,
+            data: []
+          });
+          if (self.NumberOfMembers > 0) {
+            $('.dataTables_empty').css('display', 'none');
+          }
+          
+        });
+      },
+      columns: this.headersAdmin,
+      columnDefs: [{ "visible": false, "searchable": false, "targets": 0 }
+        , { "width": "5%", "targets": 1 }]
+    };
 
   }
   openModal(id: string, accion: string, idItem: number) {
@@ -117,11 +114,6 @@ export class AuditoriasAdminComponent implements OnInit {
 
   closeModal(id: string) {
     this.auditoriasService.close(id);
-  }
-
-
-  MostrarReporte(param_id_catzonaeconomica){
-    this.auditoriasService.getReporte('/reportes/auditorias',$(param_id_catzonaeconomica).val());
   }
 
 

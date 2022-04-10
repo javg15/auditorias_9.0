@@ -1,20 +1,21 @@
 import { Component, ElementRef, Input, OnInit, ViewChild, OnDestroy, Output, EventEmitter  } from '@angular/core';
-import { DataTablesResponse } from '../../../../classes/data-tables-response';
 import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { Auditoriasdetalle, Cattipohorasdocente,Catquincena,Semestre } from '../../../../_models';
-import { CattipohorasdocenteService } from '../../../catalogos/cattipohorasdocente/services/cattipohorasdocente.service';
-import { SemestreService } from '../../../catalogos/semestre/services/semestre.service';
-import { CatquincenaService } from '../../../catalogos/catquincena/services/catquincena.service';
-
-import { ValidationSummaryComponent } from '../../../_shared/validation/validation-summary.component';
-import { actionsButtonSave, titulosModal } from '../../../../../environments/environment';
-import { Observable } from 'rxjs';
-import { IsLoadingService } from '../../../../_services/is-loading/is-loading.service';
+import { Auditoriasdetalle} from '../../../_data/_models/auditoriasdetalle';
+import { Catresponsables} from '../../../_data/_models/catresponsables';
 
 import { AuditoriasdetalleService } from '../services/auditoriasdetalle.service';
+import { CatresponsablesService } from '../../catalogos/catresponsables/services/catresponsables.service';
+
+import { ValidationSummaryComponent } from '../../_shared/validation/validation-summary.component';
+import { environment,actionsButtonSave, titulosModal } from '../../../../../src/environments/environment';
+import { Observable } from 'rxjs';
+import { IsLoadingService } from '../../../_services/is-loading/is-loading.service';
+
+
+
 
 declare var $: any;
 declare var jQuery: any;
@@ -48,36 +49,23 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
   @ViewChild(ValidationSummaryComponent) validSummary: ValidationSummaryComponent;
 
   record: Auditoriasdetalle;
-  cattipohorasdocenteCat:Cattipohorasdocente[];
-  semestreCat:Semestre[];
-  catquincenaCat:Catquincena[];
+  catresponsablesCat:Catresponsables[];
 
 
   constructor(private isLoadingService: IsLoadingService,
     private el: ElementRef,
-    private CattipohorasdocenteSvc: CattipohorasdocenteService,
+    private CatresponsablesSvc: CatresponsablesService,
     private auditoriasdetalleService: AuditoriasdetalleService,
-    private semestreSvc: SemestreService,
-    private catquincenaSvc: CatquincenaService,
 
       ) {
       this.elementModal = el.nativeElement;
-      this.CattipohorasdocenteSvc.getCatalogo().subscribe(resp => {
-        this.cattipohorasdocenteCat = resp;
-      });
-      this.semestreSvc.getCatalogo().subscribe(resp => {
-        this.semestreCat = resp;
-      });
-      this.catquincenaSvc.getCatalogo().subscribe(resp => {
-        this.catquincenaCat = resp;
-      });
+      
   }
 
   newRecord(idParent:number): Auditoriasdetalle {
     return {
-      id: 0,  id_auditorias:idParent, id_cattipohorasdocente:0, fecha_ini:null, fecha_fin:null,id_categorias:0,
-      id_semestre_ini:0,id_catquincena_ini:0,id_catquincena_fin:0,
-      state: '', created_at: new Date(),  updated_at: new Date(), id_usuarios_r: 0
+      id: 0,  id_auditorias:idParent, punto:0, observacion:null, fechalimite:"",fechaobservacion:"",
+      id_catresponsables:0, state: ''
     };
   }
   ngOnInit(): void {
@@ -108,36 +96,41 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
   async submitAction(form) {
 
     if(this.actionForm.toUpperCase()!=="VER"){
+
       this.validSummary.resetErrorMessages(form);
 
-      await this.isLoadingService.add(
-      this.auditoriasdetalleService.setRecord(this.record,this.actionForm).subscribe(resp => {
-        if (resp.hasOwnProperty('error')) {
-          this.validSummary.generateErrorMessagesFromServer(resp.message);
-        }
-        else if(resp.message=="success"){
-          if(this.actionForm.toUpperCase()=="NUEVO") this.actionForm="editar";
-          this.record.id=resp.id;
-          this.successModal.show();
-          setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
-        }
-      }),{ key: 'loading' });
+      await this.isLoadingService.add(this.setRecord(),{ key: 'loading' });
+    }
+  }
+
+  async setRecord(){
+    {
+      const resp=await this.auditoriasdetalleService.setRecord(this.record,this.actionForm);
+      if (resp.hasOwnProperty('error')) {
+        this.validSummary.generateErrorMessagesFromServer(resp.message);
+      }
+      else if(resp.message=="success"){
+        if(this.actionForm.toUpperCase()=="NUEVO") this.actionForm="editar";
+        this.record.id=resp.id;
+        this.successModal.show();
+        setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
+      }
     }
   }
 
 
   // open modal
-  open(idItem: string, accion: string,idParent:number):  void {
+  async open(idItem: string, accion: string,idParent:number):  Promise<void> {
     this.actionForm=accion;
     this.botonAccion=actionsButtonSave[accion];
     this.tituloForm="Detalle de horas - " + titulosModal[accion] + " registro";
 
+    this.catresponsablesCat = await this.CatresponsablesSvc.getCatalogo()
+
     if(idItem=="0"){
       this.record =this.newRecord(idParent);
     } else {
-    this.auditoriasdetalleService.getRecord(idItem).subscribe(resp => {
-      this.record = resp;
-    });
+      this.record = await this.auditoriasdetalleService.getRecord(idItem);
   }
 
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear

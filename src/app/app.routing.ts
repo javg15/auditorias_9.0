@@ -53,8 +53,8 @@ const routes: Routes = [
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
       },
       {
-        path: 'autenticacion',
-        loadChildren: () => import('./views/autenticacion/autenticacion.module').then(m => m.AutenticacionModule)
+        path: 'auditorias',
+        loadChildren: () => import('./views/auditorias/auditorias.module').then(m => m.AuditoriasModule)
       },
       {
         path: 'catalogos',

@@ -1,6 +1,4 @@
 import { Component, ElementRef, Input, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
-import { AuditoriasService } from '../services/auditorias.service';
-import { AuditoriasdetalleService } from '../services/auditoriasdetalle.service';
 import { ActivatedRoute } from '@angular/router';
 
 import { DataTableDirective } from 'angular-datatables';
@@ -8,6 +6,20 @@ import { Subject } from 'rxjs';
 
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Auditorias} from '../../../_data/_models/auditorias';
+import { Cattiposauditoria} from '../../../_data/_models/cattiposauditoria';
+import { Catentidades} from '../../../_data/_models/catentidades';
+import { Catejercicios} from '../../../_data/_models/catejercicios';
+import { Catservidores} from '../../../_data/_models/catservidores';
+import { Catresponsables} from '../../../_data/_models/catresponsables';
+
+import { AuditoriasService } from '../services/auditorias.service';
+import { AuditoriasdetalleService } from '../services/auditoriasdetalle.service';
+import { CattiposauditoriaService } from '../../catalogos/cattiposauditoria/services/cattiposauditoria.service';
+import { CatservidoresService } from '../../catalogos/catservidores/services/catservidores.service';
+import { CatentidadesService } from '../../catalogos/catentidades/services/catentidades.service';
+import { CatejerciciosService } from '../../catalogos/catejercicios/services/catejercicios.service';
+import { CatresponsablesService } from '../../catalogos/catresponsables/services/catresponsables.service';
+
 import { ValidationSummaryComponent } from '../../_shared/validation/validation-summary.component';
 import { environment,actionsButtonSave, titulosModal } from '../../../../../src/environments/environment';
 import { Observable } from 'rxjs';
@@ -69,42 +81,30 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   @ViewChild(ValidationSummaryComponent) validSummary: ValidationSummaryComponent;
 
   record: Auditorias;
-  gruposclaseCat: Gruposclase[];
-  catmateriasclaseCat: Materiasclase[];
-  catplantelesCat: Catplanteles[];
-  cattipohorasdocenteCat: Cattipohorasdocente[];
+  cattiposauditoriaCat: Cattiposauditoria[];
+  catcatservidoresCat: Catservidores[];
+  catentidadesCat: Catentidades[];
+  catejerciciosCat: Catejercicios[];
+  catresponsablesCat: Catresponsables[]; 
 
   constructor(private isLoadingService: IsLoadingService,
     private auditoriasService: AuditoriasService, private el: ElementRef,
     private auditoriasdetalleService: AuditoriasdetalleService,
-    private gruposclaseSvc: GruposclaseService,
-    private materiasclaseSvc: MateriasclaseService,
-    private catplantelesSvc: CatplantelesService,
-    private cattipohorasdocenteSvc: CattipohorasdocenteService,
+    private cattiposauditoriaSvc: CattiposauditoriaService,
+    private catservidoresSvc: CatservidoresService,
+    private catentidadesSvc: CatentidadesService,
+    private catejerciciosSvc: CatejerciciosService,
+    private catresponsablesSvc: CatresponsablesService,
     private route: ActivatedRoute
   ) {
     this.elementModal = el.nativeElement;
-    this.gruposclaseSvc.getCatalogo().subscribe(resp => {
-      this.gruposclaseCat = resp;
-    });
-
-    this.materiasclaseSvc.getCatalogo().subscribe(resp => {
-      this.catmateriasclaseCat = resp;
-    });
-    this.catplantelesSvc.getCatalogo().subscribe(resp => {
-      this.catplantelesCat = resp;
-    });
-    this.cattipohorasdocenteSvc.getCatalogo().subscribe(resp => {
-      this.cattipohorasdocenteCat = resp;
-    });
-    //this.cattipoCat=[{id:'',descripcion:''},{id:1,descripcion:'ADMINISTRATIVO'},{id:2,descripcion:'DOCENTE'},{id:3,descripcion:'DIRECTIVO'}];
   }
 
   newRecord(): Auditorias {
     return {
-      id: 0, id_catplanteles: 0, id_materiasclase: 0, horas: 0, horaestatus: 0, id_gruposclase: 0,
-      id_cattipohorasdocente: 0, frenteagrupo: 0, id_cattiposemestre: 0,
-      state: '', created_at: new Date(), updated_at: new Date(), id_usuarios_r: 0
+      id: 0, id_catentidades: 0, id_catservidores: 0, nombre: '', oficio: '', numero: '',
+      id_catejercicios: 0, fecha: '', periodoini: '', periodofin: '', id_cattipoauditoria: 0,
+      marcolegal: '', id_catresponsables:0,state:''
     };
   }
   ngOnInit(): void {
@@ -122,7 +122,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     modal.auditoriasService.add(modal);
 
     //subtabla datatable
-    this.headersAdmin = JSON.parse(this.route.snapshot.data.userdataSueldos.cabeceras); // get data from resolver
+    this.headersAdmin = JSON.parse(this.route.snapshot.data.userdataDetalle.data[0].cabeceras); // get data from resolver
 
     this.dtOptions = {
       pagingType: 'full_numbers',
@@ -162,41 +162,50 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     this.elementModal.remove();
   }
 
-
   async submitAction(form) {
 
-    if (this.actionForm.toUpperCase() !== "VER") {
+    if(this.actionForm.toUpperCase()!=="VER"){
+
       this.validSummary.resetErrorMessages(form);
 
-      await this.isLoadingService.add(
-        this.auditoriasService.setRecord(this.record, this.actionForm).subscribe(resp => {
-          if (resp.hasOwnProperty('error')) {
-            this.validSummary.generateErrorMessagesFromServer(resp.message);
-          }
-          else if (resp.message == "success") {
-            if (this.actionForm.toUpperCase() == "NUEVO") this.actionForm = "editar";
-            this.record.id = resp.id;
-            this.successModal.show();
-            setTimeout(() => { this.successModal.hide(); this.close(); }, 2000)
-          }
-        }), { key: 'loading' });
+      await this.isLoadingService.add(this.setRecord(),{ key: 'loading' });
     }
   }
 
+  async setRecord(){
+    {
+      const resp=await this.auditoriasService.setRecord(this.record,this.actionForm);
+      if (resp.hasOwnProperty('error')) {
+        this.validSummary.generateErrorMessagesFromServer(resp.message);
+      }
+      else if(resp.message=="success"){
+        if(this.actionForm.toUpperCase()=="NUEVO") this.actionForm="editar";
+        this.record.id=resp.id;
+        this.successModal.show();
+        setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
+      }
+    }
+  }
+
+  
+
   // open modal
-  open(idItem: string, accion: string): void {
+  async open(idItem: string, accion: string): Promise<void> {
     this.actionForm = accion;
     this.botonAccion = actionsButtonSave[accion];
     this.tituloForm = "Horas clase - " + titulosModal[accion] + " registro";
+
+    this.cattiposauditoriaCat=await this.cattiposauditoriaSvc.getCatalogo();
+    this.catcatservidoresCat = await this.catservidoresSvc.getCatalogo();
+    this.catentidadesCat= await this.catentidadesSvc.getCatalogo();
+    this.catejerciciosCat=await this.catejerciciosSvc.getCatalogo();
+    this.catresponsablesCat=await this.catresponsablesSvc.getCatalogo();
 
     if (idItem == "0") {
       this.record = this.newRecord();
       this.reDraw(null);
     } else {
-      this.auditoriasService.getRecord(idItem).subscribe(resp => {
-        this.record = resp;
-        this.reDraw(null);
-      });
+      this.record = await this.auditoriasService.getRecord(idItem);
     }
 
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear
@@ -224,14 +233,14 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     this.auditoriasdetalleService.close(id);
   }
 
-  reDraw(parametro: any): void {
+  async reDraw(parametro: any): Promise<void> {
 
 
     this.dtOptionsAdicional.raw++;
     this.dtOptionsAdicional.fkeyvalue = this.record.id;
     this.dataTablesParameters.opcionesAdicionales = this.dtOptionsAdicional;
 
-    this.auditoriasdetalleService.getAdmin(this.dataTablesParameters).subscribe(resp => {
+    const resp=await this.auditoriasdetalleService.getAdmin(this.dataTablesParameters)
 
       this.ColumnNames = resp.columnNames;
       this.Members = resp.data;
@@ -241,8 +250,6 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       if (this.NumberOfMembers > 0) {
         $('.dataTables_empty').css('display', 'none');
       }
-    }
-    );
   }
 
 }

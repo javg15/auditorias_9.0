@@ -208,6 +208,14 @@ export class CatejerciciosService {
     }
   }
 
+  async getCatalogo(): Promise<any> {
+    
+    this.conn= await this.dbSvc.connection;
+    return await this.conn.query("SELECT id,ejercicio as text,id as value,ejercicio as label "
+      +"FROM catejercicios ORDER BY ejercicio");
+    
+  }
+
   // array de modales
   public add(modal: any) {
     this.modals.push(modal);

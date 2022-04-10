@@ -28,7 +28,7 @@ const routes: Routes = [
         },
         resolve: {
           userdata: AuditoriasIniService,
-          userdataSueldos: AuditoriasdetalleIniService
+          userdataDetalle: AuditoriasdetalleIniService
         }
       },
       {

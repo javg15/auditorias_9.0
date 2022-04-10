@@ -205,6 +205,14 @@ export class CatservidoresService {
     }
   }
 
+  async getCatalogo(): Promise<any> {
+    
+    this.conn= await this.dbSvc.connection;
+    return await this.conn.query("SELECT id,nombre as text,id as value,nombre as label "
+      +"FROM catservidores ORDER BY nombre");
+    
+  }
+
   // array de modales
   public add(modal: any) {
     this.modals.push(modal);
