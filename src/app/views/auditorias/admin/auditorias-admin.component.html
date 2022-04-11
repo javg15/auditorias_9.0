@@ -13,29 +13,30 @@
                         <tbody>
                             <tr *ngFor="let member of Members">
                                 <ng-container *ngFor="let col of ColumnNames;index as i">
-                                    <div *ngIf="col=='acciones'; else elseBlock">
+                                    <div *ngIf="col=='Acciones'; else elseBlock">
                                         <!--<td><img src="assets/{{ member[col] }}" width="50" /></td>-->
                                         <td>
                                             <div *ngFor="let boton of member[col].split(',')" style="display: contents;">
-                                                <button *ngIf="boton=='ver'" class="btn btn-brand btn-sm mr-1 btn-instagram" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','ver',member.id)">
+                                                <button *ngIf="boton=='ver'" class="btn btn-brand btn-sm mr-1 btn-instagram" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','ver',member.ID)">
                                               <i class="fa fa-search"></i>
                                           </button>
-                                                <button *ngIf="boton=='editar'" class="btn btn-brand btn-sm mr-1 btn-spotify" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','editar',member.id)">
+                                                <button *ngIf="boton=='editar'" class="btn btn-brand btn-sm mr-1 btn-spotify" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','editar',member.ID)">
                                               <i class="fa fa-edit"></i>
                                           </button>
-                                                <button *ngIf="boton=='eliminar'" class="btn btn-brand btn-sm mr-1 btn-reddit" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','eliminar',member.id)">
+                                                <button *ngIf="boton=='eliminar'" class="btn btn-brand btn-sm mr-1 btn-reddit" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','eliminar',member.ID)">
                                               <i class="fa fa-trash"></i>
                                           </button>
                                             </div>
                                         </td>
                                     </div>
                                     <ng-template #elseBlock>
-                                        <ng-container *ngIf="col!='id';else elseBlock2">
+                                        <ng-container *ngIf="col!='ID';else elseBlock2">
                                             <td>{{ member[col] }}</td>
                                         </ng-container>
                                     </ng-template>
                                     <ng-template #elseBlock2></ng-template>
                                 </ng-container>
+                            </tr>
                         </tbody>
                     </table>
                 </div>

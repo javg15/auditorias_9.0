@@ -82,7 +82,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
 
   record: Auditorias;
   cattiposauditoriaCat: Cattiposauditoria[];
-  catcatservidoresCat: Catservidores[];
+  catservidoresCat: Catservidores[];
   catentidadesCat: Catentidades[];
   catejerciciosCat: Catejercicios[];
   catresponsablesCat: Catresponsables[]; 
@@ -103,7 +103,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   newRecord(): Auditorias {
     return {
       id: 0, id_catentidades: 0, id_catservidores: 0, nombre: '', oficio: '', numero: '',
-      id_catejercicios: 0, fecha: '', periodoini: '', periodofin: '', id_cattipoauditoria: 0,
+      id_catejercicios: 0, fecha: '', periodoini: '', periodofin: '', id_cattiposauditoria: 0,
       marcolegal: '', id_catresponsables:0,state:''
     };
   }
@@ -196,18 +196,17 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     this.tituloForm = "Horas clase - " + titulosModal[accion] + " registro";
 
     this.cattiposauditoriaCat=await this.cattiposauditoriaSvc.getCatalogo();
-    this.catcatservidoresCat = await this.catservidoresSvc.getCatalogo();
+    this.catservidoresCat = await this.catservidoresSvc.getCatalogo();
     this.catentidadesCat= await this.catentidadesSvc.getCatalogo();
     this.catejerciciosCat=await this.catejerciciosSvc.getCatalogo();
     this.catresponsablesCat=await this.catresponsablesSvc.getCatalogo();
 
     if (idItem == "0") {
       this.record = this.newRecord();
-      this.reDraw(null);
     } else {
       this.record = await this.auditoriasService.getRecord(idItem);
     }
-
+    this.reDraw(null);
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear
     this.basicModal.show();
   }

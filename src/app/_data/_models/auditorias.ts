@@ -24,7 +24,7 @@ export class Auditorias {
     @Column()
     periodofin: string;
     @Column()
-    id_cattipoauditoria: number;
+    id_cattiposauditoria: number;
     @Column()
     marcolegal: string;
     @Column()

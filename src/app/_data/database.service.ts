@@ -19,11 +19,11 @@ export class DatabaseService {
 
   constructor() {
     const args = process.argv.slice(1);
-    let serve: boolean = args.some(val => val === '--serve');
-    console.log("path=>",path.join(__dirname, `/data/sqlite3.db`))
+    //let serve: boolean = args.some(val => val === '--serve');
+    
     this.options = {
       type: 'sqlite',
-      database: (serve ? path.join(__dirname, `/data/sqlite3.db`) : './src/data/sqlite3.db'),
+      database: './src/data/sqlite3.db',
       entities: [Catejercicios,Catentidades,Catresponsables,Catservidores,Cattiposauditoria,Auditorias,Auditoriasdetalle],
       synchronize: false,
       logging: 'all'

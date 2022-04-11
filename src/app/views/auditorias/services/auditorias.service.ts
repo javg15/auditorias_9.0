@@ -67,6 +67,7 @@ export class AuditoriasService {
               ',ta.nombre AS Tipo ' +
               ',s.nombre AS Servidor ' +
               ',r.nombre AS Responsable ' +
+              ',a.state AS Acciones ' +
               'FROM auditorias AS a ' +
               ' LEFT JOIN catentidades AS e ON a.id_catentidades=e.id ' +
               ' LEFT JOIN catejercicios AS ej ON a.id_catejercicios=ej.id ' +
@@ -81,7 +82,6 @@ export class AuditoriasService {
               "&ordensentido=" + req.order[0].dir,this.conn)
           
       }
-      
       
       datos=await this.conn.query(query);
       if (req.solocabeceras != 1) {
@@ -155,7 +155,7 @@ export class AuditoriasService {
               let dateFin = new Date()
 
               if (dateIni > dateFin)
-                  errors.push({ type: "dateMax", field: "fechaexpedicion", expected: dateFin.toISOString().split('T')[0] })
+                  errors.push({ type: "dateMax", field: "fecha", expected: dateFin.toISOString().split('T')[0] })
 
               if (!moment(value).isValid() || !moment(value).isBefore(new Date()) || !moment(value).isAfter('1900-01-01'))
                   errors.push({ type: "date" })

@@ -61,6 +61,7 @@ export class AuditoriasdetalleService {
               ',r.nombre AS Responsable ' +
               ',a.fechaobservacion AS "Fecha de observación" ' +
               ',a.fechalimite AS "Fecha límite" ' +
+              ',a.state AS Acciones ' +
               'FROM auditoriasdetalle AS a ' +
               ' LEFT JOIN catresponsables AS r ON a.id_catresponsables=r.id '
               ,
@@ -145,7 +146,7 @@ export class AuditoriasdetalleService {
               let dateFin = new Date()
 
               if (dateIni > dateFin)
-                  errors.push({ type: "dateMax", field: "fechaexpedicion", expected: dateFin.toISOString().split('T')[0] })
+                  errors.push({ type: "dateMax", field: "fechaobservacion", expected: dateFin.toISOString().split('T')[0] })
 
               if (!moment(value).isValid() || !moment(value).isBefore(new Date()) || !moment(value).isAfter('1900-01-01'))
                   errors.push({ type: "date" })
@@ -157,10 +158,7 @@ export class AuditoriasdetalleService {
               let dateIni = new Date(value)
               let dateFin = new Date()
 
-              if (dateIni > dateFin)
-                  errors.push({ type: "dateMax", field: "fechaexpedicion", expected: dateFin.toISOString().split('T')[0] })
-
-              if (!moment(value).isValid() || !moment(value).isBefore(new Date()) || !moment(value).isAfter('1900-01-01'))
+              if (!moment(value).isValid() || !moment(value).isAfter('1900-01-01'))
                   errors.push({ type: "date" })
               return value;
           },

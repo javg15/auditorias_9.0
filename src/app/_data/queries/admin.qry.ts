@@ -115,7 +115,7 @@ export class AdminQry {
                 else if (__scampo.indexOf('.') >= 0) // si contiene un punto, entonces es de una tabla anexa (join)
                     __CS = __CS + ' AND (' + __scampo + ' ' + __soperador.replace('$data', _sdato) + ')';
                 else
-                    __CS = __CS + ' AND (a.' + __scampo, ' ', __soperador.replace('$data', _sdato), ')';
+                    __CS = __CS + ' AND (a.' + __scampo + ' ' + __soperador.replace('$data', _sdato) + ')';
     
             }
     
