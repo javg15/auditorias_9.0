@@ -1,20 +1,17 @@
 // Automatically generated. Don't change this file manually.
 
-import Archivos, { ArchivosInitializer, } from './archivos';
 import Personal, { PersonalInitializer, } from './personal';
 import Searchcampos, { SearchcamposInitializer, SearchcamposId } from './searchcampos';
 import Searchoperador, { SearchoperadorInitializer, SearchoperadorId } from './searchoperador';
 import Usuarios, { UsuariosInitializer, UsuariosId } from './usuarios';
 
 type Model =
-  | Archivos
   | Personal
   | Searchcampos
   | Searchoperador
   | Usuarios
 
 interface ModelTypeMap {
-  'archivos': Archivos;
   'personal': Personal;
   'searchcampos': Searchcampos;
   'searchoperador': Searchoperador;
@@ -33,14 +30,12 @@ interface ModelIdTypeMap {
 }
 
 type Initializer =
-  | ArchivosInitializer
   | PersonalInitializer
   | SearchcamposInitializer
   | SearchoperadorInitializer
   | UsuariosInitializer
 
 interface InitializerTypeMap {
-  'archivos': ArchivosInitializer;
   'personal': PersonalInitializer;
   'searchcampos': SearchcamposInitializer;
   'searchoperador': SearchoperadorInitializer;
@@ -48,7 +43,6 @@ interface InitializerTypeMap {
 }
 
 export {
-  Archivos, ArchivosInitializer,
 
   Personal, PersonalInitializer,
   Searchcampos, SearchcamposInitializer, SearchcamposId,

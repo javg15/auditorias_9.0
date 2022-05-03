@@ -7,14 +7,9 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class ArchivosIniService implements Resolve <Observable<any>>{
+export class ArchivosIniService {
 
   constructor(private ds: ArchivosService) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot){
-    return this.ds.getHeaders().pipe(
-      take(1),
-      map(userdata => userdata)
-    )
-  }
+  
 }

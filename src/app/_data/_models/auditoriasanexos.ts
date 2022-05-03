@@ -1,24 +1,17 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
-export class Auditoriasdetalle {
+export class Auditoriasanexos {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    id_auditorias: number;
+    id_auditoriasdetalle: number;
 
     @Column()
     punto: number;
-
     @Column()
-    observacion: string;
-    @Column()
-    fecharecepcion: string;
-    @Column()
-    fechalimite: string;
-    @Column()
-    oficio: string;
+    id_archivos: number;
 
     @Column()
     state: string;

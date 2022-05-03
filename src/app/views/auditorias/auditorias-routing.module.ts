@@ -7,13 +7,15 @@ import { AuditoriasIniService } from './services/auditorias.ini.service';
 
 import { AuditoriasdetalleFormComponent } from './formsub/auditoriasdetalle-form.component';
 import { AuditoriasdetalleIniService } from './services/auditoriasdetalle.ini.service';
+import { AuditoriasanexosFormComponent } from './formanexos/auditoriasanexos-form.component';
+import { AuditoriasanexosIniService } from './services/auditoriasanexos.ini.service';
 
 
 const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Horas docentes'
+      title: 'Auditorías'
     },
     children: [
       {
@@ -28,24 +30,31 @@ const routes: Routes = [
         },
         resolve: {
           userdata: AuditoriasIniService,
-          userdataDetalle: AuditoriasdetalleIniService
+          userdataDetalle: AuditoriasdetalleIniService,
+          userdataAnexos: AuditoriasanexosIniService
         }
       },
       {
         path: 'form',
         component: AuditoriasFormComponent,
         data: {
-          title: 'Horas clase'
+          title: 'Auditorías'
         },
       },
       {
         path: 'form',
         component: AuditoriasdetalleFormComponent,
         data: {
-          title: 'Auditorias sueldos'
+          title: 'Auditorías detalle'
         }
-      }
-
+      },
+      {
+        path: 'form',
+        component: AuditoriasanexosFormComponent,
+        data: {
+          title: 'Auditorías anexos'
+        }
+      },
     ]
   }
 ];

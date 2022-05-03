@@ -4,19 +4,14 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 export class Auditorias {
     @PrimaryGeneratedColumn()
     id: number;
-
     @Column()
     id_catentidades: number;
-
     @Column()
     nombre: string;
-
     @Column()
-    oficio: string;
+    numerooficio: string;
     @Column()
-    numero: string;
-    @Column()
-    id_catejercicios: number;
+    id_catejercicios: string; //funciona solo para concatenar los ids y mostrarlos en el formulario
     @Column()
     fecha: string;
     @Column()
@@ -26,11 +21,29 @@ export class Auditorias {
     @Column()
     id_cattiposauditoria: number;
     @Column()
-    marcolegal: string;
-    @Column()
     id_catservidores: number;
     @Column()
     id_catresponsables: number;
+    @Column()
+    rubros: string;
+    @Column()
+    numeroauditoria: string;
+    @Column()
+    numerooficionoti1: string;
+    @Column()
+    numerooficionoti2: string;
+    @Column()
+    numerooficionoti3: string;
+    @Column()
+    numeroofisol1: string;
+    @Column()
+    numeroofisol2: string;
+    @Column()
+    numeroofisol3: string;
+    @Column()
+    objetivo: string;
+    @Column()
+    marcolegal: string;
 
     @Column()
     state: string;

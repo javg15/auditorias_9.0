@@ -66,8 +66,11 @@ export class AdminQry {
             _id_usuario = gral.getParams(_parametros, 'id_usuario') !== null && gral.getParams(_parametros, 'id_usuario') !== undefined ? gral.getParams(_parametros, 'id_usuario') : 0,
             _id_permgrupos = gral.getParams(_parametros, 'id_permgrupos') !== null && gral.getParams(_parametros, 'id_permgrupos') !== undefined ? gral.getParams(_parametros, 'id_permgrupos') : 0,
             _id_maquina = gral.getParams(_parametros, 'id_maquina') !== null && gral.getParams(_parametros, 'id_maquina') !== undefined ? gral.getParams(_parametros, 'id_maquina') : 0,
-            _id_departamento = gral.getParams(_parametros, 'id_departamento') !== null && gral.getParams(_parametros, 'id_departamento') !== undefined ? gral.getParams(_parametros, 'id_departamento') : 0;
-    
+            _id_departamento = gral.getParams(_parametros, 'id_departamento') !== null && gral.getParams(_parametros, 'id_departamento') !== undefined ? gral.getParams(_parametros, 'id_departamento') : 0,
+            _groupby = gral.getParams(_parametros, 'groupby') !== null && gral.getParams(_parametros, 'groupby') !== undefined ? ' GROUP BY ' + gral.getParams(_parametros, 'groupby') + ' ' : ''
+            ;
+
+   
         let _headers = __Q,
             __CQ = '', // CONDITION QUERY
             __CS = '', // CONDITION SEARCH
@@ -145,7 +148,7 @@ export class AdminQry {
         if (_modo == 10) { //solo cabeceras
             __QC = 'SELECT *, count(*) OVER() AS total_count,' + '\'' + __cabeceras + '\'' + ' AS cabeceras,' + '"' + __align_rigth + '"' + ' AS align_rigth,' + '"' + _state + '"' + ' AS stateparametro,' + '"' + __agregar + '"' + ' AS agregar ' + ' FROM (' + __Q + __CQ + __CS + __CSE + __CD + ') AS A' + _ordencampo + _ordensentido + _largo + _inicio;
         } else {
-            __QC = __Q.split('FROM ')[0] + ', count(*) OVER() AS total_count,' + '\'' + __cabeceras + '\'' + ' AS cabeceras,' + '"' + __align_rigth + '"' + ' AS align_rigth,' + '"' + _state + '"' + ' AS stateparametro,' + '"' + __agregar + '"' + ' AS agregar ' + ' FROM ' + __Q.split('FROM ')[1] + __CQ + __CS + __CSE + __CD + _ordencampo + _ordensentido + _largo + _inicio;
+            __QC = __Q.split('FROM ')[0] + ', count(*) OVER() AS total_count,' + '\'' + __cabeceras + '\'' + ' AS cabeceras,' + '"' + __align_rigth + '"' + ' AS align_rigth,' + '"' + _state + '"' + ' AS stateparametro,' + '"' + __agregar + '"' + ' AS agregar ' + ' FROM ' + __Q.split('FROM ')[1] + __CQ + __CS + __CSE + __CD + _groupby + _ordencampo + _ordensentido + _largo + _inicio;
         }
     
         return __QC;

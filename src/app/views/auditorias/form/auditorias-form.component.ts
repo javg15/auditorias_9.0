@@ -86,6 +86,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   catentidadesCat: Catentidades[];
   catejerciciosCat: Catejercicios[];
   catresponsablesCat: Catresponsables[]; 
+  record_id_catejercicios:number[];
 
   constructor(private isLoadingService: IsLoadingService,
     private auditoriasService: AuditoriasService, private el: ElementRef,
@@ -102,9 +103,11 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
 
   newRecord(): Auditorias {
     return {
-      id: 0, id_catentidades: 0, id_catservidores: 0, nombre: '', oficio: '', numero: '',
-      id_catejercicios: 0, fecha: '', periodoini: '', periodofin: '', id_cattiposauditoria: 0,
-      marcolegal: '', id_catresponsables:0,state:''
+      id: 0, id_catentidades: 0, id_catservidores: 0, nombre: '', numerooficio: '', 
+      id_catejercicios: '', fecha: '', periodoini: '', periodofin: '', id_cattiposauditoria: 0,
+      marcolegal: '', id_catresponsables:0,
+      rubros: '',    numeroauditoria: '',    numerooficionoti1: '',numerooficionoti2: '',numerooficionoti3: '',
+      numeroofisol1: '',     numeroofisol2: '',numeroofisol3: '',     objetivo: '', state:''
     };
   }
   ngOnInit(): void {
@@ -174,6 +177,9 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
 
   async setRecord(){
     {
+      //parsear los valores de ejercicios
+      this.record.id_catejercicios=this.record_id_catejercicios.join(",");
+
       const resp=await this.auditoriasService.setRecord(this.record,this.actionForm);
       if (resp.hasOwnProperty('error')) {
         this.validSummary.generateErrorMessagesFromServer(resp.message);
@@ -193,7 +199,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   async open(idItem: string, accion: string): Promise<void> {
     this.actionForm = accion;
     this.botonAccion = actionsButtonSave[accion];
-    this.tituloForm = "Horas clase - " + titulosModal[accion] + " registro";
+    this.tituloForm = "Auditoría - " + titulosModal[accion] + " registro";
 
     this.cattiposauditoriaCat=await this.cattiposauditoriaSvc.getCatalogo();
     this.catservidoresCat = await this.catservidoresSvc.getCatalogo();
@@ -205,6 +211,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       this.record = this.newRecord();
     } else {
       this.record = await this.auditoriasService.getRecord(idItem);
+      this.record_id_catejercicios=this.record.id_catejercicios.split(",").map(Number).filter(Boolean);
     }
     this.reDraw(null);
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear
@@ -250,5 +257,4 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
         $('.dataTables_empty').css('display', 'none');
       }
   }
-
 }

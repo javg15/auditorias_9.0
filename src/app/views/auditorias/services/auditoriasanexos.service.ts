@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { Auditoriasdetalle } from 'src/app/_data/_models/auditoriasdetalle';
+import { Auditoriasanexos } from 'src/app/_data/_models/auditoriasanexos';
 
 import {DatabaseService} from 'src/app/_data/database.service';
 import {Connection} from 'typeorm';
@@ -19,7 +19,7 @@ let dataValidator = new Validator({
 @Injectable({
   providedIn: 'root'
 })
-export class AuditoriasdetalleService {
+export class AuditoriasanexosService {
   private modals: any[] = [];
   private conn:Connection;
 
@@ -44,25 +44,16 @@ export class AuditoriasdetalleService {
       let req:any = dataTablesParameters,
           datos:any = "",
           query = "";
-      //const rawData = DB().query(`SELECT * FROM auditoriadetalle where id=?`, [1]);
+      //const rawData = DB().query(`SELECT * FROM auditoriaanexos where id=?`, [1]);
       
       if (req.solocabeceras == 1) {
           query = await this.qa.getAdmin('SELECT 0 AS ID,"" AS Punto' +
-              ',"" AS Nombre ' +
-              ',"" AS "Fecha de recepción" ' +
-              ',"" AS "Fecha límite" ' +
-              ',"" AS Oficio ' +
               ',"" AS Acciones', '&modo=10&id_usuario=0',this.conn);
             
       } else {
           query = await this.qa.getAdmin('SELECT a.id AS ID ' +
               ',a.punto AS Punto ' +
-              ',a.observacion AS Nombre ' +
-              ',a.fecharecepcion AS "Fecha de recepción" ' +
-              ',a.fechalimite AS "Fecha límite" ' +
-              ',a.oficio AS Oficio ' +
-              ',a.state AS Acciones ' +
-              'FROM auditoriasdetalle AS a ' 
+              'FROM auditoriasanexos AS a ' 
               ,
               "&modo=" + req.modo + "&id_usuario=0" +
               "&inicio=" + (req.start!==null && req.start!==undefined ? req.start : 0) + "&largo=" + (req.length!==null && req.length!==undefined ? req.length : 0) +
@@ -106,12 +97,12 @@ export class AuditoriasdetalleService {
   async getRecord(id: any): Promise<any> {
     
     this.conn= await this.dbSvc.connection;
-    const rep = await this.conn.manager.getRepository(Auditoriasdetalle)
-    const Auditoriadetalle=await rep.findOne({    id: id })
-    if (!Auditoriadetalle) {
-        return { message: "Auditoriadetalle Not found." };
+    const rep = await this.conn.manager.getRepository(Auditoriasanexos)
+    const Auditoriaanexos=await rep.findOne({    id: id })
+    if (!Auditoriaanexos) {
+        return { message: "Auditoriaanexos Not found." };
     }
-    return Auditoriadetalle;
+    return Auditoriaanexos;
   }
 
   /* El siguiente método graba un registro nuevo, o uno editado. */
@@ -136,33 +127,9 @@ export class AuditoriasdetalleService {
         /*first_name: { type: "string", min: 1, max: 50, pattern: namePattern },*/
 
         id: { type: "number" },
-        id_auditorias: { type: "number" },
+        id_auditoriasdetalle: { type: "number" },
         punto: { type: "number"},
-        observacion: { type: "string", empty: false },
-        fecharecepcion: { type: "string", 
-            custom(value, errors) {
-              let dateIni = new Date(value)
-              let dateFin = new Date()
 
-              if (dateIni > dateFin)
-                  errors.push({ type: "dateMax", field: "fechaobservacion", expected: dateFin.toISOString().split('T')[0] })
-
-              if (!moment(value).isValid() || !moment(value).isBefore(new Date()) || !moment(value).isAfter('1900-01-01'))
-                  errors.push({ type: "date" })
-              return value;
-          },
-        },
-        fechalimite: { type: "string", 
-            custom(value, errors) {
-              let dateIni = new Date(value)
-              let dateFin = new Date()
-
-              if (!moment(value).isValid() || !moment(value).isAfter('1900-01-01'))
-                  errors.push({ type: "date" })
-              return value;
-          },
-        },
-        oficio: { type: "string", empty: false },
         
     };
 
@@ -192,11 +159,11 @@ export class AuditoriasdetalleService {
 
     //buscar si existe el registro y almacenarlo
     this.conn= await this.dbSvc.connection;
-    const rep = await this.conn.manager.getRepository(Auditoriasdetalle)
-    const auditoriadetalle =  await rep.findOne({    id: dataPack.id })
+    const rep = await this.conn.manager.getRepository(Auditoriasanexos)
+    const auditoriaanexos =  await rep.findOne({    id: dataPack.id })
     dataPack.state = gral.GetStatusSegunAccion(actionForm);
 
-    if (!auditoriadetalle) {
+    if (!auditoriaanexos) {
         delete dataPack.id;
         
         try{

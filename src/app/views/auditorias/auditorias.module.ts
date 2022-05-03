@@ -10,6 +10,7 @@ import { AuditoriasService } from './services/auditorias.service';
 import { AuditoriasAdminComponent } from './admin/auditorias-admin.component';
 import { AuditoriasFormComponent } from './form/auditorias-form.component';
 import { AuditoriasdetalleFormComponent } from './formsub/auditoriasdetalle-form.component';
+import { AuditoriasanexosFormComponent } from './formanexos/auditoriasanexos-form.component';
 import { DataTablesModule } from 'angular-datatables';
 import { Select2Module } from 'ng-select2-component';
 
@@ -26,7 +27,8 @@ import { Select2Module } from 'ng-select2-component';
   declarations: [
     AuditoriasAdminComponent,
     AuditoriasFormComponent,
-    AuditoriasdetalleFormComponent
+    AuditoriasdetalleFormComponent,
+    AuditoriasanexosFormComponent
   ],
   providers: [
     AuditoriasService

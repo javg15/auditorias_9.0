@@ -1,96 +1,136 @@
+
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { TokenStorageService } from '../../../../_services/token-storage.service';
-import { DataTablesResponse } from '../../../../classes/data-tables-response';
+import { Archivos } from 'src/app/_data/_models/archivos';
 
-import { environment } from '../../../../../environments/environment';
+import {DatabaseService} from 'src/app/_data/database.service';
+import {Connection} from 'typeorm';
+import { AdminQry } from 'src/app/_data/queries/admin.qry'; 
+const gral = require('src/app/_data/general.js')
+const mensajesValidacion = require("src/app/_data/config/validate.config");
 
-const httpOptions = {
-  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
-};
+let Validator = require('fastest-validator');
+/* create an instance of the validator */
+let dataValidator = new Validator({
+    useNewCustomCheckerFunction: true, // using new version
+    messages: mensajesValidacion
+});
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ArchivosService {
-  public API_URL = environment.APIS_URL;
   private modals: any[] = [];
+  private conn:Connection;
 
 
   /* En el constructor creamos el objeto http de la clase HttpClient,
   que estará disponible en toda la clase del servicio.
   Se define como public, para que sea accesible desde los componentes necesarios */
-  constructor(public http: HttpClient, private token: TokenStorageService) { }
+  constructor(private dbSvc: DatabaseService,private qa:AdminQry) { }
 
-  getHeaders(): Observable<any> {
-    return new Observable((o) => {
-      setTimeout(() => {
-        this.http.post<DataTablesResponse>(
-          // this.API_URL + '/a6b_apis/read_records_dt.php',
-          this.API_URL + '/archivos/getAdmin',
-          { solocabeceras: 1, opcionesAdicionales: { raw: 0 } }, {}
-        ).subscribe(resp => {
-          o.next(resp.data[0]);
-        })
-      }, 200)
+  
+  /* El siguiente método graba un registro nuevo, o uno editado. */
+  async setRecord(dataPack, actionForm): Promise<any>  {
+
+    Object.keys(dataPack).forEach(function(key) {
+      if (key.indexOf("id_", 0) >= 0) {
+          if (dataPack[key] != '')
+              dataPack[key] = parseInt(dataPack[key]);
+      }
+      if (key.indexOf("clave", 0) >= 0) {
+          dataPack[key] = dataPack[key].toString();
+      }
+      if (typeof dataPack[key] == 'number' && isNaN(parseFloat(dataPack[key]))) {
+          dataPack[key] = null;
+      }
     })
+
+    /* customer validator shema */
+    const dataVSchema = {
+        /*first_name: { type: "string", min: 1, max: 50, pattern: namePattern },*/
+
+        id: { type: "number" },
+        punto: { type: "string", min: 1, max: 20 },
+    };
+
+    var vres:any = true;
+    if (actionForm.toUpperCase() == "NUEVO" ||
+        actionForm.toUpperCase() == "EDITAR") {
+        vres = await dataValidator.validate(dataPack, dataVSchema);
+    }
+
+    /* validation failed */
+    if (!(vres === true)) {
+        let errors = {},
+            item;
+
+        for (const index in vres) {
+            item = vres[index];
+
+            errors[item.field] = item.message;
+        }
+
+        return {
+            "error": true,
+            "message": errors
+        };
+    }
+
+
+    //buscar si existe el registro y almacenarlo
+    this.conn= await this.dbSvc.connection;
+    const rep = await this.conn.manager.getRepository(Archivos)
+    const archivos =  await rep.findOne({    id: dataPack.id })
+    dataPack.state = gral.GetStatusSegunAccion(actionForm);
+
+    if (!archivos) {
+        delete dataPack.id;
+        
+        try{
+          const self=await rep.insert(dataPack)
+        
+          console.log("self.id=>", Number(self.identifiers[0].id))
+                // here self is your instance, but updated
+          return { message: "success", id: Number(self.identifiers[0].id) };
+        }catch(err){
+            return { error: true, message: [err.errors[0].message] };
+        };
+    } else {
+
+      await rep.update(dataPack.id, dataPack)
+      // here self is your instance, but updated
+      return { message: "success", id: dataPack.id };
+    }
   }
-
-  public getCatalogo(): Observable<any> {
-    return this.http.post(this.API_URL + '/archivos/getCatalogo',
-      {}
-      , httpOptions);
-  }
-
-  public getCatalogoSegunSexo(id_sexo): Observable<any> {
-    return this.http.post(this.API_URL + '/archivos/getCatalogoSegunSexo',
-      { id_sexo }
-      , httpOptions);
-  }
-
-
-  /* El siguiente método lee los datos de un registro seleccionado para edición. */
-  public getRecord(id: any): Observable<any> {
-    return this.http.post(this.API_URL + '/archivos/getRecord',
-      { id }
-      , httpOptions);
-  }
-
-  /* El siguiente método lee los datos avatar de un usuario. */
-  public getAvatar(id: any): Observable<any> {
-    return this.http.post(this.API_URL + '/archivos/getAvatar',
-      { id }
-      , httpOptions);
-  }
-
-  //obtiene el registro con los campos de referencia
-  public getRecordReferencia(id: any): Observable<any> {
-    return this.http.post(this.API_URL + '/archivos/getRecordReferencia',
-      { id }
-      , httpOptions);
-  }
-
-
-
 
   /* El siguiente método graba un registro nuevo, o uno editado. */
-  public setRecord(dataPack, actionForm): Observable<any> {
+  async setRecordReferencia(dataPack, actionForm): Promise<any>  {
 
-    return this.http.post(this.API_URL + '/archivos/setRecord',
-      { dataPack, actionForm }
-      , httpOptions);
+    //buscar si existe el registro y almacenarlo
+    this.conn= await this.dbSvc.connection;
+    const rep = await this.conn.manager.getRepository(Archivos)
+    const archivos =  await rep.findOne({    id: dataPack.id })
+
+    if (archivos) {
+      await rep.update(dataPack.id, dataPack)
+      // here self is your instance, but updated
+      return { message: "success", id: dataPack.id };
+    }
   }
 
-  /* El siguiente método graba un registro nuevo, o uno editado. */
-  public setRecordReferencia(dataPack, actionForm): Observable<any> {
-
-    return this.http.post(this.API_URL + '/archivos/setRecordReferencia',
-      { dataPack, actionForm }
-      , httpOptions);
+  async getRecord(id: any): Promise<any> {
+    
+    this.conn= await this.dbSvc.connection;
+    const rep = await this.conn.manager.getRepository(Archivos)
+    const Archivo=await rep.findOne({    id: id })
+    if (!Archivo) {
+        return { message: "Archivo Not found." };
+    }
+    return Archivo;
   }
 
+  
 
 
   // array de modales

@@ -1,6 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { Auditorias } from 'src/app/_data/_models/auditorias';
+import { Auditoriasejercicios } from 'src/app/_data/_models/auditoriasejercicios';
 
 import {DatabaseService} from 'src/app/_data/database.service';
 import {Connection} from 'typeorm';
@@ -47,39 +48,35 @@ export class AuditoriasService {
       //const rawData = DB().query(`SELECT * FROM auditoria where id=?`, [1]);
       
       if (req.solocabeceras == 1) {
-          query = await this.qa.getAdmin('SELECT 0 AS ID,"" AS Nombre' +
-              ',"" AS Oficio ' +
-              ',"" AS Numero ' +
-              ',"" AS Entidad ' +
+          query = await this.qa.getAdmin('SELECT 0 AS ID,"" AS ORFIS' +
+              ',"" AS Nombre ' +
               ',"" AS Ejercicio ' +
               ',"" AS Tipo ' +
-              ',"" AS Servidor ' +
-              ',"" AS Responsable ' +
+              ',"" AS Rubros ' +
+              ',"" AS "Oficio de notificación" ' +
               ',"" AS Acciones', '&modo=10&id_usuario=0',this.conn);
             
       } else {
           query = await this.qa.getAdmin('SELECT a.id AS ID ' +
+              ',e.nombrecorto AS ORFIS ' +
               ',a.nombre AS Nombre ' +
-              ',a.oficio AS Oficio ' +
-              ',a.numero AS Numero ' +
-              ',e.nombrecorto AS Entidad ' +
-              ',ej.ejercicio AS Ejercicio ' +
+              ',GROUP_CONCAT(cej.ejercicio) AS Ejercicio ' +
               ',ta.nombre AS Tipo ' +
-              ',s.nombre AS Servidor ' +
-              ',r.nombre AS Responsable ' +
+              ',a.rubros AS Rubros ' +
+              ',a.numerooficio AS "Oficio de notificación" ' +
               ',a.state AS Acciones ' +
               'FROM auditorias AS a ' +
               ' LEFT JOIN catentidades AS e ON a.id_catentidades=e.id ' +
-              ' LEFT JOIN catejercicios AS ej ON a.id_catejercicios=ej.id ' +
-              ' LEFT JOIN cattiposauditoria AS ta ON a.id_cattiposauditoria=ta.id ' +
-              ' LEFT JOIN catservidores AS s ON a.id_catservidores=s.id ' +
-              ' LEFT JOIN catresponsables AS r ON a.id_catresponsables=r.id '
+              ' LEFT JOIN auditoriasejercicios AS ej ON a.id=ej.id_auditorias ' +
+              ' 	LEFT JOIN catejercicios AS cej ON ej.id_catejercicios=cej.id ' +
+              ' LEFT JOIN cattiposauditoria AS ta ON a.id_cattiposauditoria=ta.id '
               ,
               "&modo=0&id_usuario=0" +
               "&inicio=" + (req.start!==null && req.start!==undefined ? req.start : 0) + "&largo=" + (req.length!==null && req.length!==undefined ? req.length : 0) +
               "&scampo=" + req.opcionesAdicionales.datosBusqueda.campo + "&soperador=" + req.opcionesAdicionales.datosBusqueda.operador + "&sdato=" + req.opcionesAdicionales.datosBusqueda.valor +
               "&ordencampo=" + req.columns[req.order[0].column].data +
-              "&ordensentido=" + req.order[0].dir,this.conn)
+              "&ordensentido=" + req.order[0].dir + "&groupby=a.id"
+              ,this.conn)
           
       }
       
@@ -118,10 +115,15 @@ export class AuditoriasService {
     
     this.conn= await this.dbSvc.connection;
     const rep = await this.conn.manager.getRepository(Auditorias)
+    const repE = await this.conn.manager.getRepository(Auditoriasejercicios)
     const Auditoria=await rep.findOne({    id: id })
+    const AuditoriaE=await repE.find({    id_auditorias: id })
+    
     if (!Auditoria) {
         return { message: "Auditoria Not found." };
     }
+    //unir los id de ejercicios en el campo id_catejercicios del objeto Auditoria
+    Auditoria.id_catejercicios=AuditoriaE.map(e=>e.id_catejercicios).join(",");
     return Auditoria;
   }
 
@@ -129,11 +131,12 @@ export class AuditoriasService {
   async setRecord(dataPack, actionForm): Promise<any>  {
 
     Object.keys(dataPack).forEach(function(key) {
-      if (key.indexOf("id_", 0) >= 0) {
+      if (key.indexOf("id_catejercicios", 0) < 0 &&
+          (key.indexOf("id_", 0) >= 0)) {
           if (dataPack[key] != '')
               dataPack[key] = parseInt(dataPack[key]);
       }
-      if (key.indexOf("clave", 0) >= 0) {
+      if (key.indexOf("id_catejercicios", 0) >= 0) {
           dataPack[key] = dataPack[key].toString();
       }
       if (typeof dataPack[key] == 'number' && isNaN(parseFloat(dataPack[key]))) {
@@ -147,8 +150,8 @@ export class AuditoriasService {
 
         id: { type: "number" },
         nombre: { type: "string", empty: false},
-        oficio: { type: "string", empty: false },
-        numero: { type: "string", empty: false},
+        numerooficio: { type: "string", empty: false},
+        numeroauditoria: { type: "string", empty: false},
         fecha: { type: "string", 
             custom(value, errors) {
               let dateIni = new Date(value)
@@ -183,9 +186,9 @@ export class AuditoriasService {
               return value; // Sanitize: remove all special chars except numbers
           }
         },
-        id_catejercicios: { type: "number", 
+        id_catejercicios: { type: "string", 
           custom(value, errors) {
-              if (value <= 0) errors.push({ type: "selection" })
+              if (value.length <= 0) errors.push({ type: "selection" })
               return value; // Sanitize: remove all special chars except numbers
           }
         },
@@ -233,6 +236,7 @@ export class AuditoriasService {
         
         try{
           const self=await rep.insert(dataPack)
+          await this.updateEjercicios(Number(self.identifiers[0].id),dataPack.id_catejercicios)
         
           console.log("self.id=>", Number(self.identifiers[0].id))
                 // here self is your instance, but updated
@@ -243,11 +247,25 @@ export class AuditoriasService {
     } else {
 
       await rep.update(dataPack.id, dataPack)
+      await this.updateEjercicios(dataPack.id,dataPack.id_catejercicios)
       // here self is your instance, but updated
       return { message: "success", id: dataPack.id };
     }
   }
 
+  public async updateEjercicios(id,catejercicios){
+    this.conn= await this.dbSvc.connection;
+    const repE = await this.conn.manager.getRepository(Auditoriasejercicios)
+
+    //eliminar todos los registros segun auditoria
+    await repE.delete({ id_auditorias: id })
+
+    //convertir en array
+    let ce=catejercicios.split(",")
+    for(let i=0;i<ce.length;i++)
+      await repE.insert({ id_auditorias: id,id_catejercicios:ce[i] })
+
+  }
 
   // array de modales
   public add(modal: any) {

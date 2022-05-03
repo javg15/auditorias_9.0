@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import {ArchivosService} from 'src/app/views/catalogos/archivos/services/archivos.service';
 import { HttpClient, HttpEvent, HttpRequest, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { TokenStorageService } from '../../../_services/token-storage.service';
@@ -13,7 +14,7 @@ export class UploadFisicoFileService {
 
   public API_URL = environment.APIS_URL;
 
-  constructor(private http: HttpClient,private token: TokenStorageService) { }
+  constructor(private http: HttpClient,private archivosSvc: ArchivosService) { }
 
   pushFileToStorage(file: File,ruta:string): Observable<HttpEvent<{}>> {
     const formdata: FormData = new FormData();
@@ -21,7 +22,7 @@ export class UploadFisicoFileService {
     formdata.append('file', file);
     formdata.append('ruta',ruta);
 
-    const req = new HttpRequest('POST', this.API_URL + '/archivos/uploadFisico', formdata, {
+    const req = new HttpRequest('POST', './archivos/uploadFisico', formdata, {
       reportProgress: true,
       responseType: 'text'
     });
@@ -30,13 +31,12 @@ export class UploadFisicoFileService {
 
   }
 
-  listFile(id): Observable<any> {
-    return this.http.get(this.API_URL + '/archivos/info/' + id);
+  listFile(id): Promise<any> {
+    return this.archivosSvc.getRecord(id)
   }
 
   //getFile(id): Observable<any> {
   getFile(ruta){
-    const token = this.token.getToken();
     let re = /\//g;//reemplazar diagonal
     ruta=ruta.replace(re, "!");
 
@@ -46,7 +46,7 @@ export class UploadFisicoFileService {
       //var file = new Blob([data], {type: tipo});
       var fileURL = window.URL.createObjectURL(data);
       window.open(fileURL);
-  });
+    });
 
     //return this.http.get(this.API_URL + '/archivos/' + id);
   }

@@ -10,7 +10,7 @@ import { UploadFisicoFileService } from './uploadFisico-file.service';
 export class ListUploadFisicoComponent implements OnInit {
 
   showFile = false;
-  fileUploads: Observable<string[]>;
+  fileUploads: string[];
 
   constructor(private uploadFisicoService: UploadFisicoFileService) { }
 
@@ -18,10 +18,10 @@ export class ListUploadFisicoComponent implements OnInit {
     this.showFiles(0);
   }
 
-  showFiles(id_archivos:number) {//enable: boolean
+  async showFiles(id_archivos:number) {//enable: boolean
 
     if(id_archivos>0){
-      this.fileUploads = this.uploadFisicoService.listFile(id_archivos);
+      this.fileUploads = await this.uploadFisicoService.listFile(id_archivos);
     }
     else
       this.fileUploads=null;

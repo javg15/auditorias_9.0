@@ -1,10 +1,10 @@
 import { Component, ElementRef, Input, OnInit, ViewChild, OnDestroy, Output, EventEmitter } from '@angular/core';
 import { UsuariosService } from '../services/usuarios.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { Usuarios } from '../../../../_data/_models';
+import { Usuarios } from 'src/app/_data/_models/';
 import { ValidationSummaryComponent } from '../../../_shared/validation/validation-summary.component';
 
-import { Archivos } from '../../../../_data/_models';
+import { Archivos } from 'src/app/_data/_models/archivos';
 import { ArchivosService } from '../../../catalogos/archivos/services/archivos.service';
 
 import { ListUploadComponent } from '../../../_shared/upload/list-upload.component';
@@ -97,16 +97,12 @@ export class UsuariosFormdirectComponent implements OnInit {
             this.recordFile={id:this.record.id_archivos_avatar,
                   tabla:"usuarios",
                   id_tabla:this.record.id,ruta:"",
-                  tipo: null,  nombre:  null,  datos: null,  id_usuarios_r: 0,
-                  state: '',  created_at: null,   updated_at: null
+                  tipo: null,  nombre:  null
                 };
 
-                await this.isLoadingService.add(this.archivosSvc.setRecordReferencia(this.recordFile,this.actionForm).subscribe(resp => {
-                this.successModal.show();
-                setTimeout(()=>{ this.successModal.hide(); }, 2000)
-              }),{ key: 'loading' });
-
-
+            await this.archivosSvc.setRecordReferencia(this.recordFile,this.actionForm)
+            this.successModal.show();
+            setTimeout(()=>{ this.successModal.hide(); }, 2000)
           }
           else{
             this.successModal.show();
