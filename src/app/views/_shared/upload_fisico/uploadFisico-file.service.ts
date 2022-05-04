@@ -1,53 +1,68 @@
 import { Injectable } from '@angular/core';
 import {ArchivosService} from 'src/app/views/catalogos/archivos/services/archivos.service';
-import { HttpClient, HttpEvent, HttpRequest, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { TokenStorageService } from '../../../_services/token-storage.service';
-/* Importamos los environments, para determinar la URL base de las API's */
-import { environment } from '../../../../../src/environments/environment';
+import { shell } from 'electron';
 
+const multer = require('multer');
+var storage = multer.memoryStorage()
+var upload = multer({ storage: storage });
+
+const fs = require('fs');
+let uploadDir = './uploads';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UploadFisicoFileService {
 
-  public API_URL = environment.APIS_URL;
 
-  constructor(private http: HttpClient,private archivosSvc: ArchivosService) { }
+  constructor(private archivosSvc: ArchivosService) { }
 
-  pushFileToStorage(file: File,ruta:string): Observable<HttpEvent<{}>> {
+  pushFileToStorage(fileSrc: File,ruta:string): Promise<any> {
     const formdata: FormData = new FormData();
-    console.log("file.size=>",file.size);
-    formdata.append('file', file);
+    console.log("file.size=>",fileSrc.size);
+    formdata.append('file', fileSrc);
     formdata.append('ruta',ruta);
 
-    const req = new HttpRequest('POST', './archivos/uploadFisico', formdata, {
-      reportProgress: true,
-      responseType: 'text'
+    let file=upload.single("file")
+
+    //buscar si existe el registro
+    let path = uploadDir + '/' + ruta;
+    console.log("ruta=>", path)
+        /*nombre: req.file.originalname,
+        datos: req.file.buffer*/
+
+    if (!fs.existsSync(path)) {
+        fs.mkdirSync(path, { recursive: true });
+    }
+    file.originalname = file.originalname.replace(/%20/g, ' '); //reemplaza espacios
+    // open the file in writing mode, adding a callback function where we do the actual writing
+    fs.open(path + '/' + file.originalname, 'w', function(err, fd) {
+        if (err) {
+            throw 'could not open file: ' + err;
+        }
+
+        // write the contents of the buffer, from position 0 to the end, to the file descriptor returned in opening our file
+        fs.write(fd, file.buffer, 0, file.buffer.length, null, function(err) {
+            if (err) return({ message: err.message });
+            fs.close(fd, function() {
+                console.log('wrote the file successfully');
+                return({ message: "success", ruta: path, nombrearchivo: file.originalname, tipo: file.mimetype });
+            });
+        });
     });
-
-    return this.http.request(req);
-
+    return null;
   }
 
-  listFile(id): Promise<any> {
-    return this.archivosSvc.getRecord(id)
+  async listFile(id): Promise<any> {
+    return await this.archivosSvc.getRecord(id)
   }
 
   //getFile(id): Observable<any> {
-  getFile(ruta){
+  async getFile(ruta){
     let re = /\//g;//reemplazar diagonal
     ruta=ruta.replace(re, "!");
 
-    this.http.get(this.API_URL + '/archivos/df/' + ruta, {responseType: 'blob'})
-    .subscribe( data => {
-
-      //var file = new Blob([data], {type: tipo});
-      var fileURL = window.URL.createObjectURL(data);
-      window.open(fileURL);
-    });
-
-    //return this.http.get(this.API_URL + '/archivos/' + id);
+    console.log("ruta=>", ruta)
+    shell.openPath(ruta);
   }
 }
