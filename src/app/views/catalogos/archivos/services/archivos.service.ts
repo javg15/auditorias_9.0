@@ -51,7 +51,6 @@ export class ArchivosService {
         /*first_name: { type: "string", min: 1, max: 50, pattern: namePattern },*/
 
         id: { type: "number" },
-        punto: { type: "string", min: 1, max: 20 },
     };
 
     var vres:any = true;
@@ -82,7 +81,7 @@ export class ArchivosService {
     this.conn= await this.dbSvc.connection;
     const rep = await this.conn.manager.getRepository(Archivos)
     const archivos =  await rep.findOne({    id: dataPack.id })
-    dataPack.state = gral.GetStatusSegunAccion(actionForm);
+
 
     if (!archivos) {
         delete dataPack.id;
@@ -123,7 +122,7 @@ export class ArchivosService {
     
     this.conn= await this.dbSvc.connection;
     const rep = await this.conn.manager.getRepository(Archivos)
-    const Archivo=await rep.findOne({    id: id })
+    const Archivo=await rep.find({    id: id })
     if (!Archivo) {
         return { message: "Archivo Not found." };
     }

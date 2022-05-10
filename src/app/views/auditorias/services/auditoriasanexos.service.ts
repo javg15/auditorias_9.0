@@ -53,9 +53,10 @@ export class AuditoriasanexosService {
       } else {
           query = await this.qa.getAdmin('SELECT a.id AS ID ' +
               ',a.punto AS Punto ' +
+              ',a.state AS Acciones ' +
               'FROM auditoriasanexos AS a ' 
               ,
-              "&modo=" + req.modo + "&id_usuario=0" +
+              "&modo=" + req.opcionesAdicionales.modo + "&id_usuario=0" +
               "&inicio=" + (req.start!==null && req.start!==undefined ? req.start : 0) + "&largo=" + (req.length!==null && req.length!==undefined ? req.length : 0) +
               "&fkey=" + req.opcionesAdicionales.fkey +
               "&fkeyvalue=" + req.opcionesAdicionales.fkey,this.conn)

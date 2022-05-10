@@ -5,7 +5,7 @@
 <div [hidden]="!showFile">-->
 <div class="panel panel-primary">
     <div class="panel-heading">Archivo cargado:</div>
-    <div *ngFor="let file of fileUploads | async">
+    <div *ngFor="let file of fileUploads">
         <div class="panel-body">
             <details-uploadFisico [fileUpload]='file'></details-uploadFisico>
         </div>

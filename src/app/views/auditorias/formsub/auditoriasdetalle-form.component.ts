@@ -188,7 +188,7 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
     } else {
       this.record = await this.auditoriasdetalleService.getRecord(idItem);
     }
-
+    this.reDraw(null);
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear
     this.basicModalDetalle.show();
   }

@@ -71,7 +71,6 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
   newRecord(idParent: number): Auditoriasanexos {
     return {
       id: 0, id_auditoriasdetalle: idParent, punto: 0, id_archivos: 0,
-      state: ''
     };
   }
   ngOnInit(): void {
@@ -107,6 +106,7 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
     if (this.actionForm.toUpperCase() !== "VER") {
 
       this.validSummary.resetErrorMessages(admin);
+      console.log("this.actionForm=>",this.actionForm)
         if(this.actionForm.toUpperCase()==="NUEVO"){
           //primero cargar el archivo
           this.formUpload.ruta="anexos/" +
@@ -140,24 +140,21 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
 
   //Archivo cargado. Eventos disparado desde el componente
   async onLoadedFile(datos:any){
+
       //ingresar el registro de la tabla archivos
       this.recordFile={
         id:0,
         tabla:"auditoriasanexos",
         id_tabla:0,ruta:datos.ruta,
-        tipo: datos.tipo,  nombre:  datos.nombrearchivo
+        tipo: datos.tipo,  nombre:  datos.nombre
       };
-    
-      await this.isLoadingService.add(this.setRecordFile(),{ key: 'loading' });
+      await this.setRecordFile();
           
-      //ingresar el registro de expediente
-    
-     
-    
   }
 
   async setRecordFile(){
     {
+      console.log("in setRecordFile=>true")
       let respFile=await this.archivosSvc.setRecord(this.recordFile,this.actionForm);
         this.record.id_archivos=respFile.id;
         this.recordFile.id=respFile.id;

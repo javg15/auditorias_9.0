@@ -64,7 +64,7 @@ export class AuditoriasdetalleService {
               ',a.state AS Acciones ' +
               'FROM auditoriasdetalle AS a ' 
               ,
-              "&modo=" + req.modo + "&id_usuario=0" +
+              "&modo=" + req.opcionesAdicionales.modo + "&id_usuario=0" +
               "&inicio=" + (req.start!==null && req.start!==undefined ? req.start : 0) + "&largo=" + (req.length!==null && req.length!==undefined ? req.length : 0) +
               "&fkey=" + req.opcionesAdicionales.fkey +
               "&fkeyvalue=" + req.opcionesAdicionales.fkey,this.conn)

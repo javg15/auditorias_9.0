@@ -15,7 +15,7 @@ export class FormUploadFisicoComponent implements OnInit {
 
   @Input() ruta:any;
 
-  @Output() onLoaded: EventEmitter<number> = new EventEmitter<number>();
+  @Output() onLoaded: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('fileInput') fileInput: ElementRef;
   constructor(private uploadFisicoService: UploadFisicoFileService) { }
 
@@ -33,16 +33,9 @@ export class FormUploadFisicoComponent implements OnInit {
 
     this.currentFileUpload = this.selectedFiles.item(0);
     let event=await this.uploadFisicoService.pushFileToStorage(this.currentFileUpload,this.ruta)
-    //console.log("event=>",event)
-    if (event.type === HttpEventType.UploadProgress) {
-      this.progress.percentage = Math.round(100 * event.loaded / event.total);
-      if(this.progress.percentage>99)
-      this.progress.percentage=99;
-    } else if (event instanceof HttpResponse) {
-      //console.log("event=>",event);
-      this.onLoaded.emit(JSON.parse(event.body.toString()));
-      this.progress.percentage=100;
-    }
+    //console.log("event=>",event);
+    this.onLoaded.emit({ruta:this.ruta,nombre:this.currentFileUpload.name,tipo:this.currentFileUpload.type});
+    this.progress.percentage=100;
     
 
     this.selectedFiles = undefined;

@@ -1,5 +1,6 @@
 import { Component, OnInit,Input } from '@angular/core';
 import { Observable } from 'rxjs';
+import { UsingJoinColumnIsNotAllowedError } from 'typeorm/error';
 import { UploadFisicoFileService } from './uploadFisico-file.service';
 
 @Component({
@@ -10,7 +11,7 @@ import { UploadFisicoFileService } from './uploadFisico-file.service';
 export class ListUploadFisicoComponent implements OnInit {
 
   showFile = false;
-  fileUploads: string[];
+  fileUploads: any[]=[{}];
 
   constructor(private uploadFisicoService: UploadFisicoFileService) { }
 
@@ -19,11 +20,10 @@ export class ListUploadFisicoComponent implements OnInit {
   }
 
   async showFiles(id_archivos:number) {//enable: boolean
-
     if(id_archivos>0){
       this.fileUploads = await this.uploadFisicoService.listFile(id_archivos);
     }
     else
-      this.fileUploads=null;
+      this.fileUploads=[{}];
   }
 }

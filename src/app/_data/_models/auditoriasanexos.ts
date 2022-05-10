@@ -13,6 +13,4 @@ export class Auditoriasanexos {
     @Column()
     id_archivos: number;
 
-    @Column()
-    state: string;
 }
