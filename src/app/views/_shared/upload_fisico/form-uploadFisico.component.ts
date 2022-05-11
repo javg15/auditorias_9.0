@@ -28,7 +28,8 @@ export class FormUploadFisicoComponent implements OnInit {
 
   selectFile(event) {
     this.selectedFiles = event.target.files;
-    this.nameFile.nativeElement.innerHTML=this.selectedFiles[0].name;
+    //this.nameFile.nativeElement.innerHTML=this.selectedFiles[0].name;
+    this.nameFile.nativeElement.value=this.selectedFiles[0].name;
     this.nameFile.nativeElement.style.display="";
   }
 

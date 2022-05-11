@@ -7,8 +7,8 @@
   <input type="hidden" [(ngModel)]="id" class="form-control" name="ID">
   <div>
     <label for="files" class="btn" #labelInput>Selecciona archivo ...</label>
-<label #nameFile></label>
-<input id="files" type="file" (change)="selectFile($event)" #fileInput style="display:none">
+<input type="text" #nameFile/>
+<input id="files" type="file" (change)="selectFile($event)" #fileInput style="display:none" />
 </div>
 </label>
 
