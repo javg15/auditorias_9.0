@@ -9,14 +9,17 @@ import { HttpResponse, HttpEventType } from '@angular/common/http';
 })
 export class FormUploadFisicoComponent implements OnInit {
   id:number=0;
-  selectedFiles: FileList;
+  
   currentFileUpload: File;
   progress: { percentage: number } = { percentage: 0 };
 
   @Input() ruta:any;
+  @Input() selectedFiles: FileList;
 
   @Output() onLoaded: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('fileInput') fileInput: ElementRef;
+  @ViewChild('labelInput') labelInput: ElementRef;
+  @ViewChild('nameFile') nameFile: ElementRef;
   constructor(private uploadFisicoService: UploadFisicoFileService) { }
 
   ngOnInit() {
@@ -25,6 +28,8 @@ export class FormUploadFisicoComponent implements OnInit {
 
   selectFile(event) {
     this.selectedFiles = event.target.files;
+    this.nameFile.nativeElement.innerHTML=this.selectedFiles[0].name;
+    this.nameFile.nativeElement.style.display="";
   }
 
   async upload() {
@@ -43,13 +48,18 @@ export class FormUploadFisicoComponent implements OnInit {
 
   resetFile() {
     this.fileInput.nativeElement.value="";
+    this.showFile();
   }
 
   hideFile() {
-    this.fileInput.nativeElement.style.display="none";
+    //this.fileInput.nativeElement.style.display="none";
+    this.labelInput.nativeElement.style.display="none";
+    this.nameFile.nativeElement.style.display="none";
   }
 
   showFile() {
-    this.fileInput.nativeElement.style.display="";
+    //this.fileInput.nativeElement.style.display="";
+    this.labelInput.nativeElement.style.display="";
+    this.nameFile.nativeElement.style.display="none";
   }
 }

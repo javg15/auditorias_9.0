@@ -97,11 +97,30 @@
                                 <input type="text" [(ngModel)]="record.numeroauditoria" class="form-control" name="Numero de auditoría">
                             </div>
                         </div>
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="objetivo">Objetivo de la auditoría</label>
+                                <input type="text" [(ngModel)]="record.objetivo" class="form-control" name="Objetivo de la auditoría">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <div class="form-group">
+                                <label for="marcolegal">Marco legal</label>
+                                <input type="text" [(ngModel)]="record.marcolegal" class="form-control" name="Marco legal">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
                         <div class="form-group col-sm-3">
                             <div class="form-group">
                                 <label for="numerooficionoti1">Numero de oficio de notificación(1)</label>
                                 <input type="text" [(ngModel)]="record.numerooficionoti1" class="form-control" name="Numero de oficio de notificación(1)">
                             </div>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <form-uploadFisico #id_archivos_numerooficionoti1 name="id_archivos_numerooficionoti1" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
+                            <br/>
+                            <list-uploadFisico #id_archivos_numerooficionoti1_list name="id_archivos_numerooficionoti1_list"></list-uploadFisico>
                         </div>
                         <div class="form-group col-sm-3">
                             <div class="form-group">
@@ -137,18 +156,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="form-group col-sm-4">
-                            <div class="form-group">
-                                <label for="objetivo">Objetivo de la auditoría</label>
-                                <input type="text" [(ngModel)]="record.objetivo" class="form-control" name="Objetivo de la auditoría">
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-4">
-                            <div class="form-group">
-                                <label for="marcolegal">Marco legal</label>
-                                <input type="text" [(ngModel)]="record.marcolegal" class="form-control" name="Marco legal">
-                            </div>
-                        </div>
+
                     </div>
 
                     <div *ngIf="actionForm!=='nuevo'">

@@ -14,5 +14,7 @@ export class Archivos {
   nombre: string | null;
   @Column()
   ruta: string | null;
+  @Column()
+  numero: number;
 }
 

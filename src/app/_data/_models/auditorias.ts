@@ -31,15 +31,27 @@ export class Auditorias {
     @Column()
     numerooficionoti1: string;
     @Column()
+    id_archivos_numerooficionoti1: number;
+    @Column()
     numerooficionoti2: string;
+    @Column()
+    id_archivos_numerooficionoti2: number;
     @Column()
     numerooficionoti3: string;
     @Column()
+    id_archivos_numerooficionoti3: number;
+    @Column()
     numeroofisol1: string;
+    @Column()
+    id_archivos_numeroofisol1: number;
     @Column()
     numeroofisol2: string;
     @Column()
+    id_archivos_numeroofisol2: number;
+    @Column()
     numeroofisol3: string;
+    @Column()
+    id_archivos_numeroofisol3: number;
     @Column()
     objetivo: string;
     @Column()

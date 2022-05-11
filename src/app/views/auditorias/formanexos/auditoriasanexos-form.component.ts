@@ -51,9 +51,6 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
   keywordSearch = 'full_name';
   isLoadingSearch: boolean;
   esinterina: boolean=false;
-
-
-
   //recordJsonTipodoc1:any={UltimoGradodeEstudios:0,AreadeCarrera:0,Carrera:0,Estatus:0};
 
   constructor(
@@ -106,7 +103,7 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
     if (this.actionForm.toUpperCase() !== "VER") {
 
       this.validSummary.resetErrorMessages(admin);
-      console.log("this.actionForm=>",this.actionForm)
+
         if(this.actionForm.toUpperCase()==="NUEVO"){
           //primero cargar el archivo
           this.formUpload.ruta="anexos/" +
@@ -146,7 +143,7 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
         id:0,
         tabla:"auditoriasanexos",
         id_tabla:0,ruta:datos.ruta,
-        tipo: datos.tipo,  nombre:  datos.nombre
+        tipo: datos.tipo,  nombre:  datos.nombre,numero:0
       };
       await this.setRecordFile();
           
@@ -154,12 +151,12 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
 
   async setRecordFile(){
     {
-      console.log("in setRecordFile=>true")
+
       let respFile=await this.archivosSvc.setRecord(this.recordFile,this.actionForm);
         this.record.id_archivos=respFile.id;
         this.recordFile.id=respFile.id;
       
-      //registrar el expediente
+      //registrar el anexo
       let respUpdateAnexo=await this.auditoriasanexosService.setRecord(this.record, this.actionForm);
       if (respUpdateAnexo.hasOwnProperty('error')) {
         this.validSummary.generateErrorMessagesFromServer(respUpdateAnexo.message);

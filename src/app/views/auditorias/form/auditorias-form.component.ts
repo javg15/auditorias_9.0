@@ -25,6 +25,11 @@ import { environment,actionsButtonSave, titulosModal } from '../../../../../src/
 import { Observable } from 'rxjs';
 import { IsLoadingService } from '../../../_services/is-loading/is-loading.service';
 
+import { ListUploadFisicoComponent } from '../../_shared/upload_fisico/list-uploadFisico.component';
+import { FormUploadFisicoComponent } from '../../_shared/upload_fisico/form-uploadFisico.component';
+import { UploadFisicoFileService } from '../../_shared/upload_fisico/uploadFisico-file.service';
+import { Archivos} from '../../../_data/_models/archivos';
+import { ArchivosService } from '../../catalogos/archivos/services/archivos.service';
 
 declare var $: any;
 declare var jQuery: any;
@@ -41,6 +46,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   @Input() id: string; //idModal
   @Input() botonAccion: string; //texto del boton según acción
   @Output() redrawEvent = new EventEmitter<any>();
+
   /* El decorador @ViewChild recibe la clase DataTableDirective, para luego poder
   crear el dtElement que represente la tabla que estamos creando. */
   @ViewChild(DataTableDirective)
@@ -79,14 +85,18 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   @ViewChild('basicModal') basicModal: ModalDirective;
   @ViewChild('successModal') public successModal: ModalDirective;
   @ViewChild(ValidationSummaryComponent) validSummary: ValidationSummaryComponent;
+  @ViewChild('id_archivos_numerooficionoti1_list') listUploadnoti1: ListUploadFisicoComponent;
+  @ViewChild('id_archivos_numerooficionoti1') formUploadnoti1: FormUploadFisicoComponent;
 
   record: Auditorias;
+  recordFile:Archivos;
   cattiposauditoriaCat: Cattiposauditoria[];
   catservidoresCat: Catservidores[];
   catentidadesCat: Catentidades[];
   catejerciciosCat: Catejercicios[];
   catresponsablesCat: Catresponsables[]; 
   record_id_catejercicios:number[];
+  tipofileUpload:string;//para conocer que fileupload se esta guardando
 
   constructor(private isLoadingService: IsLoadingService,
     private auditoriasService: AuditoriasService, private el: ElementRef,
@@ -96,6 +106,8 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     private catentidadesSvc: CatentidadesService,
     private catejerciciosSvc: CatejerciciosService,
     private catresponsablesSvc: CatresponsablesService,
+    private uploadFileSvc:UploadFisicoFileService,
+    private archivosSvc:ArchivosService,
     private route: ActivatedRoute
   ) {
     this.elementModal = el.nativeElement;
@@ -107,7 +119,9 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       id_catejercicios: '', fecha: '', periodoini: '', periodofin: '', id_cattiposauditoria: 0,
       marcolegal: '', id_catresponsables:0,
       rubros: '',    numeroauditoria: '',    numerooficionoti1: '',numerooficionoti2: '',numerooficionoti3: '',
-      numeroofisol1: '',     numeroofisol2: '',numeroofisol3: '',     objetivo: '', state:''
+      id_archivos_numerooficionoti1:0,id_archivos_numerooficionoti2:0,id_archivos_numerooficionoti3:0,
+      numeroofisol1: '',     numeroofisol2: '',numeroofisol3: '',     objetivo: '', state:'',
+      id_archivos_numeroofisol1:0,id_archivos_numeroofisol2:0,id_archivos_numeroofisol3:0
     };
   }
   ngOnInit(): void {
@@ -166,13 +180,24 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   }
 
   async submitAction(form) {
-
-    if(this.actionForm.toUpperCase()!=="VER"){
+    if (this.actionForm.toUpperCase() !== "VER") {
 
       this.validSummary.resetErrorMessages(form);
 
-      await this.isLoadingService.add(this.setRecord(),{ key: 'loading' });
-    }
+        if(this.actionForm.toUpperCase()==="NUEVO"){
+          //primero cargar el archivo
+          this.formUploadnoti1.ruta="auditoria/" +
+            this.record.id.toString().padStart(5 , "0")
+          //el metodo .upload, emitirá el evento que cachará el metodo  onLoadedFile de este archivo
+          if(this.formUploadnoti1.selectedFiles.length>0){
+            this.tipofileUpload="formUploadnoti1";
+            this.formUploadnoti1.upload()
+          }
+        }
+        else if(this.actionForm.toUpperCase()==="EDITAR" || this.actionForm.toUpperCase()==="ELIMINAR"){
+          await this.isLoadingService.add(this.setRecord(),{ key: 'loading' });
+        }
+      }
   }
 
   async setRecord(){
@@ -193,7 +218,55 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  
+  //Archivo cargado. Eventos disparado desde el componente
+  async onLoadedFile(datos:any){
+
+    //ingresar el registro de la tabla archivos
+    this.recordFile={
+      id:0,
+      tabla:"auditorias",
+      id_tabla:0,ruta:datos.ruta,
+      tipo: datos.tipo,  nombre:  datos.nombre,numero:0
+    };
+    if (this.tipofileUpload=="formUploadnoti1") this.recordFile.numero=1;
+    if (this.tipofileUpload=="formUploadnoti2") this.recordFile.numero=2;
+    if (this.tipofileUpload=="formUploadnoti3") this.recordFile.numero=3;
+    if (this.tipofileUpload=="formUploadsol1") this.recordFile.numero=4;
+    if (this.tipofileUpload=="formUploadsol2") this.recordFile.numero=5;
+    if (this.tipofileUpload=="formUploadsol3") this.recordFile.numero=6;
+
+    await this.setRecordFile();
+        
+}
+
+async setRecordFile(){
+  {
+    let respFile=await this.archivosSvc.setRecord(this.recordFile,this.actionForm);
+    if (this.tipofileUpload=="formUploadnoti1") this.record.id_archivos_numerooficionoti1=respFile.id;
+    if (this.tipofileUpload=="formUploadnoti2") this.record.id_archivos_numerooficionoti1=respFile.id;
+    if (this.tipofileUpload=="formUploadnoti3") this.record.id_archivos_numerooficionoti1=respFile.id;
+    if (this.tipofileUpload=="formUploadsol1") this.record.id_archivos_numeroofisol1=respFile.id;
+    if (this.tipofileUpload=="formUploadsol2") this.record.id_archivos_numeroofisol2=respFile.id;
+    if (this.tipofileUpload=="formUploadsol3") this.record.id_archivos_numeroofisol3=respFile.id;
+    this.recordFile.id=respFile.id;
+    
+    //registrar la auditoria
+    let respUpdate=await this.auditoriasService.setRecord(this.record, this.actionForm);
+    if (respUpdate.hasOwnProperty('error')) {
+      this.validSummary.generateErrorMessagesFromServer(respUpdate.message);
+    }
+    else if (respUpdate.message == "success") {
+      this.record.id=respUpdate.id;
+      if (this.actionForm.toUpperCase() == "NUEVO") this.actionForm = "editar";
+
+      //actualizar la referencia en el archivo
+      this.recordFile.id_tabla=this.record.id;
+      await this.archivosSvc.setRecordReferencia(this.recordFile,this.actionForm)
+      this.successModal.show();
+      setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
+    }
+  }
+}
 
   // open modal
   async open(idItem: string, accion: string): Promise<void> {
@@ -207,11 +280,26 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     this.catejerciciosCat=await this.catejerciciosSvc.getCatalogo();
     this.catresponsablesCat=await this.catresponsablesSvc.getCatalogo();
 
+    this.formUploadnoti1.resetFile();
+
     if (idItem == "0") {
       this.record = this.newRecord();
+      //inicializar
+      this.formUploadnoti1.showFile();
+      this.listUploadnoti1.showFiles(0);
     } else {
       this.record = await this.auditoriasService.getRecord(idItem);
       this.record_id_catejercicios=this.record.id_catejercicios.split(",").map(Number).filter(Boolean);
+
+      //inicializar
+      if(this.record.id_archivos_numerooficionoti1>0){
+        this.formUploadnoti1.hideFile();
+        this.listUploadnoti1.showFiles(this.record.id_archivos_numerooficionoti1);
+      }
+      else{
+        this.formUploadnoti1.showFile();
+        this.listUploadnoti1.showFiles(0);
+      }
     }
     this.reDraw(null);
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear
@@ -229,6 +317,10 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   // log contenido de objeto en formulario
   get diagnosticValidate() { return JSON.stringify(this.record); }
 
+  //muestra el archivo
+  getFile(ruta){
+    this.uploadFileSvc.getFile(ruta);
+  }
 
   //Sub formulario
   openModal(id: string, accion: string, idItem: number, idParent: number) {

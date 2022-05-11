@@ -97,7 +97,7 @@ export class UsuariosFormdirectComponent implements OnInit {
             this.recordFile={id:this.record.id_archivos_avatar,
                   tabla:"usuarios",
                   id_tabla:this.record.id,ruta:"",
-                  tipo: null,  nombre:  null
+                  tipo: null,  nombre:  null, numero:0
                 };
 
             await this.archivosSvc.setRecordReferencia(this.recordFile,this.actionForm)

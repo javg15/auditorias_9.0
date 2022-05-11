@@ -24,6 +24,6 @@ export class ListUploadFisicoComponent implements OnInit {
       this.fileUploads = await this.uploadFisicoService.listFile(id_archivos);
     }
     else
-      this.fileUploads=[{}];
+      this.fileUploads=null;
   }
 }
