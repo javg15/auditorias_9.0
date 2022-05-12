@@ -43,8 +43,7 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
   @ViewChild('successModal') public successModal: ModalDirective;
   @ViewChild(ValidationSummaryComponent) validSummary: ValidationSummaryComponent;
   @ViewChild(ListUploadFisicoComponent) listUpload: ListUploadFisicoComponent;
-  @ViewChild(FormUploadFisicoComponent) formUpload: FormUploadFisicoComponent;
-
+  @ViewChild('id_archivos_anexos') formUploadanexo: FormUploadFisicoComponent;
 
   record: Auditoriasanexos;
   recordFile:Archivos;
@@ -106,10 +105,10 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
 
         if(this.actionForm.toUpperCase()==="NUEVO"){
           //primero cargar el archivo
-          this.formUpload.ruta="anexos/" +
+          this.formUploadanexo.ruta="anexos/" +
             this.record.id_auditoriasdetalle.toString().padStart(5 , "0")
           //el metodo .upload, emitirá el evento que cachará el metodo  onLoadedFile de este archivo
-          this.formUpload.upload()
+          this.formUploadanexo.upload()
         }
         else if(this.actionForm.toUpperCase()==="EDITAR" || this.actionForm.toUpperCase()==="ELIMINAR"){
           
@@ -134,6 +133,7 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
       }
     }
   }
+
 
   //Archivo cargado. Eventos disparado desde el componente
   async onLoadedFile(datos:any){
@@ -179,15 +179,15 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
     this.actionForm = accion;
     this.botonAccion = actionsButtonSave[accion];
     this.tituloForm = "Anexos - " + titulosModal[accion] + " registro";
-    this.formUpload.resetFile();
+    this.formUploadanexo.resetFile();
     if (idItem == "0") {
       this.record = this.newRecord(idPersonal);
-      this.formUpload.showFile();
+      this.formUploadanexo.showFile();
       this.listUpload.showFiles(0);
     } else {
       //obtener el registro
       this.record=await this.auditoriasanexosService.getRecord(idItem)
-      this.formUpload.hideFile();
+      this.formUploadanexo.hideFile();
       this.listUpload.showFiles(this.record.id_archivos);
       
     }

@@ -85,8 +85,20 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   @ViewChild('basicModal') basicModal: ModalDirective;
   @ViewChild('successModal') public successModal: ModalDirective;
   @ViewChild(ValidationSummaryComponent) validSummary: ValidationSummaryComponent;
+  @ViewChild('id_archivos_numerooficio_list') listUploadoficio: ListUploadFisicoComponent;
+  @ViewChild('id_archivos_numerooficio') formUploadoficio: FormUploadFisicoComponent;
   @ViewChild('id_archivos_numerooficionoti1_list') listUploadnoti1: ListUploadFisicoComponent;
   @ViewChild('id_archivos_numerooficionoti1') formUploadnoti1: FormUploadFisicoComponent;
+  @ViewChild('id_archivos_numerooficionoti2_list') listUploadnoti2: ListUploadFisicoComponent;
+  @ViewChild('id_archivos_numerooficionoti2') formUploadnoti2: FormUploadFisicoComponent;
+  @ViewChild('id_archivos_numerooficionoti3_list') listUploadnoti3: ListUploadFisicoComponent;
+  @ViewChild('id_archivos_numerooficionoti3') formUploadnoti3: FormUploadFisicoComponent;
+  @ViewChild('id_archivos_numeroofisol1_list') listUploadsol1: ListUploadFisicoComponent;
+  @ViewChild('id_archivos_numeroofisol1') formUploadsol1: FormUploadFisicoComponent;
+  @ViewChild('id_archivos_numeroofisol2_list') listUploadsol2: ListUploadFisicoComponent;
+  @ViewChild('id_archivos_numeroofisol2') formUploadsol2: FormUploadFisicoComponent;
+  @ViewChild('id_archivos_numeroofisol3_list') listUploadsol3: ListUploadFisicoComponent;
+  @ViewChild('id_archivos_numeroofisol3') formUploadsol3: FormUploadFisicoComponent;
 
   record: Auditorias;
   recordFile:Archivos;
@@ -115,7 +127,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
 
   newRecord(): Auditorias {
     return {
-      id: 0, id_catentidades: 0, id_catservidores: 0, nombre: '', numerooficio: '', 
+      id: 0, id_catentidades: 0, id_catservidores: 0, nombre: '', numerooficio: '', id_archivos_numerooficio:0,
       id_catejercicios: '', fecha: '', periodoini: '', periodofin: '', id_cattiposauditoria: 0,
       marcolegal: '', id_catresponsables:0,
       rubros: '',    numeroauditoria: '',    numerooficionoti1: '',numerooficionoti2: '',numerooficionoti3: '',
@@ -189,10 +201,13 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
           this.formUploadnoti1.ruta="auditoria/" +
             this.record.id.toString().padStart(5 , "0")
           //el metodo .upload, emitirá el evento que cachará el metodo  onLoadedFile de este archivo
-          if(this.formUploadnoti1.selectedFiles.length>0){
-            this.tipofileUpload="formUploadnoti1";
-            this.formUploadnoti1.upload()
-          }
+          if(this.formUploadoficio.selectedFiles.length>0){this.tipofileUpload="formUploadoficio";this.formUploadoficio.upload();}
+          if(this.formUploadnoti1.selectedFiles.length>0){this.tipofileUpload="formUploadnoti1";this.formUploadnoti1.upload();}
+          if(this.formUploadnoti2.selectedFiles.length>0){this.tipofileUpload="formUploadnoti2";this.formUploadnoti2.upload();}
+          if(this.formUploadnoti3.selectedFiles.length>0){this.tipofileUpload="formUploadnoti3";this.formUploadnoti3.upload();}
+          if(this.formUploadsol1.selectedFiles.length>0){this.tipofileUpload="formUploadsol1";this.formUploadsol1.upload();}
+          if(this.formUploadsol2.selectedFiles.length>0){this.tipofileUpload="formUploadsol2";this.formUploadsol2.upload();}
+          if(this.formUploadsol3.selectedFiles.length>0){this.tipofileUpload="formUploadsol3";this.formUploadsol3.upload();}
         }
         else if(this.actionForm.toUpperCase()==="EDITAR" || this.actionForm.toUpperCase()==="ELIMINAR"){
           await this.isLoadingService.add(this.setRecord(),{ key: 'loading' });
@@ -218,6 +233,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     }
   }
 
+
   //Archivo cargado. Eventos disparado desde el componente
   async onLoadedFile(datos:any){
 
@@ -228,12 +244,13 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       id_tabla:0,ruta:datos.ruta,
       tipo: datos.tipo,  nombre:  datos.nombre,numero:0
     };
-    if (this.tipofileUpload=="formUploadnoti1") this.recordFile.numero=1;
-    if (this.tipofileUpload=="formUploadnoti2") this.recordFile.numero=2;
-    if (this.tipofileUpload=="formUploadnoti3") this.recordFile.numero=3;
-    if (this.tipofileUpload=="formUploadsol1") this.recordFile.numero=4;
-    if (this.tipofileUpload=="formUploadsol2") this.recordFile.numero=5;
-    if (this.tipofileUpload=="formUploadsol3") this.recordFile.numero=6;
+    if (this.tipofileUpload=="formUploadoficio") this.recordFile.numero=1;
+    if (this.tipofileUpload=="formUploadnoti1") this.recordFile.numero=2;
+    if (this.tipofileUpload=="formUploadnoti2") this.recordFile.numero=3;
+    if (this.tipofileUpload=="formUploadnoti3") this.recordFile.numero=4;
+    if (this.tipofileUpload=="formUploadsol1") this.recordFile.numero=5;
+    if (this.tipofileUpload=="formUploadsol2") this.recordFile.numero=6;
+    if (this.tipofileUpload=="formUploadsol3") this.recordFile.numero=7;
 
     await this.setRecordFile();
         
@@ -242,6 +259,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
 async setRecordFile(){
   {
     let respFile=await this.archivosSvc.setRecord(this.recordFile,this.actionForm);
+    if (this.tipofileUpload=="formUploadoficio") this.record.id_archivos_numerooficio=respFile.id;
     if (this.tipofileUpload=="formUploadnoti1") this.record.id_archivos_numerooficionoti1=respFile.id;
     if (this.tipofileUpload=="formUploadnoti2") this.record.id_archivos_numerooficionoti1=respFile.id;
     if (this.tipofileUpload=="formUploadnoti3") this.record.id_archivos_numerooficionoti1=respFile.id;
@@ -280,26 +298,50 @@ async setRecordFile(){
     this.catejerciciosCat=await this.catejerciciosSvc.getCatalogo();
     this.catresponsablesCat=await this.catresponsablesSvc.getCatalogo();
 
+    this.formUploadoficio.resetFile();
     this.formUploadnoti1.resetFile();
+    this.formUploadnoti2.resetFile();
+    this.formUploadnoti3.resetFile();
+    this.formUploadsol1.resetFile();
+    this.formUploadsol2.resetFile();
+    this.formUploadsol3.resetFile();
 
     if (idItem == "0") {
       this.record = this.newRecord();
       //inicializar
+      this.formUploadoficio.showFile();
+      this.listUploadoficio.showFiles(0);
       this.formUploadnoti1.showFile();
       this.listUploadnoti1.showFiles(0);
+      this.formUploadnoti2.showFile();
+      this.listUploadnoti2.showFiles(0);
+      this.formUploadnoti3.showFile();
+      this.listUploadnoti3.showFiles(0);
+      this.formUploadsol1.showFile();
+      this.listUploadsol1.showFiles(0);
+      this.formUploadsol2.showFile();
+      this.listUploadsol2.showFiles(0);
+      this.formUploadsol3.showFile();
+      this.listUploadsol3.showFiles(0);
     } else {
       this.record = await this.auditoriasService.getRecord(idItem);
       this.record_id_catejercicios=this.record.id_catejercicios.split(",").map(Number).filter(Boolean);
 
       //inicializar
-      if(this.record.id_archivos_numerooficionoti1>0){
-        this.formUploadnoti1.hideFile();
-        this.listUploadnoti1.showFiles(this.record.id_archivos_numerooficionoti1);
-      }
-      else{
-        this.formUploadnoti1.showFile();
-        this.listUploadnoti1.showFiles(0);
-      }
+      if(this.record.id_archivos_numerooficio>0){this.formUploadoficio.hideFile();this.listUploadoficio.showFiles(this.record.id_archivos_numerooficio);}
+      else{this.formUploadoficio.showFile();this.listUploadoficio.showFiles(0);}
+      if(this.record.id_archivos_numerooficionoti1>0){this.formUploadnoti1.hideFile();this.listUploadnoti1.showFiles(this.record.id_archivos_numerooficionoti1);}
+      else{this.formUploadnoti1.showFile();this.listUploadnoti1.showFiles(0);}
+      if(this.record.id_archivos_numerooficionoti2>0){this.formUploadnoti2.hideFile();this.listUploadnoti2.showFiles(this.record.id_archivos_numerooficionoti2);}
+      else{this.formUploadnoti2.showFile();this.listUploadnoti2.showFiles(0);}
+      if(this.record.id_archivos_numerooficionoti3>0){this.formUploadnoti3.hideFile();this.listUploadnoti3.showFiles(this.record.id_archivos_numerooficionoti3);}
+      else{this.formUploadnoti3.showFile();this.listUploadnoti3.showFiles(0);}
+      if(this.record.id_archivos_numeroofisol1>0){this.formUploadsol1.hideFile();this.listUploadsol1.showFiles(this.record.id_archivos_numeroofisol1);}
+      else{this.formUploadsol1.showFile();this.listUploadsol1.showFiles(0);}
+      if(this.record.id_archivos_numeroofisol2>0){this.formUploadsol2.hideFile();this.listUploadsol2.showFiles(this.record.id_archivos_numeroofisol2);}
+      else{this.formUploadsol2.showFile();this.listUploadsol2.showFiles(0);}
+      if(this.record.id_archivos_numeroofisol3>0){this.formUploadsol3.hideFile();this.listUploadsol3.showFiles(this.record.id_archivos_numeroofisol3);}
+      else{this.formUploadsol3.showFile();this.listUploadsol3.showFiles(0);}
     }
     this.reDraw(null);
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear

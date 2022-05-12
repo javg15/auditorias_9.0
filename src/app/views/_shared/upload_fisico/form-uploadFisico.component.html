@@ -6,9 +6,10 @@
 <label class="btn btn-default">
   <input type="hidden" [(ngModel)]="id" class="form-control" name="ID">
   <div>
-    <label for="files" class="btn" #labelInput>Selecciona archivo ...</label>
-<input type="text" #nameFile/>
-<input id="files" type="file" (change)="selectFile($event)" #fileInput style="display:none" />
+    <label class="fileContainer btn" type="button">
+      Cargar archivo ...
+      <input id="files" type="file" (change)="selectFile($event)" #fileInput   />
+    </label>
 </div>
 </label>
 

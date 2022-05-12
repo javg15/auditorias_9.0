@@ -17,9 +17,9 @@ export class FormUploadFisicoComponent implements OnInit {
   @Input() selectedFiles: FileList;
 
   @Output() onLoaded: EventEmitter<any> = new EventEmitter<any>();
+
   @ViewChild('fileInput') fileInput: ElementRef;
-  @ViewChild('labelInput') labelInput: ElementRef;
-  @ViewChild('nameFile') nameFile: ElementRef;
+  
   constructor(private uploadFisicoService: UploadFisicoFileService) { }
 
   ngOnInit() {
@@ -29,8 +29,6 @@ export class FormUploadFisicoComponent implements OnInit {
   selectFile(event) {
     this.selectedFiles = event.target.files;
     //this.nameFile.nativeElement.innerHTML=this.selectedFiles[0].name;
-    this.nameFile.nativeElement.value=this.selectedFiles[0].name;
-    this.nameFile.nativeElement.style.display="";
   }
 
   async upload() {
@@ -53,14 +51,10 @@ export class FormUploadFisicoComponent implements OnInit {
   }
 
   hideFile() {
-    //this.fileInput.nativeElement.style.display="none";
-    this.labelInput.nativeElement.style.display="none";
-    this.nameFile.nativeElement.style.display="none";
+    this.fileInput.nativeElement.style.display="none";
   }
 
   showFile() {
-    //this.fileInput.nativeElement.style.display="";
-    this.labelInput.nativeElement.style.display="";
-    this.nameFile.nativeElement.style.display="none";
+    this.fileInput.nativeElement.style.display="";
   }
 }

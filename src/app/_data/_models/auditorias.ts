@@ -11,6 +11,8 @@ export class Auditorias {
     @Column()
     numerooficio: string;
     @Column()
+    id_archivos_numerooficio: number;
+    @Column()
     id_catejercicios: string; //funciona solo para concatenar los ids y mostrarlos en el formulario
     @Column()
     fecha: string;

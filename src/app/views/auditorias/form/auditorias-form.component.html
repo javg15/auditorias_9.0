@@ -22,7 +22,7 @@
                                 <select2 [overlay]="true" [(ngModel)]="record.id_catentidades" [data]="catentidadesCat" name="Organo fiscalizador" resettable> </select2>
                             </div>
                         </div>
-                        <div class="form-group col-sm-6">
+                        <div class="form-group col-sm-3">
                             <div class="form-group">
                                 <label for="nombre">Nombre de la auditoría</label>
                                 <input type="text" [(ngModel)]="record.nombre" class="form-control" name="Nombre de la auditoría">
@@ -33,6 +33,11 @@
                                 <label for="numerooficio">Oficio de apertura de la auditoría</label>
                                 <input type="text" [(ngModel)]="record.numerooficio" class="form-control" name="Oficio de apertura de la auditoría">
                             </div>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <form-uploadFisico #id_archivos_numerooficio name="id_archivos_numerooficio" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
+                            <br/>
+                            <list-uploadFisico #id_archivos_numerooficio_list name="id_archivos_numerooficio_list"></list-uploadFisico>
                         </div>
                     </div>
                     <div class="row">
@@ -129,13 +134,23 @@
                             </div>
                         </div>
                         <div class="form-group col-sm-3">
+                            <form-uploadFisico #id_archivos_numerooficionoti2 name="id_archivos_numerooficionoti2" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
+                            <br/>
+                            <list-uploadFisico #id_archivos_numerooficionoti2_list name="id_archivos_numerooficionoti2_list"></list-uploadFisico>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-3">
                             <div class="form-group">
                                 <label for="numerooficionoti3">Numero de oficio de notificación(3)</label>
                                 <input type="text" [(ngModel)]="record.numerooficionoti3" class="form-control" name="Numero de oficio de notificación(3)">
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <form-uploadFisico #id_archivos_numerooficionoti3 name="id_archivos_numerooficionoti3" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
+                            <br/>
+                            <list-uploadFisico #id_archivos_numerooficionoti3_list name="id_archivos_numerooficionoti3_list"></list-uploadFisico>
+                        </div>
                         <div class="form-group col-sm-3">
                             <div class="form-group">
                                 <label for="numeroofisol1">Numero de oficio de solicitud de la información(1)</label>
@@ -143,16 +158,34 @@
                             </div>
                         </div>
                         <div class="form-group col-sm-3">
+                            <form-uploadFisico #id_archivos_numeroofisol1 name="id_archivos_numeroofisol1" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
+                            <br/>
+                            <list-uploadFisico #id_archivos_numeroofisol1_list name="id_archivos_numeroofisol1_list"></list-uploadFisico>
+                        </div>
+                    </div>
+                    <div class="row">
+                        
+                        <div class="form-group col-sm-3">
                             <div class="form-group">
                                 <label for="numeroofisol2">Numero de oficio de solicitud de la información(2)</label>
                                 <input type="text" [(ngModel)]="record.numeroofisol2" class="form-control" name="Numero de oficio de solicitud de la información(2)">
                             </div>
                         </div>
                         <div class="form-group col-sm-3">
+                            <form-uploadFisico #id_archivos_numeroofisol2 name="id_archivos_numeroofisol2" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
+                            <br/>
+                            <list-uploadFisico #id_archivos_numeroofisol2_list name="id_archivos_numeroofisol2_list"></list-uploadFisico>
+                        </div>
+                        <div class="form-group col-sm-3">
                             <div class="form-group">
                                 <label for="numeroofisol3">Numero de oficio de solicitud de la información(3)</label>
                                 <input type="text" [(ngModel)]="record.numeroofisol3" class="form-control" name="Numero de oficio de solicitud de la información(3)">
                             </div>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <form-uploadFisico #id_archivos_numeroofisol3 name="id_archivos_numeroofisol3" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
+                            <br/>
+                            <list-uploadFisico #id_archivos_numeroofisol3_list name="id_archivos_numeroofisol3_list"></list-uploadFisico>
                         </div>
                     </div>
                     <div class="row">

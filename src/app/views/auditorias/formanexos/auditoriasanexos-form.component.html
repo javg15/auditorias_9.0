@@ -24,7 +24,7 @@
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-8">
-                            <form-uploadFisico (onLoaded)="onLoadedFile($event)" [ruta]=""></form-uploadFisico>
+                            <form-uploadFisico #id_archivos_anexos (onLoaded)="onLoadedFile($event)" [ruta]=""></form-uploadFisico>
                             <br/>
                             <list-uploadFisico></list-uploadFisico>
                         </div>
