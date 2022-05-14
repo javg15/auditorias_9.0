@@ -47,8 +47,8 @@ export class ArchivosService {
     })
 
     /* customer validator shema */
-    const dataVSchema = {
-        /*first_name: { type: "string", min: 1, max: 50, pattern: namePattern },*/
+   /* const dataVSchema = {
+     
 
         id: { type: "number" },
     };
@@ -59,7 +59,7 @@ export class ArchivosService {
         vres = await dataValidator.validate(dataPack, dataVSchema);
     }
 
-    /* validation failed */
+    // validation failed 
     if (!(vres === true)) {
         let errors = {},
             item;
@@ -74,7 +74,7 @@ export class ArchivosService {
             "error": true,
             "message": errors
         };
-    }
+    }*/
 
 
     //buscar si existe el registro y almacenarlo
@@ -82,7 +82,7 @@ export class ArchivosService {
     const rep = await this.conn.manager.getRepository(Archivos)
     const archivos =  await rep.findOne({    id: dataPack.id, numero:dataPack.numero })
 
-console.log("archivos=>",archivos)
+
     if (!archivos) {
         delete dataPack.id;
         

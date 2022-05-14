@@ -16,7 +16,6 @@ export class UploadFisicoFileService {
   pushFileToStorage(fileSrc: File,ruta:string): Promise<any> {
     //buscar si existe el registro
     let path = uploadDir + '/' + ruta;
-    console.log("ruta=>", path)
         /*nombre: req.file.originalname,
         datos: req.file.buffer*/
 

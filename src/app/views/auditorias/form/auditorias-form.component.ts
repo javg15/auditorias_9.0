@@ -101,15 +101,15 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   @ViewChild('id_archivos_numeroofisol3') formUploadsol3: FormUploadFisicoComponent;
 
   record: Auditorias;
-  recordFile:Archivos;
+  //recordFile:Archivos;
   cattiposauditoriaCat: Cattiposauditoria[];
   catservidoresCat: Catservidores[];
   catentidadesCat: Catentidades[];
   catejerciciosCat: Catejercicios[];
   catresponsablesCat: Catresponsables[]; 
   record_id_catejercicios:number[];
-  tipofileUpload:string;//para conocer que fileupload se esta guardando
-  pricipalGuardado:boolean;
+  //tipofileUpload:string;//para conocer que fileupload se esta guardando
+  
 
   constructor(private isLoadingService: IsLoadingService,
     private auditoriasService: AuditoriasService, private el: ElementRef,
@@ -196,23 +196,25 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     if (this.actionForm.toUpperCase() !== "VER") {
 
       this.validSummary.resetErrorMessages(form);
+      let archivoModificado=false;//para saber si ya se realizo algun upload, y con él, la llamada a la funcion setRecord()
 
-        //if(this.actionForm.toUpperCase()==="NUEVO"){
+        if(this.actionForm.toUpperCase()==="NUEVO" || this.actionForm.toUpperCase()==="EDITAR"){
           //primero cargar el archivo
-          this.pricipalGuardado=false;
+          
 
           //el metodo .upload, emitirá el evento que cachará el metodo  onLoadedFile de este archivo
-          if(this.formUploadoficio.selectedFiles){this.formUploadoficio.ruta="auditoria/1-" + this.record.id.toString().padStart(5 , "0"); this.tipofileUpload="formUploadoficio";await this.formUploadoficio.upload();}
-          if(this.formUploadnoti1.selectedFiles){this.formUploadnoti1.ruta="auditoria/2-" + this.record.id.toString().padStart(5 , "0");this.tipofileUpload="formUploadnoti1";await this.formUploadnoti1.upload();}
-          if(this.formUploadnoti2.selectedFiles){this.formUploadnoti2.ruta="auditoria/3-" + this.record.id.toString().padStart(5 , "0");this.tipofileUpload="formUploadnoti2";await this.formUploadnoti2.upload();}
-          if(this.formUploadnoti3.selectedFiles){this.formUploadnoti3.ruta="auditoria/4-" + this.record.id.toString().padStart(5 , "0");this.tipofileUpload="formUploadnoti3";await this.formUploadnoti3.upload();}
-          if(this.formUploadsol1.selectedFiles){this.formUploadsol1.ruta="auditoria/5-" + this.record.id.toString().padStart(5 , "0");this.tipofileUpload="formUploadsol1";await this.formUploadsol1.upload();}
-          if(this.formUploadsol2.selectedFiles){this.formUploadsol2.ruta="auditoria/6-" + this.record.id.toString().padStart(5 , "0");this.tipofileUpload="formUploadsol2";await this.formUploadsol2.upload();}
-          if(this.formUploadsol3.selectedFiles){this.formUploadsol3.ruta="auditoria/7-" + this.record.id.toString().padStart(5 , "0");this.tipofileUpload="formUploadsol3";await this.formUploadsol3.upload();}
-        /*}
-        else if(this.actionForm.toUpperCase()==="EDITAR" || this.actionForm.toUpperCase()==="ELIMINAR"){
+          if(this.formUploadoficio.selectedFiles){archivoModificado=true;this.formUploadoficio.ruta="auditoria/1-" + this.record.id.toString().padStart(5 , "0"); await this.formUploadoficio.upload("formUploadoficio");}
+          if(this.formUploadnoti1.selectedFiles){archivoModificado=true;this.formUploadnoti1.ruta="auditoria/2-" + this.record.id.toString().padStart(5 , "0");await this.formUploadnoti1.upload("formUploadnoti1");}
+          if(this.formUploadnoti2.selectedFiles){archivoModificado=true;this.formUploadnoti2.ruta="auditoria/3-" + this.record.id.toString().padStart(5 , "0");await this.formUploadnoti2.upload("formUploadnoti2");}
+          if(this.formUploadnoti3.selectedFiles){archivoModificado=true;this.formUploadnoti3.ruta="auditoria/4-" + this.record.id.toString().padStart(5 , "0");await this.formUploadnoti3.upload("formUploadnoti3");}
+          if(this.formUploadsol1.selectedFiles){archivoModificado=true;this.formUploadsol1.ruta="auditoria/5-" + this.record.id.toString().padStart(5 , "0");await this.formUploadsol1.upload("formUploadsol1");}
+          if(this.formUploadsol2.selectedFiles){archivoModificado=true;this.formUploadsol2.ruta="auditoria/6-" + this.record.id.toString().padStart(5 , "0");await this.formUploadsol2.upload("formUploadsol2");}
+          if(this.formUploadsol3.selectedFiles){archivoModificado=true;this.formUploadsol3.ruta="auditoria/7-" + this.record.id.toString().padStart(5 , "0");await this.formUploadsol3.upload("formUploadsol3");}
+        }
+        
+        if(archivoModificado==false || this.actionForm.toUpperCase()==="ELIMINAR"){
           await this.isLoadingService.add(this.setRecord(),{ key: 'loading' });
-        }*/
+        }
       }
   }
 
@@ -222,6 +224,8 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       this.record.id_catejercicios=this.record_id_catejercicios.join(",");
 
       const resp=await this.auditoriasService.setRecord(this.record,this.actionForm);
+      await this.auditoriasService.updateEjercicios(resp.id,this.record.id_catejercicios)
+
       if (resp.hasOwnProperty('error')) {
         this.validSummary.generateErrorMessagesFromServer(resp.message);
       }
@@ -239,40 +243,46 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   async onLoadedFile(datos:any){
 
     //ingresar el registro de la tabla archivos
-    this.recordFile={
+    let recordFile={
       id:0,
       tabla:"auditorias",
       id_tabla:0,ruta:datos.ruta,
       tipo: datos.tipo,  nombre:  datos.nombre,numero:0
     };
-    console.log("this.tipofileUpload=>",this.tipofileUpload)
-    if (this.tipofileUpload=="formUploadoficio"){this.recordFile.numero=1;this.recordFile.id=this.record.id_archivos_numerooficio??0;}
-    if (this.tipofileUpload=="formUploadnoti1") {this.recordFile.numero=2;this.recordFile.id=this.record.id_archivos_numerooficionoti1??0;}
-    if (this.tipofileUpload=="formUploadnoti2") {this.recordFile.numero=3;this.recordFile.id=this.record.id_archivos_numerooficionoti2??0;}
-    if (this.tipofileUpload=="formUploadnoti3") {this.recordFile.numero=4;this.recordFile.id=this.record.id_archivos_numerooficionoti3??0;}
-    if (this.tipofileUpload=="formUploadsol1") {this.recordFile.numero=5;this.recordFile.id=this.record.id_archivos_numeroofisol1??0;}
-    if (this.tipofileUpload=="formUploadsol2") {this.recordFile.numero=6;this.recordFile.id=this.record.id_archivos_numeroofisol2??0;}
-    if (this.tipofileUpload=="formUploadsol3") {this.recordFile.numero=7;this.recordFile.id=this.record.id_archivos_numeroofisol3??0;}
-
-    await this.setRecordFile();
+    let tipofileUpload=datos.tipofileUpload;
+    
+    if (tipofileUpload=="formUploadoficio"){recordFile.numero=1;recordFile.id=this.record.id_archivos_numerooficio??0;}
+    if (tipofileUpload=="formUploadnoti1") {recordFile.numero=2;recordFile.id=this.record.id_archivos_numerooficionoti1??0;}
+    if (tipofileUpload=="formUploadnoti2") {recordFile.numero=3;recordFile.id=this.record.id_archivos_numerooficionoti2??0;}
+    if (tipofileUpload=="formUploadnoti3") {recordFile.numero=4;recordFile.id=this.record.id_archivos_numerooficionoti3??0;}
+    if (tipofileUpload=="formUploadsol1") {recordFile.numero=5;recordFile.id=this.record.id_archivos_numeroofisol1??0;}
+    if (tipofileUpload=="formUploadsol2") {recordFile.numero=6;recordFile.id=this.record.id_archivos_numeroofisol2??0;}
+    if (tipofileUpload=="formUploadsol3") {recordFile.numero=7;recordFile.id=this.record.id_archivos_numeroofisol3??0;}
+    
+    await this.setRecordFile(recordFile,tipofileUpload);
         
 }
 
-async setRecordFile(){
+async setRecordFile(recordFile:Archivos,tipofileUpload:String){
   {
     
-    let respFile=await this.archivosSvc.setRecord(this.recordFile,this.actionForm);
-    if (this.tipofileUpload=="formUploadoficio") this.record.id_archivos_numerooficio=respFile.id;
-    if (this.tipofileUpload=="formUploadnoti1") this.record.id_archivos_numerooficionoti1=respFile.id;
-    if (this.tipofileUpload=="formUploadnoti2") this.record.id_archivos_numerooficionoti1=respFile.id;
-    if (this.tipofileUpload=="formUploadnoti3") this.record.id_archivos_numerooficionoti1=respFile.id;
-    if (this.tipofileUpload=="formUploadsol1") this.record.id_archivos_numeroofisol1=respFile.id;
-    if (this.tipofileUpload=="formUploadsol2") this.record.id_archivos_numeroofisol2=respFile.id;
-    if (this.tipofileUpload=="formUploadsol3") this.record.id_archivos_numeroofisol3=respFile.id;
-    this.recordFile.id=respFile.id;
+    let respFile=await this.archivosSvc.setRecord(recordFile,this.actionForm);
+    
+    if (tipofileUpload=="formUploadoficio") this.record.id_archivos_numerooficio=respFile.id;
+    if (tipofileUpload=="formUploadnoti1") this.record.id_archivos_numerooficionoti1=respFile.id;
+    if (tipofileUpload=="formUploadnoti2") this.record.id_archivos_numerooficionoti2=respFile.id;
+    if (tipofileUpload=="formUploadnoti3") this.record.id_archivos_numerooficionoti3=respFile.id;
+    if (tipofileUpload=="formUploadsol1") this.record.id_archivos_numeroofisol1=respFile.id;
+    if (tipofileUpload=="formUploadsol2") this.record.id_archivos_numeroofisol2=respFile.id;
+    if (tipofileUpload=="formUploadsol3") this.record.id_archivos_numeroofisol3=respFile.id;
+
+    recordFile.id=respFile.id;
     
     //registrar la auditoria
+    this.record.id_catejercicios=this.record_id_catejercicios.join(",");
     let respUpdate=await this.auditoriasService.setRecord(this.record, this.actionForm);
+    await this.auditoriasService.updateEjercicios(respUpdate.id,this.record.id_catejercicios)
+
     if (respUpdate.hasOwnProperty('error')) {
       this.validSummary.generateErrorMessagesFromServer(respUpdate.message);
     }
@@ -281,9 +291,9 @@ async setRecordFile(){
       if (this.actionForm.toUpperCase() == "NUEVO") this.actionForm = "editar";
 
       //actualizar la referencia en el archivo
-      this.recordFile.id_tabla=this.record.id;
-      console.log("this.recordFile=>",this.recordFile)
-      await this.archivosSvc.setRecordReferencia(this.recordFile,this.actionForm)
+      recordFile.id_tabla=this.record.id;
+      
+      await this.archivosSvc.setRecordReferencia(recordFile,this.actionForm)
       this.successModal.show();
       setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
     }
@@ -330,7 +340,7 @@ async setRecordFile(){
     } else {
       this.record = await this.auditoriasService.getRecord(idItem);
       this.record_id_catejercicios=this.record.id_catejercicios.split(",").map(Number).filter(Boolean);
-
+console.log("open(),record_id_catejercicios=>",this.record_id_catejercicios)
       //inicializar
       if((this.record.id_archivos_numerooficio??0)>0){this.formUploadoficio.hideFile();this.listUploadoficio.showFiles(this.record.id_archivos_numerooficio);}
       else{this.formUploadoficio.showFile();this.listUploadoficio.showFiles(0);}
@@ -348,7 +358,7 @@ async setRecordFile(){
       else{this.formUploadsol3.showFile();this.listUploadsol3.showFiles(0);}
     }
     this.reDraw(null);
-    // console.log($('#modalTest').html()); poner el id a algun elemento para testear
+
     this.basicModal.show();
   }
 

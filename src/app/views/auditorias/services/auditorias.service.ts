@@ -236,35 +236,38 @@ export class AuditoriasService {
         
         try{
           const self=await rep.insert(dataPack)
-          await this.updateEjercicios(Number(self.identifiers[0].id),dataPack.id_catejercicios)
-        
-          console.log("self.id=>", Number(self.identifiers[0].id))
+          console.log("insertauditorias,self.id=>", Number(self.identifiers[0].id))
                 // here self is your instance, but updated
           return { message: "success", id: Number(self.identifiers[0].id) };
         }catch(err){
             return { error: true, message: [err.errors[0].message] };
         };
     } else {
-
+      
       await rep.update(dataPack.id, dataPack)
-      await this.updateEjercicios(dataPack.id,dataPack.id_catejercicios)
       // here self is your instance, but updated
       return { message: "success", id: dataPack.id };
     }
   }
 
-  public async updateEjercicios(id,catejercicios){
+  async updateEjercicios(id,catejercicios){
     this.conn= await this.dbSvc.connection;
     const repE = await this.conn.manager.getRepository(Auditoriasejercicios)
 
     //eliminar todos los registros segun auditoria
-    await repE.delete({ id_auditorias: id })
+    repE.delete({ id_auditorias: id }).then(async (resp)=>{
+      //convertir en array
+      let ce=catejercicios.split(",")
+      for(let i=0;i<ce.length;i++){
+        //buscar si existe el registro
+        repE.find({   id_auditorias: id,id_catejercicios:ce[i] }).then(async (repAE)=>{
+          if(repAE.length==0)//si no existe
+            await repE.insert({ id_auditorias: id,id_catejercicios:ce[i] })
+        })
+      }
+    })
 
-    //convertir en array
-    let ce=catejercicios.split(",")
-    for(let i=0;i<ce.length;i++)
-      await repE.insert({ id_auditorias: id,id_catejercicios:ce[i] })
-
+    
   }
 
   // array de modales

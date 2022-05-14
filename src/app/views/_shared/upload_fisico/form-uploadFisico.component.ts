@@ -31,14 +31,15 @@ export class FormUploadFisicoComponent implements OnInit {
     //this.nameFile.nativeElement.innerHTML=this.selectedFiles[0].name;
   }
 
-  async upload() {
+  async upload(tipofileUpload:String="") {
 
     this.progress.percentage = 0;
 
     this.currentFileUpload = this.selectedFiles.item(0);
     let event=await this.uploadFisicoService.pushFileToStorage(this.currentFileUpload,this.ruta)
     //console.log("event=>",event);
-    await this.onLoaded.emit({ruta:this.ruta,nombre:this.currentFileUpload.name,tipo:this.currentFileUpload.type});
+    await this.onLoaded.emit({ruta:this.ruta,nombre:this.currentFileUpload.name,tipo:this.currentFileUpload.type,
+      tipofileUpload:tipofileUpload});
     this.progress.percentage=100;
     
 
