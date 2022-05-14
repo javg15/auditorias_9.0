@@ -80,9 +80,9 @@ export class ArchivosService {
     //buscar si existe el registro y almacenarlo
     this.conn= await this.dbSvc.connection;
     const rep = await this.conn.manager.getRepository(Archivos)
-    const archivos =  await rep.findOne({    id: dataPack.id })
+    const archivos =  await rep.findOne({    id: dataPack.id, numero:dataPack.numero })
 
-
+console.log("archivos=>",archivos)
     if (!archivos) {
         delete dataPack.id;
         
@@ -98,6 +98,7 @@ export class ArchivosService {
     } else {
 
       await rep.update(dataPack.id, dataPack)
+      console.log("dataPack.id=>", dataPack.id)
       // here self is your instance, but updated
       return { message: "success", id: dataPack.id };
     }

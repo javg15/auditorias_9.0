@@ -38,7 +38,7 @@ export class FormUploadFisicoComponent implements OnInit {
     this.currentFileUpload = this.selectedFiles.item(0);
     let event=await this.uploadFisicoService.pushFileToStorage(this.currentFileUpload,this.ruta)
     //console.log("event=>",event);
-    this.onLoaded.emit({ruta:this.ruta,nombre:this.currentFileUpload.name,tipo:this.currentFileUpload.type});
+    await this.onLoaded.emit({ruta:this.ruta,nombre:this.currentFileUpload.name,tipo:this.currentFileUpload.type});
     this.progress.percentage=100;
     
 
@@ -46,15 +46,16 @@ export class FormUploadFisicoComponent implements OnInit {
   }
 
   resetFile() {
+    this.progress.percentage = 0;
     this.fileInput.nativeElement.value="";
     this.showFile();
   }
 
   hideFile() {
-    this.fileInput.nativeElement.style.display="none";
+    //this.fileInput.nativeElement.style.display="none";
   }
 
   showFile() {
-    this.fileInput.nativeElement.style.display="";
+    //this.fileInput.nativeElement.style.display="";
   }
 }

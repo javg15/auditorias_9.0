@@ -109,6 +109,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   catresponsablesCat: Catresponsables[]; 
   record_id_catejercicios:number[];
   tipofileUpload:string;//para conocer que fileupload se esta guardando
+  pricipalGuardado:boolean;
 
   constructor(private isLoadingService: IsLoadingService,
     private auditoriasService: AuditoriasService, private el: ElementRef,
@@ -198,14 +199,8 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
 
         //if(this.actionForm.toUpperCase()==="NUEVO"){
           //primero cargar el archivo
-          
-          
-          
-          
-          
-          
-          
-          
+          this.pricipalGuardado=false;
+
           //el metodo .upload, emitirá el evento que cachará el metodo  onLoadedFile de este archivo
           if(this.formUploadoficio.selectedFiles){this.formUploadoficio.ruta="auditoria/1-" + this.record.id.toString().padStart(5 , "0"); this.tipofileUpload="formUploadoficio";await this.formUploadoficio.upload();}
           if(this.formUploadnoti1.selectedFiles){this.formUploadnoti1.ruta="auditoria/2-" + this.record.id.toString().padStart(5 , "0");this.tipofileUpload="formUploadnoti1";await this.formUploadnoti1.upload();}
@@ -287,6 +282,7 @@ async setRecordFile(){
 
       //actualizar la referencia en el archivo
       this.recordFile.id_tabla=this.record.id;
+      console.log("this.recordFile=>",this.recordFile)
       await this.archivosSvc.setRecordReferencia(this.recordFile,this.actionForm)
       this.successModal.show();
       setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
