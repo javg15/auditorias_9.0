@@ -221,7 +221,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   async setRecord(){
     {
       //parsear los valores de ejercicios
-      this.record.id_catejercicios=this.record_id_catejercicios.join(",");
+      this.record.id_catejercicios=(this.record_id_catejercicios || []).join(",");
 
       const resp=await this.auditoriasService.setRecord(this.record,this.actionForm);
       await this.auditoriasService.updateEjercicios(resp.id,this.record.id_catejercicios)
@@ -279,7 +279,7 @@ async setRecordFile(recordFile:Archivos,tipofileUpload:String){
     recordFile.id=respFile.id;
     
     //registrar la auditoria
-    this.record.id_catejercicios=this.record_id_catejercicios.join(",");
+    this.record.id_catejercicios=(this.record_id_catejercicios || []).join(",");
     let respUpdate=await this.auditoriasService.setRecord(this.record, this.actionForm);
     await this.auditoriasService.updateEjercicios(respUpdate.id,this.record.id_catejercicios)
 
@@ -340,7 +340,7 @@ async setRecordFile(recordFile:Archivos,tipofileUpload:String){
     } else {
       this.record = await this.auditoriasService.getRecord(idItem);
       this.record_id_catejercicios=this.record.id_catejercicios.split(",").map(Number).filter(Boolean);
-console.log("open(),record_id_catejercicios=>",this.record_id_catejercicios)
+
       //inicializar
       if((this.record.id_archivos_numerooficio??0)>0){this.formUploadoficio.hideFile();this.listUploadoficio.showFiles(this.record.id_archivos_numerooficio);}
       else{this.formUploadoficio.showFile();this.listUploadoficio.showFiles(0);}

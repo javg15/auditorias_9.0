@@ -1,0 +1,27 @@
+.modal-header {
+    background: #eee;
+}
+
+.modal-body {
+    background: #ddd;
+}
+
+.tablaInfo {
+    border-spacing: 10px;
+    border-collapse: separate;
+}
+
+.tablaInfo tr,
+.tablaInfo td {
+    border: none;
+}
+
+.tablaInfo td {
+    background-color: lightgray;
+    color: #333;
+    padding: 2px;
+}
+
+.tablaInfo tr td:first-child {
+    font-weight: bold;
+}

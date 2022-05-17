@@ -66,7 +66,7 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
 
   newRecord(idParent: number): Auditoriasanexos {
     return {
-      id: 0, id_auditoriasdetalle: idParent, punto: 0, id_archivos: 0,
+      id: 0, id_auditoriasdetalle: idParent, puntoanexo: 0, id_archivos: 0,state:''
     };
   }
   ngOnInit(): void {
@@ -102,16 +102,20 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
     if (this.actionForm.toUpperCase() !== "VER") {
 
       this.validSummary.resetErrorMessages(admin);
+      let archivoModificado=false;//para saber si ya se realizo algun upload, y con él, la llamada a la funcion setRecord()
 
-        if(this.actionForm.toUpperCase()==="NUEVO"){
-          //primero cargar el archivo
-          this.formUploadanexo.ruta="anexos/" +
-            this.record.id_auditoriasdetalle.toString().padStart(5 , "0")
-          //el metodo .upload, emitirá el evento que cachará el metodo  onLoadedFile de este archivo
-          this.formUploadanexo.upload()
+      if(this.actionForm.toUpperCase()==="NUEVO" || this.actionForm.toUpperCase()==="EDITAR"){
+          console.log("this.formUploadanexo.selectedFiles=>",this.formUploadanexo.selectedFiles)
+          if(this.formUploadanexo.selectedFiles){
+            //primero cargar el archivo
+            this.formUploadanexo.ruta="anexos/" +
+              this.record.id_auditoriasdetalle.toString().padStart(5 , "0")
+              archivoModificado=true;
+            //el metodo .upload, emitirá el evento que cachará el metodo  onLoadedFile de este archivo
+            this.formUploadanexo.upload()
+          }
         }
-        else if(this.actionForm.toUpperCase()==="EDITAR" || this.actionForm.toUpperCase()==="ELIMINAR"){
-          
+        if(archivoModificado==false || this.actionForm.toUpperCase()==="ELIMINAR"){
           await this.isLoadingService.add(this.setRecord(),{ key: 'loading' });
         }
       

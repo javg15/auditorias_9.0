@@ -1,6 +1,5 @@
 
 import { Injectable } from '@angular/core';
-import { Auditoriasanexos } from 'src/app/_data/_models/auditoriasanexos';
 
 import {DatabaseService} from 'src/app/_data/database.service';
 import {Connection} from 'typeorm';
@@ -19,7 +18,7 @@ let dataValidator = new Validator({
 @Injectable({
   providedIn: 'root'
 })
-export class AuditoriasanexosService {
+export class AuditoriasreporteService {
   private modals: any[] = [];
   private conn:Connection;
 
@@ -44,17 +43,25 @@ export class AuditoriasanexosService {
       let req:any = dataTablesParameters,
           datos:any = "",
           query = "";
-      //const rawData = DB().query(`SELECT * FROM auditoriaanexos where id=?`, [1]);
+      //const rawData = DB().query(`SELECT * FROM auditoriareporte where id=?`, [1]);
       
       if (req.solocabeceras == 1) {
           query = await this.qa.getAdmin('SELECT 0 AS ID,"" AS Punto' +
+              ',"" AS Nombre ' +
+              ',"" AS "Fecha de recepción" ' +
+              ',"" AS "Fecha límite" ' +
+              ',"" AS Oficio ' +
               ',"" AS Acciones', '&modo=10&id_usuario=0',this.conn);
             
       } else {
           query = await this.qa.getAdmin('SELECT a.id AS ID ' +
-              ',a.puntoanexo AS Punto ' +
+              ',a.punto AS Punto ' +
+              ',a.observacion AS Nombre ' +
+              ',a.fecharecepcion AS "Fecha de recepción" ' +
+              ',a.fechalimite AS "Fecha límite" ' +
+              ',a.oficio AS Oficio ' +
               ',a.state AS Acciones ' +
-              'FROM auditoriasanexos AS a ' 
+              'FROM auditoriasreporte AS a ' 
               ,
               "&modo=" + req.opcionesAdicionales.modo + "&id_usuario=0" +
               "&inicio=" + (req.start!==null && req.start!==undefined ? req.start : 0) + "&largo=" + (req.length!==null && req.length!==undefined ? req.length : 0) +
@@ -94,99 +101,8 @@ export class AuditoriasanexosService {
     }
   }
 
-  /* El siguiente método lee los datos de un registro seleccionado para edición. */
-  async getRecord(id: any): Promise<any> {
-    
-    this.conn= await this.dbSvc.connection;
-    const rep = await this.conn.manager.getRepository(Auditoriasanexos)
-    const Auditoriaanexos=await rep.findOne({    id: id })
-    if (!Auditoriaanexos) {
-        return { message: "Auditoriaanexos Not found." };
-    }
-    return Auditoriaanexos;
-  }
 
-  /* El siguiente método graba un registro nuevo, o uno editado. */
-  async setRecord(dataPack, actionForm): Promise<any>  {
-    Object.keys(dataPack).forEach(function(key) {
-      if (key.indexOf("id_", 0) >= 0
-          || key.indexOf("puntoanexo", 0) >= 0) {
-          if (dataPack[key] != '')
-              dataPack[key] = parseInt(dataPack[key]);
-      }
-      if (key.indexOf("clave", 0) >= 0) {
-          dataPack[key] = dataPack[key].toString();
-      }
-      if (typeof dataPack[key] == 'number' && isNaN(parseFloat(dataPack[key]))) {
-          dataPack[key] = null;
-      }
-    })
-
-    /* customer validator shema */
-    const dataVSchema = {
-        /*first_name: { type: "string", min: 1, max: 50, pattern: namePattern },*/
-
-        id: { type: "number" },
-        id_auditoriasdetalle: { type: "number" },
-        puntoanexo: { type: "number",
-          custom(value, errors) {
-            if (value <= 0) errors.push({ type: "selection" })
-            return value; // Sanitize: remove all special chars except numbers
-          }
-        },
-
-        
-    };
-
-    var vres:any = true;
-    if (actionForm.toUpperCase() == "NUEVO" ||
-        actionForm.toUpperCase() == "EDITAR") {
-        vres = await dataValidator.validate(dataPack, dataVSchema);
-    }
-
-    /* validation failed */
-    if (!(vres === true)) {
-        let errors = {},
-            item;
-
-        for (const index in vres) {
-            item = vres[index];
-
-            errors[item.field] = item.message;
-        }
-
-        return {
-            "error": true,
-            "message": errors
-        };
-    }
-
-
-    //buscar si existe el registro y almacenarlo
-    this.conn= await this.dbSvc.connection;
-    const rep = await this.conn.manager.getRepository(Auditoriasanexos)
-    const auditoriaanexos =  await rep.findOne({    id: dataPack.id })
-    dataPack.state = gral.GetStatusSegunAccion(actionForm);
-
-    if (!auditoriaanexos) {
-        delete dataPack.id;
-        
-        try{
-          const self=await rep.insert(dataPack)
-        
-          console.log("self.id=>", Number(self.identifiers[0].id))
-                // here self is your instance, but updated
-          return { message: "success", id: Number(self.identifiers[0].id) };
-        }catch(err){
-            return { error: true, message: [err.errors[0].message] };
-        };
-    } else {
-
-      await rep.update(dataPack.id, dataPack)
-      // here self is your instance, but updated
-      return { message: "success", id: dataPack.id };
-    }
-  }
+  
 
 
   // array de modales

@@ -1,0 +1,231 @@
+<div bsModal #basicModalReporte="bs-modal" [config]="{ backdrop: 'static', keyboard: false}" class="modal fade right" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-full-height modal-right" role="document">
+        <div class="modal-content modal-form">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">{{ tituloForm }}</h4>
+
+                <button type="button" class="close pull-right" aria-label="Close" (click)="close()">
+                  <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form #dataForm="ngForm" (ngSubmit)="submitAction(dataForm)">
+                    <input type="hidden" name="action" value="{{ actionForm }}">
+                    <div class="form-group">
+
+                        <input type="hidden" [(ngModel)]="record.id" class="form-control" name="ID">
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Organo fiscalizador</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.desc_catentidades" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Nombre de la auditoría</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.desc_nombre" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Oficio de apertura de la auditoría</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.numerooficio" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Ejercicios auditados</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.id_catejercicios" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Fecha de inicio de la auditoría</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.fecha" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Fecha de inicio del periodo que se informa</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.periodoini" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Fecha final del periodo que se informa</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.periodofin" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Tipo de auditoría</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.desc_cattiposauditoria" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Servidor público responsable de la información</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.desc_catservidores" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Auditor responsable</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.desc_catresponsables" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Rubros sujetos a revisión</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.rubros" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Numero de auditoría</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.numeroauditoria" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Objetivo de la auditoría</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.objetivo" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Marco legal</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.marcolegal" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Numero de oficio de notificación(1)</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.numerooficionoti1" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Numero de oficio de notificación(2)</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.numerooficionoti2" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Numero de oficio de notificación(3)</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.numerooficionoti3" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Numero de oficio de solicitud de la información(1)</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.numeroofisol1" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Numero de oficio de solicitud de la información(2)</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.numeroofisol2" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <label>Numero de oficio de solicitud de la información(3)</label>
+                        </div>
+                        <div class="form-group col-sm-9">
+                            <input type="text" [(ngModel)]="record.numeroofisol3" class="form-control">
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div #colInfo class="col-sm-12 colInfo">
+                            <div class="form-group">
+                                <table class="tablaInfo">
+                                    <tr>
+                                        <th>Punto</th>
+                                        <th>Observación</th>
+                                        <th>Fecha de recepción</th>
+                                        <th>Fecha límite</td>
+                                            <th>Oficio</td>
+                                    </tr>
+                                    <ng-container *ngFor="let col of record_detalles;index as i">
+                                        <tr>
+                                            <td> {{ col.punto }} </td>
+                                            <td> {{ col.observacion }} </td>
+                                            <td> {{ col.fecharecepcion }} </td>
+                                            <td> {{ col.fechalimite }} </td>
+                                            <td> {{ col.oficio }} </td>
+                                        </tr>
+                                    </ng-container>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        &nbsp;
+                    </div>
+                    <!-- [disabled]="!dataForm.form.valid" -->
+                    <button *ngIf="actionForm!=='ver'" type="submit" class="btn btn-primary">
+                      <div>{{ botonAccion }}</div>
+                    </button>
+                </form>
+            </div>
+            <!-- <h2>Diagnostic Info</h2>
+            <div [innerHtml]="diagnosticValidate"></div>-->
+        </div>
+    </div>
+</div>

@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form #dataForm="ngForm" (ngSubmit)="submitAction(dataForm)">
+                <form #dataFormAnexos="ngForm" (ngSubmit)="submitAction(dataFormAnexos)">
                     <input type="hidden" name="action" value="{{ actionForm }}">
                     <div class="form-group">
                         <input type="hidden" [(ngModel)]="record.id" class="form-control" name="ID">
@@ -17,8 +17,8 @@
                     <div class="row">
                         <div class="form-group col-sm-4">
                             <div class="form-group">
-                                <label for="punto">Punto o inciso que responde</label>
-                                <input type="text" [(ngModel)]="record.punto" class="form-control" name="Punto o inciso que responde">
+                                <label for="puntoanexo">Punto o inciso que responde</label>
+                                <input type="text" [(ngModel)]="record.puntoanexo" class="form-control" name="Punto o inciso que responde">
                             </div>
                         </div>
                     </div>
@@ -33,7 +33,7 @@
                     <div class="row">
                         &nbsp;
                     </div>
-                    <app-validation-summary [form]="dataForm"></app-validation-summary>
+                    <app-validation-summary [form]="dataFormAnexos"></app-validation-summary>
                     <!-- [disabled]="!dataForm.form.valid" -->
                     <button *ngIf="actionForm!=='ver'" type="submit" [disabled]='userFormIsPending | async' class="btn btn-primary">
                       <div *ngIf="userFormIsPending | async; else elseBlock"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Procesando...</span></div>
