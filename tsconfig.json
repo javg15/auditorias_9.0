@@ -18,5 +18,6 @@
       "esnext",
       "dom"
     ],
+    "allowSyntheticDefaultImports": true
   }
 }

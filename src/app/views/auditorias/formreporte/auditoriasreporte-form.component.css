@@ -6,22 +6,27 @@
     background: #ddd;
 }
 
-.tablaInfo {
+.tablaInfo,
+.tablaInfoSub {
     border-spacing: 10px;
     border-collapse: separate;
 }
 
 .tablaInfo tr,
-.tablaInfo td {
+.tablaInfo td,
+.tablaInfoSub tr,
+.tablaInfoSub td {
     border: none;
 }
 
-.tablaInfo td {
+.tablaInfo td,
+.tablaInfoSub td {
     background-color: lightgray;
     color: #333;
     padding: 2px;
 }
 
-.tablaInfo tr td:first-child {
+.tablaInfo tr td:first-child,
+.tablaInfoSub tr td:first-child {
     font-weight: bold;
 }

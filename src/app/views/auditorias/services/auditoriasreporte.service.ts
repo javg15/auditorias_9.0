@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-
+import { Auditoriasreporte } from 'src/app/_data/_models/auditoriasreporte';
 import {DatabaseService} from 'src/app/_data/database.service';
 import {Connection} from 'typeorm';
 import { AdminQry } from 'src/app/_data/queries/admin.qry'; 
@@ -29,73 +29,49 @@ export class AuditoriasreporteService {
     
   }
 
-  async getHeaders(): Promise<any>  {
-    return this.getAdmin(
-      { solocabeceras: 1, opcionesAdicionales: { raw: 0 } }
-    );
-  }
-
-  async getAdmin(dataTablesParameters: any): Promise<any> {
+  async getAdmin(id_auditoria: any): Promise<any> {
     
     this.conn= await this.dbSvc.connection;
+    let datos="";
     try {
-      
-      let req:any = dataTablesParameters,
-          datos:any = "",
-          query = "";
       //const rawData = DB().query(`SELECT * FROM auditoriareporte where id=?`, [1]);
       
-      if (req.solocabeceras == 1) {
-          query = await this.qa.getAdmin('SELECT 0 AS ID,"" AS Punto' +
-              ',"" AS Nombre ' +
-              ',"" AS "Fecha de recepción" ' +
-              ',"" AS "Fecha límite" ' +
-              ',"" AS Oficio ' +
-              ',"" AS Acciones', '&modo=10&id_usuario=0',this.conn);
-            
-      } else {
-          query = await this.qa.getAdmin('SELECT a.id AS ID ' +
-              ',a.punto AS Punto ' +
-              ',a.observacion AS Nombre ' +
-              ',a.fecharecepcion AS "Fecha de recepción" ' +
-              ',a.fechalimite AS "Fecha límite" ' +
-              ',a.oficio AS Oficio ' +
-              ',a.state AS Acciones ' +
-              'FROM auditoriasreporte AS a ' 
-              ,
-              "&modo=" + req.opcionesAdicionales.modo + "&id_usuario=0" +
-              "&inicio=" + (req.start!==null && req.start!==undefined ? req.start : 0) + "&largo=" + (req.length!==null && req.length!==undefined ? req.length : 0) +
-              "&fkey=" + req.opcionesAdicionales.fkey +
-              "&fkeyvalue=" + req.opcionesAdicionales.fkeyvalue,this.conn)
-          
-      }
-      
-      
-      datos=await this.conn.query(query);
-      if (req.solocabeceras != 1) {
-        for(let i=0;i<datos.length;i++){
-          datos[i]["Acciones"]=this.qa.getAcciones(0,"todo",datos[i]["Acciones"]);
-        }
-      }
+      datos = await this.conn.query("SELECT a.id,"
+            + "a.nombre,"
+            + "ce.nombrecorto AS desc_catentidades,"
+            + "a.numerooficio,"
+            + "a.id_catejercicios,"
+            + "a.fecha,"
+            + "a.periodoini,"
+            + "a.periodofin,"
+            + "ca.nombre AS desc_cattiposauditoria,"
+            + "cs.nombre AS desc_catservidores,"
+            + "cr.nombre AS desc_catresponsables,"
+            + "a.rubros,"
+            + "a.numeroauditoria,"
+            + "a.objetivo,"
+            + "a.marcolegal,"
+            + "a.numerooficionoti1,"
+            + "a.numerooficionoti2,"
+            + "a.numerooficionoti3,"
+            + "a.numeroofisol1,"
+            + "a.numeroofisol2,"
+            + "a.numeroofisol3, "
+            + "GROUP_CONCAT('{\"punto\":\"' || ad.punto || '\",\"observacion\":\"' || ad.observacion || '\",\"fecharecepcion\":\"' || ad.fecharecepcion || '\",\"fechalimite\":\"' || ad.fechalimite || '\",\"oficio\":\"' || ad.oficio || '\"}') AS Detalle "
+            + "FROM auditorias AS a "
+            + " LEFT JOIN auditoriasdetalle AS ad ON a.id=ad.id_auditorias "
+            + " LEFT JOIN catentidades AS ce ON a.id_catentidades=ce.id "
+            + " LEFT JOIN cattiposauditoria AS ca ON a.id_cattiposauditoria=ca.id "
+            + " LEFT JOIN catservidores AS cs ON a.id_catservidores=cs.id "
+            + " LEFT JOIN catresponsables AS cr ON a.id_catresponsables=cr.id "
+            + "WHERE a.id=$1 "
+            + "GROUP BY a.id"
+            ,[id_auditoria])
+      if(datos.length>0)
+        return datos[0];
+      else
+        return new Auditoriasreporte();
 
-      var columnNames = (datos.length > 0 ? Object.keys(datos[0]).map(function(key) {
-          return key;
-      }) : []);
-      var quitarKeys = false;
-
-      for (var i = 0; i < columnNames.length; i++) {
-          if (columnNames[i] == "total_count") quitarKeys = true;
-          if (quitarKeys)
-              columnNames.splice(i);
-      }
-
-      return {
-        draw: req.opcionesAdicionales.raw,
-        recordsTotal: (datos.length > 0 ? parseInt(datos[0].total_count) : 0),
-        recordsFiltered: (datos.length > 0 ? parseInt(datos[0].total_count) : 0),
-        data: datos,
-        columnNames: columnNames
-      };
     } catch (err) {
         throw err;
     }

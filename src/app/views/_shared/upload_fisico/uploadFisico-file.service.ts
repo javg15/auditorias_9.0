@@ -36,9 +36,13 @@ export class UploadFisicoFileService {
 
   //getFile(id): Observable<any> {
   async getFile(ruta){
-    /*let re = /\//g;//reemplazar diagonal
-    ruta=ruta.replace(re, "!");*/
+    let dir=(electron.app || electron.remote.app).getAppPath()
 
-    shell.openPath((electron.app || electron.remote.app).getAppPath() + "/uploads/" + ruta);
+    //console.log("(antes)dir=>",dir)
+    if(dir.indexOf("\\resources\\app")>=0)
+      dir=dir.replace("\\resources\\app","")
+    //console.log("(desp)dir=>",dir)
+    //console.log("dir=>",dir + "/uploads/" + ruta)
+    shell.openPath( dir + "/uploads/" + ruta);
   }
 }

@@ -26,6 +26,9 @@
                                                 <button *ngIf="boton=='eliminar'" class="btn btn-brand btn-sm mr-1 btn-reddit" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','eliminar',member.ID)">
                                               <i class="fa fa-trash"></i>
                                           </button>
+                                                <button *ngIf="boton=='reporte'" class="btn btn-brand btn-sm mr-1 btn-instagram" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-2','reporte',member.ID)">
+                                            <i class="fa fa-search"></i>
+                                        </button>
                                             </div>
                                         </td>
                                     </div>
@@ -54,3 +57,6 @@
 <app-auditorias-form id="custom-modal-1" (redrawEvent)="reDraw($event)">
     <!--<input type="hidden" [(ngModel)]="idItem" />-->
 </app-auditorias-form>
+<app-auditoriasreporte-form id="custom-modal-2">
+    <!--<input type="hidden" [(ngModel)]="idItem" />-->
+</app-auditoriasreporte-form>

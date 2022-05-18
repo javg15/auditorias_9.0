@@ -24,7 +24,7 @@ export class AdminQry {
                     (_permisos.indexOf('documentacion') >= 0 || _permisos.indexOf('todo') >= 0 ? ',documentacion' : '') + 
                     (_permisos.indexOf('historial') >= 0 || _permisos.indexOf('todo') >= 0 ? ',historial' : '') + 
                     (_permisos.indexOf('imprimir') >= 0 || _permisos.indexOf('todo') >= 0 ? ',imprimir' : '') + 
-                    (_permisos.indexOf('cadena') >= 0 || _permisos.indexOf('todo') >= 0 ? ',cadena' : '');
+                    (_permisos.indexOf('reporte') >= 0 || _permisos.indexOf('todo') >= 0 ? ',reporte' : '');
         else if(_state== "B")
                 _acciones = _permisos.indexOf('ver') >= 0 || _permisos.indexOf('todo') >= 0 ? ',ver' : '';
         else if(_state=="D")
