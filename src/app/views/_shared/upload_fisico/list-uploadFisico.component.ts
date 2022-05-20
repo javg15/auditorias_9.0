@@ -1,4 +1,4 @@
-import { Component, OnInit,Input } from '@angular/core';
+import { Component, OnInit,Input,Output,EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UsingJoinColumnIsNotAllowedError } from 'typeorm/error';
 import { UploadFisicoFileService } from './uploadFisico-file.service';
@@ -13,6 +13,8 @@ export class ListUploadFisicoComponent implements OnInit {
   showFile = false;
   fileUploads: any[]=[{}];
 
+  @Output() onRemove: EventEmitter<any> = new EventEmitter<any>();
+
   constructor(private uploadFisicoService: UploadFisicoFileService) { }
 
   ngOnInit() {
@@ -25,5 +27,9 @@ export class ListUploadFisicoComponent implements OnInit {
     }
     else
       this.fileUploads=null;
+  }
+
+  onRemoveFile(datos:any){
+    this.onRemove.emit(datos);
   }
 }

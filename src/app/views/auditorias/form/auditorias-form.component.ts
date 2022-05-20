@@ -260,7 +260,18 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     if (tipofileUpload=="formUploadsol3") {recordFile.numero=7;recordFile.id=this.record.id_archivos_numeroofisol3??0;}
     
     await this.setRecordFile(recordFile,tipofileUpload);
-        
+}
+
+async onRemoveFile(datos:any){
+  console.log("this.record.id_archivos_numerooficio antes=>",this.record.id_archivos_numerooficio)
+  if(this.record.id_archivos_numerooficio==datos.id){this.record.id_archivos_numerooficio=0;}
+  if(this.record.id_archivos_numerooficionoti1==datos.id){this.record.id_archivos_numerooficionoti1=0;}
+  if(this.record.id_archivos_numerooficionoti2==datos.id){this.record.id_archivos_numerooficionoti2=0;}
+  if(this.record.id_archivos_numerooficionoti3==datos.id){this.record.id_archivos_numerooficionoti3=0;}
+  if(this.record.id_archivos_numeroofisol1==datos.id){this.record.id_archivos_numeroofisol1=0;}
+  if(this.record.id_archivos_numeroofisol2==datos.id){this.record.id_archivos_numeroofisol2=0;}
+  if(this.record.id_archivos_numeroofisol3==datos.id){this.record.id_archivos_numeroofisol3=0;}
+  console.log("this.record.id_archivos_numerooficio desp=>",this.record.id_archivos_numerooficio)
 }
 
 async setRecordFile(recordFile:Archivos,tipofileUpload:String){

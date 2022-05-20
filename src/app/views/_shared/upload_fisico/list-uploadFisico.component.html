@@ -7,7 +7,7 @@
     <div class="panel-heading">Archivo cargado:</div>
     <div *ngFor="let file of fileUploads">
         <div class="panel-body">
-            <details-uploadFisico [fileUpload]='file'></details-uploadFisico>
+            <details-uploadFisico [fileUpload]='file' (onRemove)="onRemoveFile($event)"></details-uploadFisico>
         </div>
     </div>
 </div>
