@@ -9,7 +9,7 @@ export class Auditoriasdetalle {
     id_auditorias: number;
 
     @Column()
-    punto: number;
+    punto: string;
 
     @Column()
     observacion: string;
@@ -19,6 +19,8 @@ export class Auditoriasdetalle {
     fechalimite: string;
     @Column()
     oficio: string;
+    @Column()
+    id_archivos: number;
 
     @Column()
     state: string;

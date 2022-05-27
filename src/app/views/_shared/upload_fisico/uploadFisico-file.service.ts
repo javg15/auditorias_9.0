@@ -14,6 +14,11 @@ export class UploadFisicoFileService {
   constructor(private archivosSvc: ArchivosService) { }
 
   pushFileToStorage(fileSrc: File,ruta:string): Promise<any> {
+    //generar un uuid aleatorio para el nombre de archivo interno, así no se sobreesriben los archivos
+    let nombreUuid='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+      return v.toString(16);
+    })
     //buscar si existe el registro
     let path = uploadDir + '/' + ruta;
         /*nombre: req.file.originalname,
@@ -23,11 +28,12 @@ export class UploadFisicoFileService {
         fs.mkdirSync(path, { recursive: true });
     }
    
-    fs.copyFile(fileSrc.path, path + '/' + fileSrc.name, (err) => {
-      if (err) throw err;
+    fs.copyFile(fileSrc.path, path + '/' + nombreUuid + '.' + fileSrc.name.split('.').pop(), (err) => {//fileSrc.name
+      if (err){ throw err;}
       console.log('source.txt was copied to destination.txt');
+      return {"uuid":nombreUuid};
     });
-    return null;
+    return Promise.resolve({"uuid":nombreUuid});
   }
 
   async listFile(id): Promise<any> {

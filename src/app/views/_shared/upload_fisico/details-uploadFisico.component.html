@@ -1,9 +1,9 @@
 <div *ngIf="fileUpload!=null">
-  <button title="Documentación" class="btn btn-brand btn-sm mr-1 btn-xing" style="margin-bottom: 4px" type="button" (click)="getFile(fileUpload.ruta + '/'+ fileUpload.nombre)">
+    <button title="Documentación" class="btn btn-brand btn-sm mr-1 btn-xing" style="margin-bottom: 4px" type="button" (click)="getFile(fileUpload.ruta + '/'+ fileUpload.uuid + '.' + fileUpload.nombre.split('.').pop())">
     <i class="fa fa-file"></i>
   </button>
-  <span>{{fileUpload.nombre}}</span>
-  <button title="Quitar" class="btn btn-brand btn-sm mr-1 btn-reddit" style="margin-bottom: 4px" type="button" (click)="removeFile(fileUpload.id,fileUpload.ruta + '/'+ fileUpload.nombre)">
+    <span>{{fileUpload.nombre}}</span>
+    <button title="Quitar" class="btn btn-brand btn-sm mr-1 btn-reddit" style="margin-bottom: 4px" type="button" (click)="removeFile(fileUpload.id,fileUpload.ruta + '/'+ fileUpload.uuid + '.' + fileUpload.nombre.split('.').pop())">
     <i class="fa fa-ban"></i>
   </button>
 </div>

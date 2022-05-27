@@ -44,7 +44,8 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
   @ViewChild('content', {static: false}) pdfTable: ElementRef;
 
   record: Auditoriasreporte;
-  record_detalles:string="";
+  record_detalles:any;
+  record_anexos:any;
 
   constructor(private isLoadingService: IsLoadingService,
     private el: ElementRef,
@@ -60,8 +61,8 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
     return {
       id: 0, nombre:'',desc_catentidades: '', desc_catservidores: '', numerooficio: '', 
       id_catejercicios: '', fecha: '', periodoini: '', periodofin: '', desc_cattiposauditoria: '',
-      marcolegal: '', desc_catresponsables:'',rubros: '',    numeroauditoria: '',    numerooficionoti1: '',numerooficionoti2: '',numerooficionoti3: '',
-      numeroofisol1: '',     numeroofisol2: '',numeroofisol3: '',     objetivo: '', Detalle:'',
+      marcolegal: '', desc_catresponsables:'',rubros: '',    numeroauditoria: '',    
+      objetivo: '', Detalle:'',Anexo:''
     };
   }
 
@@ -107,54 +108,138 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
  
         doc.save('sample-file.pdf');
   }
-  makeMultiPage() {
- 
-        var quotes = document.getElementById('pdfTable');
-        html2canvas(quotes).then(function (canvas) {
- 
-            //! MAKE YOUR PDF
-            var pdf = new jsPDF('p', 'pt', 'letter');
- 
-            for (var i = 0; i <= quotes.clientHeight/980; i++) {
-                //! This is all just html2canvas stuff
-                var srcImg  = canvas;
-                var sX      = 0;
-                var sY      = 980*i; // start 980 pixels down for every new page
-                var sWidth  = 900;
-                var sHeight = 980;
-                var dX      = 0;
-                var dY      = 0;
-                var dWidth  = 900;
-                var dHeight = 980;
- 
-                let onePageCanvas = document.createElement("canvas");
-                onePageCanvas.setAttribute('width', "900");
-                onePageCanvas.setAttribute('height', "980");
-                var ctx = onePageCanvas.getContext('2d');
-                // details on this usage of this function:
-                // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
-                ctx.drawImage(srcImg,sX,sY,sWidth,sHeight,dX,dY,dWidth,dHeight);
- 
-                // document.body.appendChild(canvas);
-                var canvasDataURL = onePageCanvas.toDataURL("image/png", 1.0);
- 
-                var width         = onePageCanvas.width;
-                var height        = onePageCanvas.clientHeight;
- 
-                //! If we're on anything other than the first page,
-                // add another page
-                if (i > 0) {
-                    pdf.addPage(612, 791); //8.5" x 11" in pts (in*72)
-                }
-                //! now we declare that we're working on that page
-                pdf.setPage(i+1);
-                //! now we add content to that page!
-                pdf.addImage(canvasDataURL, 'PNG', 20, 40, (width*.62), (height*.62));
- 
-            }
-            //! after the for loop is finished running, we save the pdf.
-            pdf.save(`auditorias_${new Date().toISOString()}.pdf`);
-        });
+  async MakePDF() {
+    this.userFormIsPending=new Observable<boolean>( observer => { observer.next(true);})
+    setTimeout(async ()=>{ 
+      await this.makeMultiPage();
+      this.userFormIsPending=new Observable<boolean>( observer => { observer.next(false);})
+   }, 500)
+    
+  }
+
+  async makeMultiPage(){
+      var quotes = document.getElementById('pdfTable');
+      html2canvas(quotes).then(function (canvas) {
+
+          //! MAKE YOUR PDF
+          var pdf = new jsPDF('p', 'pt', 'letter');
+
+          for (var i = 0; i <= quotes.clientHeight/910; i++) {
+              //! This is all just html2canvas stuff
+              var srcImg  = canvas;
+              var sX      = 0;
+              var sY      = 910*i; // start 910 pixels down for every new page
+              var sWidth  = 900;
+              var sHeight = 910;
+              var dX      = 0;
+              var dY      = 0;
+              var dWidth  = 900;
+              var dHeight = 910;
+
+              let onePageCanvas = document.createElement("canvas");
+              onePageCanvas.setAttribute('width', "900");
+              onePageCanvas.setAttribute('height', "910");
+              var ctx = onePageCanvas.getContext('2d');
+              // details on this usage of this function:
+              // https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API/Tutorial/Using_images#Slicing
+              ctx.drawImage(srcImg,sX,sY,sWidth,sHeight,dX,dY,dWidth,dHeight);
+
+              // document.body.appendChild(canvas);
+              var canvasDataURL = onePageCanvas.toDataURL("image/png", 1.0);
+
+              var width         = onePageCanvas.width;
+              var height        = onePageCanvas.clientHeight;
+
+              //! If we're on anything other than the first page,
+              // add another page
+              if (i > 0) {
+                  pdf.addPage(612, 791); //8.5" x 11" in pts (in*72)
+              }
+              //! now we declare that we're working on that page
+              pdf.setPage(i+1);
+              //! now we add content to that page!
+              pdf.addImage(canvasDataURL, 'PNG', 20, 40, (width*.62), (height*.62));
+
+          }
+          //! after the for loop is finished running, we save the pdf.
+          pdf.save(`auditorias_${new Date().toISOString()}.pdf`);
+          console.log("guardado")
+      });
+    }
+
+    findItem(valor):any{
+      const all = this.record_anexos.filter((obj) => {
+        return obj.id_auditoriasdetalle === valor;
+      });
+
+      return all;
+    }
+
+    print(){
+      const electron = require('electron')
+      // Importing BrowserWindow from Main
+      const BrowserWindow = electron.remote.BrowserWindow;
+      
+      let element = document.getElementById('pdfTable');
+    let range = new Range();
+    range.setStart(element, 0);
+    range.setEndAfter(element);
+    document.getSelection().removeAllRanges();
+    document.getSelection().addRange(range);
+
+    var options = {
+      silent: false,
+      printBackground: true,
+      color: false,
+      margin: {
+          marginType: 'printableArea'
+      },
+      landscape: false,
+      pagesPerSheet: 1,
+      collate: false,
+      copies: 1,
+      header: 'Header of the Page',
+      footer: 'Footer of the Page'
+  }
+
+    let window = BrowserWindow.fromWebContents(document);
+    window.webContents.print({ printSelectionOnly: true, }).then((data) => {
+        // Use the data however you like :)
+    });
+    /*window.webContents.print(options, (success, failureReason) => {
+      if (!success) console.log(failureReason);
+
+      console.log('Print Initiated');
+  });*/
+      /*const electron = require('electron')
+      // Importing BrowserWindow from Main
+      const BrowserWindow = electron.remote.BrowserWindow;
+      var current = document.getElementById('pdfTable'); 
+      var options = {
+          silent: false,
+          printBackground: true,
+          color: false,
+          margin: {
+              marginType: 'printableArea'
+          },
+          landscape: false,
+          pagesPerSheet: 1,
+          collate: false,
+          copies: 1,
+          header: 'Header of the Page',
+          footer: 'Footer of the Page'
+      }
+        
+
+          let win = BrowserWindow.getFocusedWindow();
+          // let win = BrowserWindow.getAllWindows()[0];
+        
+          win.webContents.print(options, (success, failureReason) => {
+              if (!success) console.log(failureReason);
+        
+              console.log('Print Initiated');
+          });*/
+
     }
 
   // open modal
@@ -165,7 +250,8 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
 
     this.record=await this.auditoriasreporteService.getAdmin(idItem);
     this.record_detalles=JSON.parse("[" + this.record.Detalle + "]")
-
+    this.record_anexos=JSON.parse("[" + this.record.Anexo + "]")
+console.log("this.record_anexos=>",this.record_anexos)
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear
     this.basicModalReporte.show();
   }

@@ -16,5 +16,7 @@ export class Archivos {
   ruta: string | null;
   @Column()
   numero: number;
+  @Column()
+  uuid: string | null;
 }
 

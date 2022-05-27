@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form #dataForm="ngForm" (ngSubmit)="submitAction(dataForm)">
+                <form #dataForm="ngForm" (ngSubmit)="MakePDF()">
                     <table class="tablaInfo" id="pdfTable" #pdfTable>
                         <tr>
                             <td>Organo fiscalizador</td>
@@ -71,30 +71,6 @@
                             <td>{{record.marcolegal}}</td>
                         </tr>
                         <tr>
-                            <td>Numero de oficio de notificación(1)</td>
-                            <td>{{record.numerooficionoti1}}</td>
-                        </tr>
-                        <tr>
-                            <td>Numero de oficio de notificación(2)</td>
-                            <td>{{record.numerooficionoti2}}</td>
-                        </tr>
-                        <tr>
-                            <td>Numero de oficio de notificación(3)</td>
-                            <td>{{record.numerooficionoti3}}</td>
-                        </tr>
-                        <tr>
-                            <td>Numero de oficio de solicitud de la información(1)</td>
-                            <td>{{record.numeroofisol1}}</td>
-                        </tr>
-                        <tr>
-                            <td>Numero de oficio de solicitud de la información(2)</td>
-                            <td>{{record.numeroofisol2}}</td>
-                        </tr>
-                        <tr>
-                            <td>Numero de oficio de solicitud de la información(3)</td>
-                            <td>{{record.numeroofisol3}}</td>
-                        </tr>
-                        <tr>
                             <td colspan="2">
                                 <table class="tablaInfoSub">
                                     <thead>
@@ -115,6 +91,28 @@
                                                 <td> {{ col.fechalimite }} </td>
                                                 <td> {{ col.oficio }} </td>
                                             </tr>
+                                            <tr *ngIf="findItem(col.id).length>0">
+                                                <td colspan="5">
+                                                    <table class="tablaInfoSub">
+                                                        <thead>
+                                                            <tr>
+                                                                <th></th>
+                                                                <th>Inciso</th>
+                                                                <th>Nombre</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <ng-container *ngFor="let col2 of findItem(col.id);">
+                                                                <tr>
+                                                                    <td> </td>
+                                                                    <td> {{ col2.puntoanexo }} </td>
+                                                                    <td> {{ col2.nombre }} </td>
+                                                                </tr>
+                                                            </ng-container>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
                                         </ng-container>
                                     </tbody>
                                 </table>
@@ -126,9 +124,11 @@
                         &nbsp;
                     </div>
                     <!-- [disabled]="!dataForm.form.valid" -->
-                    <button type="button" class="btn btn-primary" (click)="makeMultiPage();">
-                      <div>Exportar a PDF</div>
-                    </button>
+                    <button *ngIf="actionForm!=='ver'" type="submit" [disabled]='userFormIsPending | async' class="btn btn-primary">
+                        <div *ngIf="userFormIsPending | async; else elseBlock"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Procesando...</span></div>
+                        <ng-template #elseBlock>Exportar a PDF</ng-template>
+                      </button>
+                    <!--<button type="button" class="btn btn-secondary" (click)="print()">print</button>-->
                 </form>
             </div>
             <!-- <h2>Diagnostic Info</h2>

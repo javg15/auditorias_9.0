@@ -115,86 +115,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="form-group col-sm-3">
-                            <div class="form-group">
-                                <label for="numerooficionoti1">Numero de oficio de notificación(1)</label>
-                                <input type="text" [(ngModel)]="record.numerooficionoti1" class="form-control" name="Numero de oficio de notificación(1)">
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-3">
-                            <form-uploadFisico #id_archivos_numerooficionoti1 name="id_archivos_numerooficionoti1" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
-                            <br/>
-                            <list-uploadFisico #id_archivos_numerooficionoti1_list name="id_archivos_numerooficionoti1_list" (onRemove)="onRemoveFile($event)"></list-uploadFisico>
-                        </div>
-                        <div class="form-group col-sm-3">
-                            <div class="form-group">
-                                <label for="numerooficionoti2">Numero de oficio de notificación(2)</label>
-                                <input type="text" [(ngModel)]="record.numerooficionoti2" class="form-control" name="Numero de oficio de notificación(2)">
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-3">
-                            <form-uploadFisico #id_archivos_numerooficionoti2 name="id_archivos_numerooficionoti2" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
-                            <br/>
-                            <list-uploadFisico #id_archivos_numerooficionoti2_list name="id_archivos_numerooficionoti2_list" (onRemove)="onRemoveFile($event)"></list-uploadFisico>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="form-group col-sm-3">
-                            <div class="form-group">
-                                <label for="numerooficionoti3">Numero de oficio de notificación(3)</label>
-                                <input type="text" [(ngModel)]="record.numerooficionoti3" class="form-control" name="Numero de oficio de notificación(3)">
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-3">
-                            <form-uploadFisico #id_archivos_numerooficionoti3 name="id_archivos_numerooficionoti3" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
-                            <br/>
-                            <list-uploadFisico #id_archivos_numerooficionoti3_list name="id_archivos_numerooficionoti3_list" (onRemove)="onRemoveFile($event)"></list-uploadFisico>
-                        </div>
-                        <div class="form-group col-sm-3">
-                            <div class="form-group">
-                                <label for="numeroofisol1">Numero de oficio de solicitud de la información(1)</label>
-                                <input type="text" [(ngModel)]="record.numeroofisol1" class="form-control" name="Numero de oficio de solicitud de la información(1)">
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-3">
-                            <form-uploadFisico #id_archivos_numeroofisol1 name="id_archivos_numeroofisol1" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
-                            <br/>
-                            <list-uploadFisico #id_archivos_numeroofisol1_list name="id_archivos_numeroofisol1_list" (onRemove)="onRemoveFile($event)"></list-uploadFisico>
-                        </div>
-                    </div>
-                    <div class="row">
-                        
-                        <div class="form-group col-sm-3">
-                            <div class="form-group">
-                                <label for="numeroofisol2">Numero de oficio de solicitud de la información(2)</label>
-                                <input type="text" [(ngModel)]="record.numeroofisol2" class="form-control" name="Numero de oficio de solicitud de la información(2)">
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-3">
-                            <form-uploadFisico #id_archivos_numeroofisol2 name="id_archivos_numeroofisol2" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
-                            <br/>
-                            <list-uploadFisico #id_archivos_numeroofisol2_list name="id_archivos_numeroofisol2_list" (onRemove)="onRemoveFile($event)"></list-uploadFisico>
-                        </div>
-                        <div class="form-group col-sm-3">
-                            <div class="form-group">
-                                <label for="numeroofisol3">Numero de oficio de solicitud de la información(3)</label>
-                                <input type="text" [(ngModel)]="record.numeroofisol3" class="form-control" name="Numero de oficio de solicitud de la información(3)">
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-3">
-                            <form-uploadFisico #id_archivos_numeroofisol3 name="id_archivos_numeroofisol3" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
-                            <br/>
-                            <list-uploadFisico #id_archivos_numeroofisol3_list name="id_archivos_numeroofisol3_list" (onRemove)="onRemoveFile($event)"></list-uploadFisico>
-                        </div>
-                    </div>
+
                     <div class="row">
 
                     </div>
 
                     <div *ngIf="actionForm!=='nuevo'">
-                        <app-header-admin id="header-admin-2" [nombreModulo]="nombreModulo" (agregarEvent)="openModal('custom-modal-2','nuevo',0,record.id)">
-                        </app-header-admin>
+                        <nav class="header-admin navbar navbar-expand-lg ">
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav mr-auto">
+
+                                </ul>
+                                <form class="form-inline my-2 my-lg-0">
+                                    <button class="btn btn-success my-2 my-sm-0" (click)="openModal('custom-modal-2','nuevo',0,record.id)">Agregar procedimiento</button>
+                                </form>
+                            </div>
+                        </nav>
                     </div>
                     <div class="row">
                         &nbsp;

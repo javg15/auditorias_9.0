@@ -66,7 +66,7 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
 
   newRecord(idParent: number): Auditoriasanexos {
     return {
-      id: 0, id_auditoriasdetalle: idParent, puntoanexo: 0, id_archivos: 0,state:''
+      id: 0, id_auditoriasdetalle: idParent, puntoanexo: '', nombre:'',id_archivos: 0,state:''
     };
   }
   ngOnInit(): void {
@@ -105,7 +105,7 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
       let archivoModificado=false;//para saber si ya se realizo algun upload, y con él, la llamada a la funcion setRecord()
 
       if(this.actionForm.toUpperCase()==="NUEVO" || this.actionForm.toUpperCase()==="EDITAR"){
-          console.log("this.formUploadanexo.selectedFiles=>",this.formUploadanexo.selectedFiles)
+
           if(this.formUploadanexo.selectedFiles){
             //primero cargar el archivo
             this.formUploadanexo.ruta="anexos/" +
@@ -147,10 +147,15 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
         id:0,
         tabla:"auditoriasanexos",
         id_tabla:0,ruta:datos.ruta,
-        tipo: datos.tipo,  nombre:  datos.nombre,numero:0
+        tipo: datos.tipo,  nombre:  datos.nombre,numero:0,
+        uuid:datos.uuid
       };
       await this.setRecordFile();
           
+  }
+  
+  async onRemoveFile(datos:any){
+    if(this.record.id_archivos==datos.id){this.record.id_archivos=0;}
   }
 
   async setRecordFile(){
@@ -191,9 +196,8 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
     } else {
       //obtener el registro
       this.record=await this.auditoriasanexosService.getRecord(idItem)
-      this.formUploadanexo.hideFile();
-      this.listUpload.showFiles(this.record.id_archivos);
-      
+      if((this.record.id_archivos??0)>0){this.formUploadanexo.hideFile();this.listUpload.showFiles(this.record.id_archivos);}
+      else{this.formUploadanexo.showFile();this.listUpload.showFiles(0);}
     }
 
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear

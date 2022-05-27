@@ -31,6 +31,7 @@ import { UploadFisicoFileService } from '../../_shared/upload_fisico/uploadFisic
 import { Archivos} from '../../../_data/_models/archivos';
 import { ArchivosService } from '../../catalogos/archivos/services/archivos.service';
 
+
 declare var $: any;
 declare var jQuery: any;
 
@@ -87,21 +88,9 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   @ViewChild(ValidationSummaryComponent) validSummary: ValidationSummaryComponent;
   @ViewChild('id_archivos_numerooficio_list') listUploadoficio: ListUploadFisicoComponent;
   @ViewChild('id_archivos_numerooficio') formUploadoficio: FormUploadFisicoComponent;
-  @ViewChild('id_archivos_numerooficionoti1_list') listUploadnoti1: ListUploadFisicoComponent;
-  @ViewChild('id_archivos_numerooficionoti1') formUploadnoti1: FormUploadFisicoComponent;
-  @ViewChild('id_archivos_numerooficionoti2_list') listUploadnoti2: ListUploadFisicoComponent;
-  @ViewChild('id_archivos_numerooficionoti2') formUploadnoti2: FormUploadFisicoComponent;
-  @ViewChild('id_archivos_numerooficionoti3_list') listUploadnoti3: ListUploadFisicoComponent;
-  @ViewChild('id_archivos_numerooficionoti3') formUploadnoti3: FormUploadFisicoComponent;
-  @ViewChild('id_archivos_numeroofisol1_list') listUploadsol1: ListUploadFisicoComponent;
-  @ViewChild('id_archivos_numeroofisol1') formUploadsol1: FormUploadFisicoComponent;
-  @ViewChild('id_archivos_numeroofisol2_list') listUploadsol2: ListUploadFisicoComponent;
-  @ViewChild('id_archivos_numeroofisol2') formUploadsol2: FormUploadFisicoComponent;
-  @ViewChild('id_archivos_numeroofisol3_list') listUploadsol3: ListUploadFisicoComponent;
-  @ViewChild('id_archivos_numeroofisol3') formUploadsol3: FormUploadFisicoComponent;
 
   record: Auditorias;
-  //recordFile:Archivos;
+  recordFile:Archivos;
   cattiposauditoriaCat: Cattiposauditoria[];
   catservidoresCat: Catservidores[];
   catentidadesCat: Catentidades[];
@@ -119,9 +108,9 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     private catentidadesSvc: CatentidadesService,
     private catejerciciosSvc: CatejerciciosService,
     private catresponsablesSvc: CatresponsablesService,
+    private route: ActivatedRoute,
     private uploadFileSvc:UploadFisicoFileService,
     private archivosSvc:ArchivosService,
-    private route: ActivatedRoute
   ) {
     this.elementModal = el.nativeElement;
   }
@@ -131,10 +120,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       id: 0, id_catentidades: 0, id_catservidores: 0, nombre: '', numerooficio: '', id_archivos_numerooficio:0,
       id_catejercicios: '', fecha: '', periodoini: '', periodofin: '', id_cattiposauditoria: 0,
       marcolegal: '', id_catresponsables:0,
-      rubros: '',    numeroauditoria: '',    numerooficionoti1: '',numerooficionoti2: '',numerooficionoti3: '',
-      id_archivos_numerooficionoti1:0,id_archivos_numerooficionoti2:0,id_archivos_numerooficionoti3:0,
-      numeroofisol1: '',     numeroofisol2: '',numeroofisol3: '',     objetivo: '', state:'',
-      id_archivos_numeroofisol1:0,id_archivos_numeroofisol2:0,id_archivos_numeroofisol3:0
+      rubros: '',    numeroauditoria: '',  objetivo: '', state:'',
     };
   }
   ngOnInit(): void {
@@ -196,26 +182,23 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     if (this.actionForm.toUpperCase() !== "VER") {
 
       this.validSummary.resetErrorMessages(form);
+
       let archivoModificado=false;//para saber si ya se realizo algun upload, y con él, la llamada a la funcion setRecord()
 
-        if(this.actionForm.toUpperCase()==="NUEVO" || this.actionForm.toUpperCase()==="EDITAR"){
-          //primero cargar el archivo
-          
-
-          //el metodo .upload, emitirá el evento que cachará el metodo  onLoadedFile de este archivo
-          if(this.formUploadoficio.selectedFiles){archivoModificado=true;this.formUploadoficio.ruta="auditoria/1-" + this.record.id.toString().padStart(5 , "0"); await this.formUploadoficio.upload("formUploadoficio");}
-          if(this.formUploadnoti1.selectedFiles){archivoModificado=true;this.formUploadnoti1.ruta="auditoria/2-" + this.record.id.toString().padStart(5 , "0");await this.formUploadnoti1.upload("formUploadnoti1");}
-          if(this.formUploadnoti2.selectedFiles){archivoModificado=true;this.formUploadnoti2.ruta="auditoria/3-" + this.record.id.toString().padStart(5 , "0");await this.formUploadnoti2.upload("formUploadnoti2");}
-          if(this.formUploadnoti3.selectedFiles){archivoModificado=true;this.formUploadnoti3.ruta="auditoria/4-" + this.record.id.toString().padStart(5 , "0");await this.formUploadnoti3.upload("formUploadnoti3");}
-          if(this.formUploadsol1.selectedFiles){archivoModificado=true;this.formUploadsol1.ruta="auditoria/5-" + this.record.id.toString().padStart(5 , "0");await this.formUploadsol1.upload("formUploadsol1");}
-          if(this.formUploadsol2.selectedFiles){archivoModificado=true;this.formUploadsol2.ruta="auditoria/6-" + this.record.id.toString().padStart(5 , "0");await this.formUploadsol2.upload("formUploadsol2");}
-          if(this.formUploadsol3.selectedFiles){archivoModificado=true;this.formUploadsol3.ruta="auditoria/7-" + this.record.id.toString().padStart(5 , "0");await this.formUploadsol3.upload("formUploadsol3");}
-        }
-        
-        if(archivoModificado==false || this.actionForm.toUpperCase()==="ELIMINAR"){
-          await this.isLoadingService.add(this.setRecord(),{ key: 'loading' });
-        }
+      if(this.actionForm.toUpperCase()==="NUEVO" || this.actionForm.toUpperCase()==="EDITAR"){
+        //el metodo .upload, emitirá el evento que cachará el metodo  onLoadedFile de este archivo
+        if(this.formUploadoficio.selectedFiles){
+          archivoModificado=true;
+          this.formUploadoficio.ruta="auditoria/" + 
+            this.record.id.toString().padStart(5 , "0"); 
+            await this.formUploadoficio.upload();
+          }
       }
+      
+      if(archivoModificado==false || this.actionForm.toUpperCase()==="ELIMINAR"){
+        await this.isLoadingService.add(this.setRecord(),{ key: 'loading' });
+      }
+    }
   }
 
   async setRecord(){
@@ -238,73 +221,48 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     }
   }
 
-
   //Archivo cargado. Eventos disparado desde el componente
   async onLoadedFile(datos:any){
 
     //ingresar el registro de la tabla archivos
-    let recordFile={
+    this.recordFile={
       id:0,
       tabla:"auditorias",
       id_tabla:0,ruta:datos.ruta,
-      tipo: datos.tipo,  nombre:  datos.nombre,numero:0
+      tipo: datos.tipo,  nombre:  datos.nombre,numero:0,
+      uuid:datos.uuid
     };
-    let tipofileUpload=datos.tipofileUpload;
     
-    if (tipofileUpload=="formUploadoficio"){recordFile.numero=1;recordFile.id=this.record.id_archivos_numerooficio??0;}
-    if (tipofileUpload=="formUploadnoti1") {recordFile.numero=2;recordFile.id=this.record.id_archivos_numerooficionoti1??0;}
-    if (tipofileUpload=="formUploadnoti2") {recordFile.numero=3;recordFile.id=this.record.id_archivos_numerooficionoti2??0;}
-    if (tipofileUpload=="formUploadnoti3") {recordFile.numero=4;recordFile.id=this.record.id_archivos_numerooficionoti3??0;}
-    if (tipofileUpload=="formUploadsol1") {recordFile.numero=5;recordFile.id=this.record.id_archivos_numeroofisol1??0;}
-    if (tipofileUpload=="formUploadsol2") {recordFile.numero=6;recordFile.id=this.record.id_archivos_numeroofisol2??0;}
-    if (tipofileUpload=="formUploadsol3") {recordFile.numero=7;recordFile.id=this.record.id_archivos_numeroofisol3??0;}
-    
-    await this.setRecordFile(recordFile,tipofileUpload);
+    await this.setRecordFile();
 }
 
 async onRemoveFile(datos:any){
-  console.log("this.record.id_archivos_numerooficio antes=>",this.record.id_archivos_numerooficio)
   if(this.record.id_archivos_numerooficio==datos.id){this.record.id_archivos_numerooficio=0;}
-  if(this.record.id_archivos_numerooficionoti1==datos.id){this.record.id_archivos_numerooficionoti1=0;}
-  if(this.record.id_archivos_numerooficionoti2==datos.id){this.record.id_archivos_numerooficionoti2=0;}
-  if(this.record.id_archivos_numerooficionoti3==datos.id){this.record.id_archivos_numerooficionoti3=0;}
-  if(this.record.id_archivos_numeroofisol1==datos.id){this.record.id_archivos_numeroofisol1=0;}
-  if(this.record.id_archivos_numeroofisol2==datos.id){this.record.id_archivos_numeroofisol2=0;}
-  if(this.record.id_archivos_numeroofisol3==datos.id){this.record.id_archivos_numeroofisol3=0;}
-  console.log("this.record.id_archivos_numerooficio desp=>",this.record.id_archivos_numerooficio)
 }
 
-async setRecordFile(recordFile:Archivos,tipofileUpload:String){
+async setRecordFile(){
   {
     
-    let respFile=await this.archivosSvc.setRecord(recordFile,this.actionForm);
-    
-    if (tipofileUpload=="formUploadoficio") this.record.id_archivos_numerooficio=respFile.id;
-    if (tipofileUpload=="formUploadnoti1") this.record.id_archivos_numerooficionoti1=respFile.id;
-    if (tipofileUpload=="formUploadnoti2") this.record.id_archivos_numerooficionoti2=respFile.id;
-    if (tipofileUpload=="formUploadnoti3") this.record.id_archivos_numerooficionoti3=respFile.id;
-    if (tipofileUpload=="formUploadsol1") this.record.id_archivos_numeroofisol1=respFile.id;
-    if (tipofileUpload=="formUploadsol2") this.record.id_archivos_numeroofisol2=respFile.id;
-    if (tipofileUpload=="formUploadsol3") this.record.id_archivos_numeroofisol3=respFile.id;
-
-    recordFile.id=respFile.id;
+    let respFile=await this.archivosSvc.setRecord(this.recordFile,this.actionForm);
+        this.record.id_archivos_numerooficio=respFile.id;
+        this.recordFile.id=respFile.id;
     
     //registrar la auditoria
-    this.record.id_catejercicios=(this.record_id_catejercicios || []).join(",");
     let respUpdate=await this.auditoriasService.setRecord(this.record, this.actionForm);
-    await this.auditoriasService.updateEjercicios(respUpdate.id,this.record.id_catejercicios)
 
     if (respUpdate.hasOwnProperty('error')) {
       this.validSummary.generateErrorMessagesFromServer(respUpdate.message);
     }
     else if (respUpdate.message == "success") {
+      
+      await this.auditoriasService.updateEjercicios(respUpdate.id,this.record.id_catejercicios)
+
       this.record.id=respUpdate.id;
       if (this.actionForm.toUpperCase() == "NUEVO") this.actionForm = "editar";
 
       //actualizar la referencia en el archivo
-      recordFile.id_tabla=this.record.id;
-      
-      await this.archivosSvc.setRecordReferencia(recordFile,this.actionForm)
+      this.recordFile.id_tabla=this.record.id;
+      await this.archivosSvc.setRecordReferencia(this.recordFile,this.actionForm)
       this.successModal.show();
       setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
     }
@@ -324,49 +282,19 @@ async setRecordFile(recordFile:Archivos,tipofileUpload:String){
     this.catresponsablesCat=await this.catresponsablesSvc.getCatalogo();
 
     this.formUploadoficio.resetFile();
-    this.formUploadnoti1.resetFile();
-    this.formUploadnoti2.resetFile();
-    this.formUploadnoti3.resetFile();
-    this.formUploadsol1.resetFile();
-    this.formUploadsol2.resetFile();
-    this.formUploadsol3.resetFile();
 
     if (idItem == "0") {
       this.record = this.newRecord();
+      this.record_id_catejercicios=[];
       //inicializar
       this.formUploadoficio.showFile();
       this.listUploadoficio.showFiles(0);
-      this.formUploadnoti1.showFile();
-      this.listUploadnoti1.showFiles(0);
-      this.formUploadnoti2.showFile();
-      this.listUploadnoti2.showFiles(0);
-      this.formUploadnoti3.showFile();
-      this.listUploadnoti3.showFiles(0);
-      this.formUploadsol1.showFile();
-      this.listUploadsol1.showFiles(0);
-      this.formUploadsol2.showFile();
-      this.listUploadsol2.showFiles(0);
-      this.formUploadsol3.showFile();
-      this.listUploadsol3.showFiles(0);
     } else {
       this.record = await this.auditoriasService.getRecord(idItem);
       this.record_id_catejercicios=this.record.id_catejercicios.split(",").map(Number).filter(Boolean);
-
       //inicializar
       if((this.record.id_archivos_numerooficio??0)>0){this.formUploadoficio.hideFile();this.listUploadoficio.showFiles(this.record.id_archivos_numerooficio);}
       else{this.formUploadoficio.showFile();this.listUploadoficio.showFiles(0);}
-      if((this.record.id_archivos_numerooficionoti1??0)>0){this.formUploadnoti1.hideFile();this.listUploadnoti1.showFiles(this.record.id_archivos_numerooficionoti1);}
-      else{this.formUploadnoti1.showFile();this.listUploadnoti1.showFiles(0);}
-      if((this.record.id_archivos_numerooficionoti2??0)>0){this.formUploadnoti2.hideFile();this.listUploadnoti2.showFiles(this.record.id_archivos_numerooficionoti2);}
-      else{this.formUploadnoti2.showFile();this.listUploadnoti2.showFiles(0);}
-      if((this.record.id_archivos_numerooficionoti3??0)>0){this.formUploadnoti3.hideFile();this.listUploadnoti3.showFiles(this.record.id_archivos_numerooficionoti3);}
-      else{this.formUploadnoti3.showFile();this.listUploadnoti3.showFiles(0);}
-      if((this.record.id_archivos_numeroofisol1??0)>0){this.formUploadsol1.hideFile();this.listUploadsol1.showFiles(this.record.id_archivos_numeroofisol1);}
-      else{this.formUploadsol1.showFile();this.listUploadsol1.showFiles(0);}
-      if((this.record.id_archivos_numeroofisol2??0)>0){this.formUploadsol2.hideFile();this.listUploadsol2.showFiles(this.record.id_archivos_numeroofisol2);}
-      else{this.formUploadsol2.showFile();this.listUploadsol2.showFiles(0);}
-      if((this.record.id_archivos_numeroofisol3??0)>0){this.formUploadsol3.hideFile();this.listUploadsol3.showFiles(this.record.id_archivos_numeroofisol3);}
-      else{this.formUploadsol3.showFile();this.listUploadsol3.showFiles(0);}
     }
     this.reDraw(null);
 

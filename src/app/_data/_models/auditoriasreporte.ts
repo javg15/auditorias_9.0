@@ -29,22 +29,13 @@ export class Auditoriasreporte {
     @Column()
     numeroauditoria: string;
     @Column()
-    numerooficionoti1: string;
-    @Column()
-    numerooficionoti2: string;
-    @Column()
-    numerooficionoti3: string;
-    @Column()
-    numeroofisol1: string;
-    @Column()
-    numeroofisol2: string;
-    @Column()
-    numeroofisol3: string;
-    @Column()
     objetivo: string;
     @Column()
     marcolegal: string;
 
     @Column()
     Detalle : string;
+    @Column()
+    Anexo : string;
+    
 }

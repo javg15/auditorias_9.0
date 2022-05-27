@@ -47,12 +47,14 @@ export class AuditoriasanexosService {
       //const rawData = DB().query(`SELECT * FROM auditoriaanexos where id=?`, [1]);
       
       if (req.solocabeceras == 1) {
-          query = await this.qa.getAdmin('SELECT 0 AS ID,"" AS Punto' +
+          query = await this.qa.getAdmin('SELECT 0 AS ID,"" AS Inciso' +
+              ',"" AS Nombre'+
               ',"" AS Acciones', '&modo=10&id_usuario=0',this.conn);
             
       } else {
           query = await this.qa.getAdmin('SELECT a.id AS ID ' +
-              ',a.puntoanexo AS Punto ' +
+              ',a.puntoanexo AS Inciso ' +
+              ',a.nombre AS Nombre ' +
               ',a.state AS Acciones ' +
               'FROM auditoriasanexos AS a ' 
               ,
@@ -109,8 +111,7 @@ export class AuditoriasanexosService {
   /* El siguiente método graba un registro nuevo, o uno editado. */
   async setRecord(dataPack, actionForm): Promise<any>  {
     Object.keys(dataPack).forEach(function(key) {
-      if (key.indexOf("id_", 0) >= 0
-          || key.indexOf("puntoanexo", 0) >= 0) {
+      if (key.indexOf("id_", 0) >= 0) {
           if (dataPack[key] != '')
               dataPack[key] = parseInt(dataPack[key]);
       }
@@ -128,9 +129,15 @@ export class AuditoriasanexosService {
 
         id: { type: "number" },
         id_auditoriasdetalle: { type: "number" },
-        puntoanexo: { type: "number",
+        puntoanexo: { type: "string",
           custom(value, errors) {
-            if (value <= 0) errors.push({ type: "selection" })
+            if (value.length <= 0) errors.push({ type: "required" })
+            return value; // Sanitize: remove all special chars except numbers
+          }
+        },
+        nombre: { type: "string",
+          custom(value, errors) {
+            if (value.length <= 0) errors.push({ type: "required" })
             return value; // Sanitize: remove all special chars except numbers
           }
         },

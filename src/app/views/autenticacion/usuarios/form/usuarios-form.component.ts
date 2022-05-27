@@ -121,7 +121,7 @@ export class UsuariosFormComponent implements OnInit, OnDestroy {
             this.recordFile={id:this.record.id_archivos_avatar,
                   tabla:"usuarios",
                   id_tabla:this.record.id,ruta:"",
-                  tipo: null,  nombre:  null,numero:0
+                  tipo: null,  nombre:  null,numero:0,uuid:''
                 };
 
             await this.archivosSvc.setRecordReferencia(this.recordFile,this.actionForm)

@@ -9,9 +9,11 @@ export class Auditoriasanexos {
     id_auditoriasdetalle: number;
 
     @Column()
-    puntoanexo: number;
+    puntoanexo: string;
     @Column()
     id_archivos: number;
+    @Column()
+    nombre: string;
     @Column()
     state: string;
 }

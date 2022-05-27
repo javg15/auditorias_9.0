@@ -118,8 +118,7 @@ export class AuditoriasdetalleService {
   async setRecord(dataPack, actionForm): Promise<any>  {
 
     Object.keys(dataPack).forEach(function(key) {
-      if (key.indexOf("id_", 0) >= 0
-          || key.indexOf("punto", 0) >= 0) {
+      if (key.indexOf("id_", 0) >= 0) {
           if (dataPack[key] != '')
               dataPack[key] = parseInt(dataPack[key]);
       }
@@ -137,7 +136,7 @@ export class AuditoriasdetalleService {
 
         id: { type: "number" },
         id_auditorias: { type: "number" },
-        punto: { type: "number"},
+        punto: { type: "string"},
         observacion: { type: "string", empty: false },
         fecharecepcion: { type: "string", 
             custom(value, errors) {

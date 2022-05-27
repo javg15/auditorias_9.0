@@ -16,6 +16,13 @@ import { environment,actionsButtonSave, titulosModal } from '../../../../../src/
 import { Observable } from 'rxjs';
 import { IsLoadingService } from '../../../_services/is-loading/is-loading.service';
 
+import { ListUploadFisicoComponent } from '../../_shared/upload_fisico/list-uploadFisico.component';
+import { FormUploadFisicoComponent } from '../../_shared/upload_fisico/form-uploadFisico.component';
+import { UploadFisicoFileService } from '../../_shared/upload_fisico/uploadFisico-file.service';
+import { Archivos} from '../../../_data/_models/archivos';
+import { ArchivosService } from '../../catalogos/archivos/services/archivos.service';
+
+
 declare var $: any;
 declare var jQuery: any;
 
@@ -69,8 +76,11 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
   @ViewChild('basicModalDetalle') basicModalDetalle: ModalDirective;
   @ViewChild('successModal') public successModal: ModalDirective;
   @ViewChild(ValidationSummaryComponent) validSummary: ValidationSummaryComponent;
+  @ViewChild('id_archivos_detalle_list') listUploaddetalle: ListUploadFisicoComponent;
+  @ViewChild('id_archivos_detalle') formUploaddetalle: FormUploadFisicoComponent;
 
   record: Auditoriasdetalle;
+  recordFile:Archivos;
   catresponsablesCat:Catresponsables[];
 
 
@@ -79,7 +89,9 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
     private CatresponsablesSvc: CatresponsablesService,
     private auditoriasdetalleService: AuditoriasdetalleService,
     private auditoriasanexosService: AuditoriasanexosService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private uploadFileSvc:UploadFisicoFileService,
+    private archivosSvc:ArchivosService,
       ) {
       this.elementModal = el.nativeElement;
       
@@ -87,8 +99,8 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
 
   newRecord(idParent:number): Auditoriasdetalle {
     return {
-      id: 0,  id_auditorias:idParent, punto:0, observacion:'', fechalimite:"",fecharecepcion:"",
-      oficio:'', state: ''
+      id: 0,  id_auditorias:idParent, punto:'', observacion:'', fechalimite:"",fecharecepcion:"",
+      oficio:'', id_archivos:0, state: ''
     };
   }
   ngOnInit(): void {
@@ -154,8 +166,21 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
     if(this.actionForm.toUpperCase()!=="VER"){
 
       this.validSummary.resetErrorMessages(form);
+      let archivoModificado=false;//para saber si ya se realizo algun upload, y con él, la llamada a la funcion setRecord()
 
-      await this.isLoadingService.add(this.setRecord(),{ key: 'loading' });
+      if(this.actionForm.toUpperCase()==="NUEVO" || this.actionForm.toUpperCase()==="EDITAR"){
+        //el metodo .upload, emitirá el evento que cachará el metodo  onLoadedFile de este archivo
+        if(this.formUploaddetalle.selectedFiles){
+          archivoModificado=true;
+          this.formUploaddetalle.ruta="detalle/" + 
+            this.record.id.toString().padStart(5 , "0"); 
+            await this.formUploaddetalle.upload();
+          }
+      }
+      
+      if(archivoModificado==false || this.actionForm.toUpperCase()==="ELIMINAR"){
+        await this.isLoadingService.add(this.setRecord(),{ key: 'loading' });
+      }
     }
   }
 
@@ -174,6 +199,50 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  //Archivo cargado. Eventos disparado desde el componente
+  async onLoadedFile(datos:any){
+
+    //ingresar el registro de la tabla archivos
+    this.recordFile={
+      id:0,
+      tabla:"auditorias",
+      id_tabla:0,ruta:datos.ruta,
+      tipo: datos.tipo,  nombre:  datos.nombre,numero:0,
+      uuid:datos.uuid
+    };
+    
+    await this.setRecordFile();
+}
+
+async onRemoveFile(datos:any){
+  if(this.record.id_archivos==datos.id){this.record.id_archivos=0;}
+}
+
+async setRecordFile(){
+  {
+    
+    let respFile=await this.archivosSvc.setRecord(this.recordFile,this.actionForm);
+        this.record.id_archivos=respFile.id;
+        this.recordFile.id=respFile.id;
+    
+    //registrar el detalle
+    let respUpdate=await this.auditoriasdetalleService.setRecord(this.record, this.actionForm);
+
+    if (respUpdate.hasOwnProperty('error')) {
+      this.validSummary.generateErrorMessagesFromServer(respUpdate.message);
+    }
+    else if (respUpdate.message == "success") {
+      this.record.id=respUpdate.id;
+      if (this.actionForm.toUpperCase() == "NUEVO") this.actionForm = "editar";
+
+      //actualizar la referencia en el archivo
+      this.recordFile.id_tabla=this.record.id;
+      await this.archivosSvc.setRecordReferencia(this.recordFile,this.actionForm)
+      this.successModal.show();
+      setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
+    }
+  }
+}
 
   // open modal
   async open(idItem: string, accion: string,idParent:number):  Promise<void> {
@@ -183,10 +252,19 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
 
     this.catresponsablesCat = await this.CatresponsablesSvc.getCatalogo()
 
+    this.formUploaddetalle.resetFile();
+
     if(idItem=="0"){
       this.record =this.newRecord(idParent);
+      //inicializar
+      this.formUploaddetalle.showFile();
+      this.listUploaddetalle.showFiles(0);
+      
     } else {
       this.record = await this.auditoriasdetalleService.getRecord(idItem);
+      //inicializar
+      if((this.record.id_archivos??0)>0){this.formUploaddetalle.hideFile();this.listUploaddetalle.showFiles(this.record.id_archivos);}
+      else{this.formUploaddetalle.showFile();this.listUploaddetalle.showFiles(0);}
     }
     this.reDraw(null);
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear
@@ -203,6 +281,11 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
 
   // log contenido de objeto en formulario
   get diagnosticValidate() { return JSON.stringify(this.record); }
+
+  //muestra el archivo
+  getFile(ruta){
+    this.uploadFileSvc.getFile(ruta);
+  }
 
   //Sub formulario
   openModal(id: string, accion: string, idItem: number, idParent: number) {
