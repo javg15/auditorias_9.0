@@ -1,7 +1,7 @@
 import { Component, OnInit, Input,Output,EventEmitter } from '@angular/core';
-import { UploadFisicoFileService } from './uploadFisico-file.service';
+import { UploadFisicoFileService } from '../uploadFisico-file.service';
 /* Importamos los environments, para determinar la URL base de las API's */
-import { environment } from '../../../../../src/environments/environment';
+import { environment } from '../../../../../../src/environments/environment';
 
 
 @Component({

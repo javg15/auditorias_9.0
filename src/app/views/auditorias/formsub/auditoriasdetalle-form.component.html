@@ -53,11 +53,19 @@
                             </div>
                         </div>
                     </div>
+                    <div *ngIf="actionForm!=='nuevo'">
+                        <nav class="header-admin navbar navbar-expand-lg ">
+                            <div class="collapse navbar-collapse">
+                                <ul class="navbar-nav mr-auto"></ul>
+                                <form class="form-inline my-2 my-lg-0">
+                                    <button class="btn btn-success my-2 my-sm-0" (click)="openModal('modalUpload', 'nuevo', 0, record.id)">Agregar archivo</button>
+                                </form>
+                            </div>
+                        </nav>
+                    </div>
                     <div class="row">
                         <div class="form-group col-sm-8">
-                            <form-uploadFisico #id_archivos_detalle name="id_archivos_detalle" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
-                            <br/>
-                            <list-uploadFisico #id_archivos_detalle_list name="id_archivos_detalle_list" (onRemove)="onRemoveFile($event)"></list-uploadFisico>
+                            <table-uploadFisico #tablaArchivos name="tablaArchivos" (onRemoved)="onRemovedFile($event)"></table-uploadFisico>
                         </div>
                     </div>
                     <div *ngIf="actionForm!=='nuevo'">
@@ -151,3 +159,5 @@
 <!-- /.modal -->
 <app-auditoriasanexos-form id="custom-anexos" (redrawEvent)="reDraw($event)">
 </app-auditoriasanexos-form>
+<app-modalupload-form id="modalUpload" [ruta]="detalle/" [tabla]="auditoriasdetalle" [selectedFiles]="">
+</app-modalupload-form>

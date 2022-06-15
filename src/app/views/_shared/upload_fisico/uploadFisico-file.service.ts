@@ -9,7 +9,7 @@ let uploadDir = './uploads';
   providedIn: 'root'
 })
 export class UploadFisicoFileService {
-
+  private modals: any[] = [];
 
   constructor(private archivosSvc: ArchivosService) { }
 
@@ -40,6 +40,11 @@ export class UploadFisicoFileService {
     return await this.archivosSvc.getRecord(id)
   }
 
+  async listTablaFile(id_parent,tabla): Promise<any> {
+    return await this.archivosSvc.getRecords(id_parent,tabla)
+  }
+  
+
   //getFile(id): Observable<any> {
   async getFile(ruta){
     let dir=(electron.app || electron.remote.app).getAppPath()
@@ -51,4 +56,34 @@ export class UploadFisicoFileService {
     //console.log("dir=>",dir + "/uploads/" + ruta)
     shell.openPath( dir + "/uploads/" + ruta);
   }
+
+  async removeFile(id,ruta){
+    let dir=(electron.app || electron.remote.app).getAppPath()
+
+    //console.log("(antes)dir=>",dir)
+    if(dir.indexOf("\\resources\\app")>=0)
+      dir=dir.replace("\\resources\\app","")
+    //console.log("(desp)dir=>",dir)
+    //console.log("dir=>",dir + "/uploads/" + ruta)
+    shell.openPath( dir + "/uploads/" + ruta);
+  }
+
+    // array de modales
+    public add(modal: any) {
+      this.modals.push(modal);
+    }
+  
+    public remove(id: string) {
+      this.modals = this.modals.filter(x => x.id !== id);
+    }
+  
+    public open(id: string, accion: string, idItem: number,idParent:number) {
+      let modal: any = this.modals.filter(x => x.id === id)[0];
+      modal.open(idItem, accion,idParent);
+  }
+  
+    public close(id: string) {
+      let modal: any = this.modals.filter(x => x.id === id)[0];
+      modal.close();
+    }
 }

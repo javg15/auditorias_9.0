@@ -12,16 +12,14 @@
                 <form #dataForm="ngForm" (ngSubmit)="submitAction(dataForm)">
                     <input type="hidden" name="action" value="{{ actionForm }}">
                     <div class="form-group">
-                        <input type="hidden" [(ngModel)]="record.id" class="form-control" name="ID">
-                        <input type="hidden" [(ngModel)]="record.id_auditorias" class="form-control" name="Código">
+                        <input type="hidden" [(ngModel)]="record_id" class="form-control" name="ID">
+                        <input type="hidden" [(ngModel)]="record_id_parent" class="form-control" name="id_parent">
                     </div>
                     <!-- Nav tabs -->
 
                     <div class="row">
                         <div class="form-group col-sm-8">
-                            <form-uploadFisico #id_archivos_detalle name="id_archivos_detalle" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
-                            <br/>
-                            <list-uploadFisico #id_archivos_detalle_list name="id_archivos_detalle_list" (onRemove)="onRemoveFile($event)"></list-uploadFisico>
+                            <form-uploadFisico #formUploadFisico name="formUploadFisico" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
                         </div>
                     </div>
 
@@ -59,6 +57,3 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
-<!-- /.modal -->
-<app-auditoriasanexos-form id="custom-anexos" (redrawEvent)="reDraw($event)">
-</app-auditoriasanexos-form>

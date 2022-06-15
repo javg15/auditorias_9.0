@@ -130,7 +130,17 @@ export class ArchivosService {
     return Archivo;
   }
 
-  
+  async getRecords(id_parent:number,tabla:string){
+    let query = 'SELECT * ' +
+      'FROM ' + tabla + ' ' +
+      'WHERE id_tabla='+id_parent;
+
+    let datos=await this.conn.query(query);
+
+    for(let i=0;i<datos.length;i++){
+      datos[i]["Acciones"]=this.qa.getAcciones(0,"todo",datos[i]["Acciones"]);
+    }
+  }
 
 
   // array de modales

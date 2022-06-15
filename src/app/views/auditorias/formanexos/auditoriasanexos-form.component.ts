@@ -11,8 +11,8 @@ import { IsLoadingService } from '../../../_services/is-loading/is-loading.servi
 
 import { ArchivosService } from '../../catalogos/archivos/services/archivos.service';
 import { AuditoriasanexosService } from '../services/auditoriasanexos.service';
-import { ListUploadFisicoComponent } from '../../_shared/upload_fisico/list-uploadFisico.component';
-import { FormUploadFisicoComponent } from '../../_shared/upload_fisico/form-uploadFisico.component';
+import { ListUploadFisicoComponent } from '../../_shared/upload_fisico/list/list-uploadFisico.component';
+import { FormUploadFisicoComponent } from '../../_shared/upload_fisico/list/form-uploadFisico.component';
 import { UploadFisicoFileService } from '../../_shared/upload_fisico/uploadFisico-file.service';
 import { relativeTimeThreshold } from 'moment';
 

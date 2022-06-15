@@ -10,7 +10,6 @@ import { environment } from '../../../../../src/environments/environment';
   providedIn: 'root'
 })
 export class UploadFileService {
-
   public API_URL = environment.APIS_URL;
 
   constructor(private http: HttpClient,private token: TokenStorageService) { }

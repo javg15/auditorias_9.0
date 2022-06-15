@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter,Input, ViewChild, ElementRef } from '@angular/core';
-import { UploadFisicoFileService } from './uploadFisico-file.service';
+import { UploadFisicoFileService } from '../uploadFisico-file.service';
 import { HttpResponse, HttpEventType } from '@angular/common/http';
 
 @Component({

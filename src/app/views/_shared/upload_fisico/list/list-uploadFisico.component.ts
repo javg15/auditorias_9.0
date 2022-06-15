@@ -1,7 +1,7 @@
 import { Component, OnInit,Input,Output,EventEmitter } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UsingJoinColumnIsNotAllowedError } from 'typeorm/error';
-import { UploadFisicoFileService } from './uploadFisico-file.service';
+import { UploadFisicoFileService } from '../uploadFisico-file.service';
 
 @Component({
   selector: 'list-uploadFisico',
