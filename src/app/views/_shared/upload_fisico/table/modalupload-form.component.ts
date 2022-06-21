@@ -86,8 +86,8 @@ export class ModaluploadFormComponent implements OnInit, OnDestroy {
       if(this.actionForm.toUpperCase()==="NUEVO" || this.actionForm.toUpperCase()==="EDITAR"){
         //el metodo .upload, emitirá el evento que cachará el metodo  onLoadedFile de este archivo
         if(this.formUploadFisico.selectedFiles){
-          this.formUploadFisico.ruta+= 
-            this.record_id.toString().padStart(5 , "0"); 
+          this.formUploadFisico.ruta=this.ruta+ "/" + 
+            this.record_id_parent.toString().padStart(5 , "0"); 
             await this.formUploadFisico.upload();
           }
       }
@@ -107,7 +107,13 @@ export class ModaluploadFormComponent implements OnInit, OnDestroy {
     };
     
     let respFile=await this.archivosSvc.setRecord(this.recordFile,this.actionForm);
-    await this.onLoaded.emit({id_archivo:respFile.id});
+    this.recordFile.id=respFile.id;
+    //actualizar la referencia en el archivo
+    this.recordFile.id_tabla=this.record_id_parent;
+    await this.archivosSvc.setRecordReferencia(this.recordFile,this.actionForm)
+    this.basicModalDetalle.hide();
+
+    await this.onLoaded.emit({file:this.recordFile});
 
   }
 

@@ -10,9 +10,12 @@ import { ValidationSummaryComponent } from './validation/validation-summary.comp
 import { DetailsUploadComponent } from './upload/details-upload.component';
 import { FormUploadComponent } from './upload/form-upload.component';
 import { ListUploadComponent } from './upload/list-upload.component';
-import { DetailsUploadFisicoComponent } from './upload_fisico/details-uploadFisico.component';
-import { FormUploadFisicoComponent } from './upload_fisico/form-uploadFisico.component';
-import { ListUploadFisicoComponent } from './upload_fisico/list-uploadFisico.component';
+import { DetailsUploadFisicoComponent } from './upload_fisico/list/details-uploadFisico.component';
+import { FormUploadFisicoComponent } from './upload_fisico/list/form-uploadFisico.component';
+import { ListUploadFisicoComponent } from './upload_fisico/list/list-uploadFisico.component';
+import { ModaluploadFormComponent } from './upload_fisico/table/modalupload-form.component';
+import { TablaUploadFisicoComponent } from './upload_fisico/table/table-uploadFisico.component';
+
 import { LoginModalComponent } from './login/login-modal.component';
 import { Select2Module } from 'ng-select2-component';
 
@@ -34,6 +37,8 @@ import { Select2Module } from 'ng-select2-component';
     DetailsUploadComponent,
     FormUploadFisicoComponent,
     ListUploadFisicoComponent,
+    TablaUploadFisicoComponent,
+    ModaluploadFormComponent,
     DetailsUploadFisicoComponent,
     LoginModalComponent
   ],
@@ -50,6 +55,8 @@ import { Select2Module } from 'ng-select2-component';
     FormUploadFisicoComponent,
     ListUploadFisicoComponent,
     DetailsUploadFisicoComponent,
+    TablaUploadFisicoComponent,
+    ModaluploadFormComponent,
     LoginModalComponent,
     CommonModule
   ]

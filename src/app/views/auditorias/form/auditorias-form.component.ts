@@ -25,8 +25,8 @@ import { environment,actionsButtonSave, titulosModal } from '../../../../../src/
 import { Observable } from 'rxjs';
 import { IsLoadingService } from '../../../_services/is-loading/is-loading.service';
 
-import { ListUploadFisicoComponent } from '../../_shared/upload_fisico/list-uploadFisico.component';
-import { FormUploadFisicoComponent } from '../../_shared/upload_fisico/form-uploadFisico.component';
+import { ListUploadFisicoComponent } from '../../_shared/upload_fisico/list/list-uploadFisico.component';
+import { FormUploadFisicoComponent } from '../../_shared/upload_fisico/list/form-uploadFisico.component';
 import { UploadFisicoFileService } from '../../_shared/upload_fisico/uploadFisico-file.service';
 import { Archivos} from '../../../_data/_models/archivos';
 import { ArchivosService } from '../../catalogos/archivos/services/archivos.service';
@@ -230,7 +230,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       tabla:"auditorias",
       id_tabla:0,ruta:datos.ruta,
       tipo: datos.tipo,  nombre:  datos.nombre,numero:0,
-      uuid:datos.uuid
+      uuid:datos.uuid 
     };
     
     await this.setRecordFile();

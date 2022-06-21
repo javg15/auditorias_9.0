@@ -159,5 +159,5 @@
 <!-- /.modal -->
 <app-auditoriasanexos-form id="custom-anexos" (redrawEvent)="reDraw($event)">
 </app-auditoriasanexos-form>
-<app-modalupload-form id="modalUpload" [ruta]="detalle/" [tabla]="auditoriasdetalle" [selectedFiles]="">
+<app-modalupload-form id="modalUpload" [ruta]="ruta" [tabla]="tabla" [selectedFiles]="" (onLoaded)="onLoadedFile($event)">
 </app-modalupload-form>

@@ -132,14 +132,30 @@ export class ArchivosService {
 
   async getRecords(id_parent:number,tabla:string){
     let query = 'SELECT * ' +
-      'FROM ' + tabla + ' ' +
-      'WHERE id_tabla='+id_parent;
+      'FROM archivos ' +
+      'WHERE tabla="'+ tabla +'" AND id_tabla='+id_parent;
 
     let datos=await this.conn.query(query);
 
     for(let i=0;i<datos.length;i++){
       datos[i]["Acciones"]=this.qa.getAcciones(0,"todo",datos[i]["Acciones"]);
     }
+    return datos;
+  }
+
+  /* El siguiente método graba un registro nuevo, o uno editado. */
+  async removeRecord(id): Promise<any>  {
+    //buscar si existe el registro y almacenarlo
+    this.conn= await this.dbSvc.connection;
+    const rep = await this.conn.manager.getRepository(Archivos)
+        
+    try{
+      const self=await rep.delete({    id: id })
+      // here self is your instance, but updated
+      return { message: "success" };
+    }catch(err){
+      return { error: true, message: [err.errors[0].message] };
+    };
   }
 
 

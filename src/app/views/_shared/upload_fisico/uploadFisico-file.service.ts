@@ -58,14 +58,7 @@ export class UploadFisicoFileService {
   }
 
   async removeFile(id,ruta){
-    let dir=(electron.app || electron.remote.app).getAppPath()
-
-    //console.log("(antes)dir=>",dir)
-    if(dir.indexOf("\\resources\\app")>=0)
-      dir=dir.replace("\\resources\\app","")
-    //console.log("(desp)dir=>",dir)
-    //console.log("dir=>",dir + "/uploads/" + ruta)
-    shell.openPath( dir + "/uploads/" + ruta);
+    await this.archivosSvc.removeRecord(id)
   }
 
     // array de modales

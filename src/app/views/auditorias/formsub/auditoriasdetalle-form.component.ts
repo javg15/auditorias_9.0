@@ -70,13 +70,14 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
 
   actionForm: string; //acción que se ejecuta (nuevo, edición,etc)
   tituloForm: string;
-
+  ruta:string="detalle";//variables para modalUpload
+  tabla:string="auditoriasdetalle";//variables para modalUpload
   private elementModal: any;
   @ViewChild('basicModalDetalle') basicModalDetalle: ModalDirective;
   @ViewChild('successModal') public successModal: ModalDirective;
   @ViewChild(ValidationSummaryComponent) validSummary: ValidationSummaryComponent;
   @ViewChild(ModaluploadFormComponent) modalUpload: ModaluploadFormComponent;
-  @ViewChild(TablaUploadFisicoComponent) tablaUpload: TablaUploadFisicoComponent;
+  @ViewChild('tablaArchivos') tablaUpload: TablaUploadFisicoComponent;
   
   record: Auditoriasdetalle;
   recordFile:Archivos;
@@ -173,9 +174,7 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
       else if(resp.message=="success"){
         if(this.actionForm.toUpperCase()=="NUEVO") this.actionForm="editar";
         this.record.id=resp.id;
-        //actualizar la referencia en el archivo
-        this.recordFile.id_tabla=this.record.id;
-        await this.archivosSvc.setRecordReferencia(this.recordFile,this.actionForm)
+        
         this.successModal.show();
         setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
       }
@@ -229,8 +228,8 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
 
   //Sub formulario
   openModal(id: string, accion: string, idItem: number, idParent: number) {
-    if(id=="openModal")
-    this.uploadFisicoFileSvc.open(id, accion, idItem, idParent);
+    if(id=="modalUpload")
+      this.uploadFisicoFileSvc.open(id, accion, idItem, idParent);
     else
       this.auditoriasanexosService.open(id, accion, idItem, idParent);
   }
