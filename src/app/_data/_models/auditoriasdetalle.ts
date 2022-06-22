@@ -24,4 +24,6 @@ export class Auditoriasdetalle {
 
     @Column()
     state: string;
+    @Column()
+    orden: number;
 }

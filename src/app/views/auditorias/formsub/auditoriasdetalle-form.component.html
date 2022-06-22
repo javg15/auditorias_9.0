@@ -63,7 +63,7 @@
                             </div>
                         </nav>
                     </div>
-                    <div class="row">
+                    <div class="row" *ngIf="actionForm!=='nuevo'">
                         <div class="form-group col-sm-8">
                             <table-uploadFisico #tablaArchivos name="tablaArchivos" (onRemoved)="onRemovedFile($event)"></table-uploadFisico>
                         </div>

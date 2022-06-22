@@ -46,6 +46,7 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
   dtTrigger: Subject<DataTableDirective> = new Subject();
 
   Members: any[];
+  MembersAll: any[];
   ColumnNames: string[];
   private dataTablesParameters = {
     draw: 1, length: 100, opcionesAdicionales: {},
@@ -100,7 +101,7 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
   newRecord(idParent:number): Auditoriasdetalle {
     return {
       id: 0,  id_auditorias:idParent, punto:'', observacion:'', fechalimite:"",fecharecepcion:"",
-      oficio:'', id_archivos:0, state: ''
+      oficio:'', id_archivos:0, state: '',orden:0
     };
   }
   ngOnInit(): void {
@@ -128,7 +129,7 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
       //processing: true,
       ordering: false,
       destroy: true,
-      searching: false,
+      searching: true,
       info: false,
       language: {
         emptyTable: '',
@@ -235,7 +236,11 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
   }
 
   closeModal(id: string) {
-    this.auditoriasanexosService.close(id);
+    if(id=="modalUpload")
+      this.uploadFisicoFileSvc.close(id);
+    else
+      this.auditoriasanexosService.close(id);
+    
   }
 
   async reDraw(parametro: any): Promise<void> {
@@ -247,14 +252,32 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
 
     const resp=await this.auditoriasanexosService.getAdmin(this.dataTablesParameters)
 
-      this.ColumnNames = resp.columnNames;
-      this.Members = resp.data;
-      this.NumberOfMembers = resp.data.length;
-      $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
-      //$('#tblAuditoriasdetalle').dataTable({searching: false, paging: false, info: false});
-      if (this.NumberOfMembers > 0) {
-        $('.dataTables_empty').css('display', 'none');
-      }
+    this.ColumnNames = resp.columnNames;
+    this.MembersAll = this.Members = resp.data;
+    this.NumberOfMembers = resp.data.length;
+    $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
+    //$('#tblAuditoriasdetalle').dataTable({searching: false, paging: false, info: false});
+    if (this.NumberOfMembers > 0) {
+      $('.dataTables_empty').css('display', 'none');
+    }
+
+    //Cuadro de busqueda
+    $('.dataTables_filter input').attr('type', 'text');//para quitar el icono de limpiar
+
+    let that = this;
+    //getting the value of search box
+    $('.dataTables_filter input').unbind().on('keyup change', function () {
+      var value = $(this).val();
+      if (value.length>=3) {
+        that.Members = that.MembersAll.filter(a=>a.Nombre.toUpperCase().indexOf(this['value'].toUpperCase())>=0
+          );
+      } else {     
+          //optional, reset the search if the phrase 
+          //is less then 3 characters long
+          that.Members = that.MembersAll
+      }        
+      that.dtTrigger.next();
+    });
   }
 
 }

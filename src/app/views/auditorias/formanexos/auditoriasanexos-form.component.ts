@@ -3,17 +3,18 @@ import { ActivatedRoute } from '@angular/router';
 
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Auditoriasanexos} from '../../../_data/_models/auditoriasanexos';
-import { Archivos} from '../../../_data/_models/archivos';
+import { AuditoriasanexosService } from '../services/auditoriasanexos.service';
 import { ValidationSummaryComponent } from '../../_shared/validation/validation-summary.component';
 import { environment,actionsButtonSave, titulosModal } from '../../../../../src/environments/environment';
 import { Observable } from 'rxjs';
 import { IsLoadingService } from '../../../_services/is-loading/is-loading.service';
 
+import { ModaluploadFormComponent } from '../../_shared/upload_fisico/table/modalupload-form.component';
+import { TablaUploadFisicoComponent } from '../../_shared/upload_fisico/table/table-uploadFisico.component';
+import { Archivos} from '../../../_data/_models/archivos';
 import { ArchivosService } from '../../catalogos/archivos/services/archivos.service';
-import { AuditoriasanexosService } from '../services/auditoriasanexos.service';
-import { ListUploadFisicoComponent } from '../../_shared/upload_fisico/list/list-uploadFisico.component';
-import { FormUploadFisicoComponent } from '../../_shared/upload_fisico/list/form-uploadFisico.component';
 import { UploadFisicoFileService } from '../../_shared/upload_fisico/uploadFisico-file.service';
+
 import { relativeTimeThreshold } from 'moment';
 
 
@@ -36,14 +37,15 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
 
   actionForm: string; //acción que se ejecuta (nuevo, edición,etc)
   tituloForm: string;
-
+  ruta:string="anexos";//variables para modalUploadAnexos
+  tabla:string="auditoriasanexos";//variables para modalUploadAnexos
   private elementModal: any;
 
   @ViewChild('basicModalAnexos') basicModalAnexos: ModalDirective;
   @ViewChild('successModal') public successModal: ModalDirective;
   @ViewChild(ValidationSummaryComponent) validSummary: ValidationSummaryComponent;
-  @ViewChild(ListUploadFisicoComponent) listUpload: ListUploadFisicoComponent;
-  @ViewChild('id_archivos_anexos') formUploadanexo: FormUploadFisicoComponent;
+  @ViewChild(ModaluploadFormComponent) modalUploadAnexos: ModaluploadFormComponent;
+  @ViewChild('tablaArchivosAnexos') tablaUploadAnexos: TablaUploadFisicoComponent;
 
   record: Auditoriasanexos;
   recordFile:Archivos;
@@ -57,7 +59,7 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
     private auditoriasanexosService: AuditoriasanexosService,
     private el: ElementRef,
     private archivosSvc:ArchivosService,
-    private uploadFileSvc:UploadFisicoFileService,
+    private uploadFisicoFileSvc: UploadFisicoFileService,
     private route: ActivatedRoute
   ) {
     this.elementModal = el.nativeElement;
@@ -66,7 +68,7 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
 
   newRecord(idParent: number): Auditoriasanexos {
     return {
-      id: 0, id_auditoriasdetalle: idParent, puntoanexo: '', nombre:'',id_archivos: 0,state:''
+      id: 0, id_auditoriasdetalle: idParent, puntoanexo: '', nombre:'',id_archivos: 0,state:'',orden:0
     };
   }
   ngOnInit(): void {
@@ -102,38 +104,17 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
     if (this.actionForm.toUpperCase() !== "VER") {
 
       this.validSummary.resetErrorMessages(admin);
-      let archivoModificado=false;//para saber si ya se realizo algun upload, y con él, la llamada a la funcion setRecord()
-
-      if(this.actionForm.toUpperCase()==="NUEVO" || this.actionForm.toUpperCase()==="EDITAR"){
-
-          if(this.formUploadanexo.selectedFiles){
-            //primero cargar el archivo
-            this.formUploadanexo.ruta="anexos/" +
-              this.record.id_auditoriasdetalle.toString().padStart(5 , "0")
-              archivoModificado=true;
-            //el metodo .upload, emitirá el evento que cachará el metodo  onLoadedFile de este archivo
-            this.formUploadanexo.upload()
-          }
-        }
-        if(archivoModificado==false || this.actionForm.toUpperCase()==="ELIMINAR"){
-          await this.isLoadingService.add(this.setRecord(),{ key: 'loading' });
-        }
-      
-    }
-  }
-
-  async setRecord(){
-    {
       //Solo se edita información, el archivo no se puede reemplazar, solo eliminar
       const resp=await this.auditoriasanexosService.setRecord(this.record, this.actionForm)
       if (resp.hasOwnProperty('error')) {
         this.validSummary.generateErrorMessagesFromServer(resp.message);
       }
       else if (resp.message == "success") {
+        if(this.actionForm.toUpperCase()=="NUEVO") this.actionForm="editar";
         this.record.id=resp.id;
-
-          this.successModal.show();
-          setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
+        
+        this.successModal.show();
+        setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
       }
     }
   }
@@ -141,46 +122,11 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
 
   //Archivo cargado. Eventos disparado desde el componente
   async onLoadedFile(datos:any){
-
-      //ingresar el registro de la tabla archivos
-      this.recordFile={
-        id:0,
-        tabla:"auditoriasanexos",
-        id_tabla:0,ruta:datos.ruta,
-        tipo: datos.tipo,  nombre:  datos.nombre,numero:0,
-        uuid:datos.uuid
-      };
-      await this.setRecordFile();
-          
+    this.tablaUploadAnexos.showFiles(this.record.id,"auditoriasanexos")          
   }
   
   async onRemoveFile(datos:any){
-    if(this.record.id_archivos==datos.id){this.record.id_archivos=0;}
-  }
-
-  async setRecordFile(){
-    {
-
-      let respFile=await this.archivosSvc.setRecord(this.recordFile,this.actionForm);
-        this.record.id_archivos=respFile.id;
-        this.recordFile.id=respFile.id;
-      
-      //registrar el anexo
-      let respUpdateAnexo=await this.auditoriasanexosService.setRecord(this.record, this.actionForm);
-      if (respUpdateAnexo.hasOwnProperty('error')) {
-        this.validSummary.generateErrorMessagesFromServer(respUpdateAnexo.message);
-      }
-      else if (respUpdateAnexo.message == "success") {
-        this.record.id=respUpdateAnexo.id;
-        if (this.actionForm.toUpperCase() == "NUEVO") this.actionForm = "editar";
-
-        //actualizar la referencia en el archivo
-        this.recordFile.id_tabla=this.record.id;
-        await this.archivosSvc.setRecordReferencia(this.recordFile,this.actionForm)
-        this.successModal.show();
-        setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
-      }
-    }
+    //if(this.record.id_archivos==datos.id){this.record.id_archivos=0;}
   }
 
   // open modal
@@ -188,16 +134,16 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
     this.actionForm = accion;
     this.botonAccion = actionsButtonSave[accion];
     this.tituloForm = "Anexos - " + titulosModal[accion] + " registro";
-    this.formUploadanexo.resetFile();
+    
     if (idItem == "0") {
       this.record = this.newRecord(idPersonal);
-      this.formUploadanexo.showFile();
-      this.listUpload.showFiles(0);
+      //inicializar
+      this.tablaUploadAnexos.showFiles(0,"auditoriasanexos");
     } else {
       //obtener el registro
       this.record=await this.auditoriasanexosService.getRecord(idItem)
-      if((this.record.id_archivos??0)>0){this.formUploadanexo.hideFile();this.listUpload.showFiles(this.record.id_archivos);}
-      else{this.formUploadanexo.showFile();this.listUpload.showFiles(0);}
+      //inicializar
+      this.tablaUploadAnexos.showFiles(this.record.id,"auditoriasanexos")
     }
 
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear
@@ -212,11 +158,14 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  //muestra el archivo
-  getFile(ruta){
-    this.uploadFileSvc.getFile(ruta);
+  //Sub formulario
+  openModal(id: string, accion: string, idItem: number, idParent: number) {
+    this.uploadFisicoFileSvc.open(id, accion, idItem, idParent);
   }
 
+  closeModal(id: string) {
+    this.uploadFisicoFileSvc.close(id);
+  }
   // log contenido de objeto en adminulario
   get diagnosticValidate() { return JSON.stringify(this.record); }
 

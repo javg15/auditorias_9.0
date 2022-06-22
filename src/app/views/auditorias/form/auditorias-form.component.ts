@@ -56,6 +56,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   dtTrigger: Subject<DataTableDirective> = new Subject();
 
   Members: any[];
+  MembersAll: any[];
   ColumnNames: string[];
 
   private dataTablesParameters = {
@@ -124,7 +125,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     };
   }
   ngOnInit(): void {
-
+    const that=this;
     this.record = this.newRecord();
 
     let modal = this;
@@ -148,7 +149,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       //processing: true,
       ordering: false,
       destroy: true,
-      searching: false,
+      searching: true,
       info: false,
       language: {
         emptyTable: '',
@@ -176,6 +177,10 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.auditoriasService.remove(this.id); //idModal
     this.elementModal.remove();
+  }
+
+  ngAfterViewInit(): void {
+
   }
 
   async submitAction(form) {
@@ -335,13 +340,32 @@ async setRecordFile(){
 
     const resp=await this.auditoriasdetalleService.getAdmin(this.dataTablesParameters)
 
-      this.ColumnNames = resp.columnNames;
-      this.Members = resp.data;
-      this.NumberOfMembers = resp.data.length;
-      $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
-      //$('#tblAuditoriasdetalle').dataTable({searching: false, paging: false, info: false});
-      if (this.NumberOfMembers > 0) {
-        $('.dataTables_empty').css('display', 'none');
-      }
+    this.ColumnNames = resp.columnNames;
+    this.MembersAll = this.Members = resp.data;
+    this.NumberOfMembers = resp.data.length;
+    $('.dataTables_length>label>select, .dataTables_filter>label>input').addClass('form-control-sm');
+    //$('#tblAuditoriasdetalle').dataTable({searching: false, paging: false, info: false});
+    if (this.NumberOfMembers > 0) {
+      $('.dataTables_empty').css('display', 'none');
+    }
+
+    //Cuadro de busqueda
+    $('.dataTables_filter input').attr('type', 'text');//para quitar el icono de limpiar
+
+    let that = this;
+    //getting the value of search box
+    $('.dataTables_filter input').unbind().on('keyup change', function () {
+      var value = $(this).val();
+      if (value.length>=3) {
+        that.Members = that.MembersAll.filter(a=>a.Nombre.toUpperCase().indexOf(this['value'].toUpperCase())>=0
+          || a.Oficio.indexOf(this['value'])>=0
+          );
+      } else {     
+          //optional, reset the search if the phrase 
+          //is less then 3 characters long
+          that.Members = that.MembersAll
+      }        
+      that.dtTrigger.next();
+    });
   }
 }

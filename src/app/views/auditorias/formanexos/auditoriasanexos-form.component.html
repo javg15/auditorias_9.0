@@ -29,14 +29,21 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div *ngIf="actionForm!=='nuevo'">
+                        <nav class="header-admin navbar navbar-expand-lg ">
+                            <div class="collapse navbar-collapse">
+                                <ul class="navbar-nav mr-auto"></ul>
+                                <form class="form-inline my-2 my-lg-0">
+                                    <button class="btn btn-success my-2 my-sm-0" (click)="openModal('modalUploadAnexos', 'nuevo', 0, record.id)">Agregar archivo</button>
+                                </form>
+                            </div>
+                        </nav>
+                    </div>
+                    <div class="row" *ngIf="actionForm!=='nuevo'">
                         <div class="form-group col-sm-8">
-                            <form-uploadFisico #id_archivos_anexos (onLoaded)="onLoadedFile($event)" [ruta]=""></form-uploadFisico>
-                            <br/>
-                            <list-uploadFisico></list-uploadFisico>
+                            <table-uploadFisico #tablaArchivosAnexos name="tablaArchivosAnexos" (onRemoved)="onRemovedFile($event)"></table-uploadFisico>
                         </div>
                     </div>
-
                     <div class="row">
                         &nbsp;
                     </div>
@@ -53,6 +60,8 @@
         </div>
     </div>
 </div>
+<app-modalupload-form id="modalUploadAnexos" [ruta]="ruta" [tabla]="tabla" [selectedFiles]="" (onLoaded)="onLoadedFile($event)">
+</app-modalupload-form>
 
 <div bsModal #successModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-success" role="document">

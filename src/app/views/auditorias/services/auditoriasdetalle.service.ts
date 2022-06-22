@@ -67,7 +67,10 @@ export class AuditoriasdetalleService {
               "&modo=" + req.opcionesAdicionales.modo + "&id_usuario=0" +
               "&inicio=" + (req.start!==null && req.start!==undefined ? req.start : 0) + "&largo=" + (req.length!==null && req.length!==undefined ? req.length : 0) +
               "&fkey=" + req.opcionesAdicionales.fkey +
-              "&fkeyvalue=" + req.opcionesAdicionales.fkeyvalue,this.conn)
+              "&fkeyvalue=" + req.opcionesAdicionales.fkeyvalue +
+              "&ordencampo=punto" + 
+              "&ordensentido=ASC"
+              ,this.conn)
           
       }
       
@@ -151,7 +154,7 @@ export class AuditoriasdetalleService {
               return value;
           },
         },
-        fechalimite: { type: "string", 
+        /*fechalimite: { type: "string", 
             custom(value, errors) {
               let dateIni = new Date(value)
               let dateFin = new Date()
@@ -161,7 +164,7 @@ export class AuditoriasdetalleService {
               return value;
           },
         },
-        oficio: { type: "string", empty: false },
+        oficio: { type: "string", empty: false },*/
         
     };
 
