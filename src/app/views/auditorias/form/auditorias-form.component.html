@@ -1,5 +1,5 @@
 <div bsModal #basicModal="bs-modal" [config]="{ backdrop: 'static', keyboard: false}" class="modal fade right" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-full-height modal-right" role="document">
+    <div class="modal-dialog modal-lg modal-full-height modal-right" role="document" style="background: rgb(140, 255, 0); top: 20px;">
         <div class="modal-content modal-form">
             <div class="modal-header">
                 <h4 class="modal-title w-100" id="myModalLabel">{{ tituloForm }}</h4>
@@ -194,6 +194,7 @@
                 <p>Acción realizada satisfactoriamente</p>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-primary" (click)="continuarEditando()">Continuar editando</button>
                 <button type="button" class="btn btn-secondary" (click)="successModal.hide()">Cerrar</button>
             </div>
         </div>

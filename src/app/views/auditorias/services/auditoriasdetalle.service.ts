@@ -200,7 +200,7 @@ export class AuditoriasdetalleService {
 
     if (!auditoriadetalle) {
         delete dataPack.id;
-        
+        dataPack.created_at=moment(new Date()).format("YYYY-MM-DD");
         try{
           const self=await rep.insert(dataPack)
         

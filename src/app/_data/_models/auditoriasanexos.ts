@@ -18,4 +18,6 @@ export class Auditoriasanexos {
     state: string;
     @Column()
     orden: number;
+    @Column()
+    created_at: string;
 }

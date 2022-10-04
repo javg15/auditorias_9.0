@@ -17,17 +17,17 @@
                                         <!--<td><img src="assets/{{ member[col] }}" width="50" /></td>-->
                                         <td>
                                             <div *ngFor="let boton of member[col].split(',')" style="display: contents;">
-                                                <button *ngIf="boton=='ver'" class="btn btn-brand btn-sm mr-1 btn-instagram" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','ver',member.ID)">
+                                                <button *ngIf="boton=='ver'" class="btn btn-brand btn-sm mr-1 btn-instagram" title="ver" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','ver',member.ID)">
                                               <i class="fa fa-search"></i>
                                           </button>
-                                                <button *ngIf="boton=='editar'" class="btn btn-brand btn-sm mr-1 btn-spotify" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','editar',member.ID)">
+                                                <button *ngIf="boton=='editar'" class="btn btn-brand btn-sm mr-1 btn-spotify" title="editar" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','editar',member.ID)">
                                               <i class="fa fa-edit"></i>
                                           </button>
-                                                <button *ngIf="boton=='eliminar'" class="btn btn-brand btn-sm mr-1 btn-reddit" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','eliminar',member.ID)">
+                                                <button *ngIf="boton=='eliminar'" class="btn btn-brand btn-sm mr-1 btn-reddit" title="eliminar" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','eliminar',member.ID)">
                                               <i class="fa fa-trash"></i>
                                           </button>
-                                                <button *ngIf="boton=='reporte'" class="btn btn-brand btn-sm mr-1 btn-instagram" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-2','reporte',member.ID)">
-                                            <i class="fa fa-search"></i>
+                                                <button *ngIf="boton=='reporte'" class="btn btn-brand btn-sm mr-1 btn-xing" title="reporte" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-2','reporte',member.ID)">
+                                            <i class="fa fa-file"></i>
                                         </button>
                                             </div>
                                         </td>

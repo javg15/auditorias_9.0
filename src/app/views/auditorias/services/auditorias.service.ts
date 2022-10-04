@@ -233,10 +233,10 @@ export class AuditoriasService {
 
     if (!auditoria) {
         delete dataPack.id;
-        
+        dataPack.created_at=moment(new Date()).format("YYYY-MM-DD");
         try{
           const self=await rep.insert(dataPack)
-          console.log("insertauditorias,self.id=>", Number(self.identifiers[0].id))
+          
                 // here self is your instance, but updated
           return { message: "success", id: Number(self.identifiers[0].id) };
         }catch(err){

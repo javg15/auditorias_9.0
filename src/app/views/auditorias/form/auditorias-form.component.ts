@@ -82,6 +82,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
 
   actionForm: string; //acción que se ejecuta (nuevo, edición,etc)
   tituloForm: string;
+  successModalTimeOut: null | ReturnType<typeof setTimeout> = null;
 
   private elementModal: any;
   @ViewChild('basicModal') basicModal: ModalDirective;
@@ -121,7 +122,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       id: 0, id_catentidades: 0, id_catservidores: 0, nombre: '', numerooficio: '', id_archivos_numerooficio:0,
       id_catejercicios: '', fecha: '', periodoini: '', periodofin: '', id_cattiposauditoria: 0,
       marcolegal: '', id_catresponsables:0,
-      rubros: '',    numeroauditoria: '',  objetivo: '', state:'',
+      rubros: '',    numeroauditoria: '',  objetivo: '', state:'', created_at: ''
     };
   }
   ngOnInit(): void {
@@ -220,8 +221,9 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       else if(resp.message=="success"){
         if(this.actionForm.toUpperCase()=="NUEVO") this.actionForm="editar";
         this.record.id=resp.id;
+
         this.successModal.show();
-        setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
+        this.successModalTimeOut=setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
       }
     }
   }
@@ -367,5 +369,12 @@ async setRecordFile(){
       }        
       that.dtTrigger.next();
     });
+  }
+
+  continuarEditando(){
+    if(this.successModalTimeOut) {
+      clearTimeout(this.successModalTimeOut);
+      this.successModal.hide();
+    }
   }
 }

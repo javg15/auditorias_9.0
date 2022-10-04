@@ -23,7 +23,16 @@ export class Auditoriasdetalle {
     id_archivos: number;
 
     @Column()
+    original: number;
+    @Column()
+    simple: number;
+    @Column()
+    copia: number;
+
+    @Column()
     state: string;
     @Column()
     orden: number;
+    @Column()
+    created_at: string;
 }

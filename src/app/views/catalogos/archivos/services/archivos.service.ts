@@ -140,6 +140,7 @@ export class ArchivosService {
     for(let i=0;i<datos.length;i++){
       datos[i]["Acciones"]=this.qa.getAcciones(0,"todo",datos[i]["Acciones"]);
     }
+    
     return datos;
   }
 

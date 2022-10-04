@@ -37,4 +37,6 @@ export class Auditorias {
 
     @Column()
     state: string;
+    @Column()
+    created_at: string;
 }

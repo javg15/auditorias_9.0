@@ -71,6 +71,8 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
 
   actionForm: string; //acción que se ejecuta (nuevo, edición,etc)
   tituloForm: string;
+  successModalTimeOut: null | ReturnType<typeof setTimeout> = null;
+
   ruta:string="detalle";//variables para modalUpload
   tabla:string="auditoriasdetalle";//variables para modalUpload
   private elementModal: any;
@@ -78,7 +80,7 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
   @ViewChild('successModal') public successModal: ModalDirective;
   @ViewChild(ValidationSummaryComponent) validSummary: ValidationSummaryComponent;
   @ViewChild(ModaluploadFormComponent) modalUpload: ModaluploadFormComponent;
-  @ViewChild('tablaArchivos') tablaUpload: TablaUploadFisicoComponent;
+  @ViewChild('tablaArchivos') tablaArchivos: TablaUploadFisicoComponent;
   
   record: Auditoriasdetalle;
   recordFile:Archivos;
@@ -101,7 +103,8 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
   newRecord(idParent:number): Auditoriasdetalle {
     return {
       id: 0,  id_auditorias:idParent, punto:'', observacion:'', fechalimite:"",fecharecepcion:"",
-      oficio:'', id_archivos:0, state: '',orden:0
+      original:0,simple:0,copia:0,
+      oficio:'', id_archivos:0, state: '',orden:0, created_at: ''
     };
   }
   ngOnInit(): void {
@@ -177,14 +180,14 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
         this.record.id=resp.id;
         
         this.successModal.show();
-        setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
+        this.successModalTimeOut=setTimeout(()=>{ this.successModal.hide(); this.close();}, 2000)
       }
     }
   }
 
   //Archivo cargado. Eventos disparado desde el componente
   async onLoadedFile(datos:any){
-    this.tablaUpload.showFiles(this.record.id,"auditoriasdetalle")
+    this.tablaArchivos.showFiles(this.record.id,"auditoriasdetalle")
   }
 
   async onRemovedFile(datos:any){
@@ -203,12 +206,12 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
     if(idItem=="0"){
       this.record =this.newRecord(idParent);
       //inicializar
-      this.tablaUpload.showFiles(0,"auditoriasdetalle");
+      this.tablaArchivos.showFiles(0,"auditoriasdetalle");
       
     } else {
       this.record = await this.auditoriasdetalleService.getRecord(idItem);
       //inicializar
-      this.tablaUpload.showFiles(this.record.id,"auditoriasdetalle")
+      this.tablaArchivos.showFiles(this.record.id,"auditoriasdetalle")
     }
     this.reDraw(null);
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear
@@ -280,4 +283,10 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  continuarEditando(){
+    if(this.successModalTimeOut) {
+      clearTimeout(this.successModalTimeOut);
+      this.successModal.hide();
+    }
+  }
 }

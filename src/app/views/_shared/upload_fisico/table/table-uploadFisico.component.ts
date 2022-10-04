@@ -30,6 +30,7 @@ export class TablaUploadFisicoComponent implements OnInit {
       this.id_parent=id_parent;
       this.tabla=tabla;
       this.fileUploads = await this.uploadFisicoFileSvc.listTablaFile(id_parent,tabla);
+      console.log("this.fileUploads=>",this.fileUploads)
     }
     else
       this.fileUploads=null;

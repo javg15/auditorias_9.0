@@ -100,6 +100,11 @@ export class SearchAdminComponent implements OnInit {
             + 'FROM catresponsables as m').then((datos)=>{
               _respuesta=(datos.length>0 ? datos[0].data : '')
             });
+      else if (_campo.toLowerCase()=='cej.ejercicio')
+          await this.conn.query('SELECT group_concat(\'{"value":"\' || m.ejercicio || \'","label":"\' || m.ejercicio || \'"}\',\',\') AS data '
+            + 'FROM catejercicios as m').then((datos)=>{
+              _respuesta=(datos.length>0 ? datos[0].data : '')
+            });
     }
     else if (_modulo.toLowerCase()=='catentidades'){
       if (_campo.toLowerCase()=='id_catresponsables')

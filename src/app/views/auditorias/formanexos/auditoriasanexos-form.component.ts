@@ -68,7 +68,8 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
 
   newRecord(idParent: number): Auditoriasanexos {
     return {
-      id: 0, id_auditoriasdetalle: idParent, puntoanexo: '', nombre:'',id_archivos: 0,state:'',orden:0
+      id: 0, id_auditoriasdetalle: idParent, puntoanexo: '', nombre:'',id_archivos: 0,
+      state:'',orden:0,created_at: ''
     };
   }
   ngOnInit(): void {

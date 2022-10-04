@@ -1,9 +1,9 @@
 .modal-header {
-    background: #eee;
+    background: #fff;
 }
 
 .modal-body {
-    background: #ddd;
+    background: #fff;
 }
 
 .tablaInfo,
@@ -21,7 +21,7 @@
 
 .tablaInfo td,
 .tablaInfoSub td {
-    background-color: lightgray;
+    background-color: rgb(244, 244, 244);
     color: #333;
     padding: 2px;
 }

@@ -180,6 +180,7 @@ export class AuditoriasanexosService {
 
     if (!auditoriaanexos) {
         delete dataPack.id;
+        dataPack.created_at=moment(new Date()).format("YYYY-MM-DD");
         
         try{
           const self=await rep.insert(dataPack)
