@@ -42,7 +42,8 @@ export const navItems = [
     ]
   },
   {
-    divider: true
+    name: 'Portabilidad',
+    url: '/portabilidad',
+    icon: 'icon-puzzle',
   },
-  
 ];

@@ -11,6 +11,8 @@ import { Catentidades} from '../../../_data/_models/catentidades';
 import { Catejercicios} from '../../../_data/_models/catejercicios';
 import { Catservidores} from '../../../_data/_models/catservidores';
 import { Catresponsables} from '../../../_data/_models/catresponsables';
+import { Catestatus} from '../../../_data/_models/catestatus';
+
 
 import { AuditoriasService } from '../services/auditorias.service';
 import { AuditoriasdetalleService } from '../services/auditoriasdetalle.service';
@@ -19,6 +21,7 @@ import { CatservidoresService } from '../../catalogos/catservidores/services/cat
 import { CatentidadesService } from '../../catalogos/catentidades/services/catentidades.service';
 import { CatejerciciosService } from '../../catalogos/catejercicios/services/catejercicios.service';
 import { CatresponsablesService } from '../../catalogos/catresponsables/services/catresponsables.service';
+import { CatestatusService } from '../../catalogos/catestatus/services/catestatus.service';
 
 import { ValidationSummaryComponent } from '../../_shared/validation/validation-summary.component';
 import { environment,actionsButtonSave, titulosModal } from '../../../../../src/environments/environment';
@@ -98,6 +101,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   catentidadesCat: Catentidades[];
   catejerciciosCat: Catejercicios[];
   catresponsablesCat: Catresponsables[]; 
+  catestatusCat: Catestatus[]; 
   record_id_catejercicios:number[];
   //tipofileUpload:string;//para conocer que fileupload se esta guardando
   
@@ -110,6 +114,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     private catentidadesSvc: CatentidadesService,
     private catejerciciosSvc: CatejerciciosService,
     private catresponsablesSvc: CatresponsablesService,
+    private catestatusSvc: CatestatusService,
     private route: ActivatedRoute,
     private uploadFileSvc:UploadFisicoFileService,
     private archivosSvc:ArchivosService,
@@ -121,7 +126,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     return {
       id: 0, id_catentidades: 0, id_catservidores: 0, nombre: '', numerooficio: '', id_archivos_numerooficio:0,
       id_catejercicios: '', fecha: '', periodoini: '', periodofin: '', id_cattiposauditoria: 0,
-      marcolegal: '', id_catresponsables:0,
+      marcolegal: '', id_catresponsables:0, id_catestatus:0,
       rubros: '',    numeroauditoria: '',  objetivo: '', state:'', created_at: ''
     };
   }
@@ -287,7 +292,8 @@ async setRecordFile(){
     this.catentidadesCat= await this.catentidadesSvc.getCatalogo();
     this.catejerciciosCat=await this.catejerciciosSvc.getCatalogo();
     this.catresponsablesCat=await this.catresponsablesSvc.getCatalogo();
-
+    this.catestatusCat=await this.catestatusSvc.getCatalogo();
+    
     this.formUploadoficio.resetFile();
 
     if (idItem == "0") {

@@ -60,6 +60,10 @@ const routes: Routes = [
         path: 'catalogos',
         loadChildren: () => import('./views/catalogos/catalogos.module').then(m => m.CatalogosModule)
       },
+      {
+        path: 'portabilidad',
+        loadChildren: () => import('./views/portabilidad/portabilidad.module').then(m => m.PortabilidadModule)
+      },
     ]
   },
   { path: '**', component: P404Component }

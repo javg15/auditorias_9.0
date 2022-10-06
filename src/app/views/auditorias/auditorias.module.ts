@@ -14,6 +14,7 @@ import { AuditoriasanexosFormComponent } from './formanexos/auditoriasanexos-for
 import { AuditoriasreporteFormComponent } from './formreporte/auditoriasreporte-form.component';
 import { DataTablesModule } from 'angular-datatables';
 import { Select2Module } from 'ng-select2-component';
+import {NgxPrintModule} from 'ngx-print';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { Select2Module } from 'ng-select2-component';
     DataTablesModule,
     ModalModule.forRoot(),
     SharedModule,
-    Select2Module
+    Select2Module,
+    NgxPrintModule
   ],
   declarations: [
     AuditoriasAdminComponent,

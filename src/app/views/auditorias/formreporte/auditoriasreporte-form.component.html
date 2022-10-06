@@ -1,6 +1,6 @@
 <div bsModal #basicModalReporte="bs-modal" [config]="{ backdrop: 'static', keyboard: false}" class="modal fade right" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-full-height modal-right" role="document">
-        <div class="modal-content modal-form">
+        <div class="modal-content modal-form modal-report">
             <div class="modal-header">
                 <h4 class="modal-title w-100" id="myModalLabel">{{ tituloForm }}</h4>
 
@@ -9,126 +9,146 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form #dataForm="ngForm" (ngSubmit)="MakePDF()">
-                    <table class="tablaInfo" id="pdfTable" #pdfTable>
-                        <tr>
-                            <td>Organo fiscalizador</td>
-                            <td>{{record.desc_catentidades}}</td>
-                        </tr>
-                        <tr>
-                            <td>Nombre de la auditoría</td>
-                            <td>{{record.nombre}}</td>
-                        </tr>
+                <form #dataForm="ngForm" (ngSubmit)="MakePDF()" id="ngForm">
+                    <div>
+                        <div class="table tablaInfo" id="pdfTable" #pdfTable>
+                            <div class="tr">
+                                <div class="td colspan5">
+                                        <div class="table titulo" style="width: inherit;">
+                                            <div class="tr">
+                                                <div class="td"><img  src="assets/img/brand/encabezadosinmargen.png" width="50%"></div>
+                                            </div>
+                                            <div class="tr">
+                                                <div class="td"><span>COLEGIO DE BACHILLERES DEL ESTADO DE VERACRUZ</span></div>
+                                            </div>
+                                            <div class="tr">
+                                                <div class="td"><span>ORGANISMO PÚBLICO DESCENTRALIZADO</span></div>
+                                            </div>
+                                            <div class="tr">
+                                                <div class="td"><span>DIRECCIÓN ADMINISTRATIVA</span></div>
+                                            </div>
+                                        </div>
+                                    
+                                </div>
+                            
+                                <div class="tr">
+                                    <div class="td">Organo fiscalizador</div>
+                                    <div class="td">{{record.desc_catentidades}}</div>
+                                
+                                    <div class="td">Nombre de la auditoría</div>
+                                    <div class="td">{{record.nombre}}</div>
+                                </div>
 
-                        <tr>
-                            <td>Oficio de apertura de la auditoría</td>
-                            <td>{{record.numerooficio}}</td>
-                        </tr>
+                                <div class="tr">
+                                    <div class="td">Oficio de apertura de la auditoría</div>
+                                    <div class="td">{{record.numerooficio}}</div>
+                            
+                                    <div class="td">Ejercicios auditados</div>
+                                    <div class="td">{{record.id_catejercicios}}</div>
+                                </div>
 
-                        <tr>
-                            <td>Ejercicios auditados</td>
-                            <td>{{record.id_catejercicios}}</td>
-                        </tr>
-
-                        <tr>
-                            <td>Fecha de inicio de la auditoría</td>
-                            <td>{{record.fecha}}</td>
-                        </tr>
-                        <tr>
-                            <td>Fecha de inicio del periodo que se informa</td>
-                            <td>{{record.periodoini}}</td>
-                        </tr>
-                        <tr>
-                            <td>Fecha final del periodo que se informa</td>
-                            <td>{{record.periodofin}}</td>
-                        </tr>
-                        <tr>
-                            <td>Tipo de auditoría</td>
-                            <td>{{record.desc_cattiposauditoria}}</td>
-                        </tr>
-                        <tr>
-                            <td>Servidor público responsable de la información</td>
-                            <td>{{record.desc_catservidores}}</td>
-                        </tr>
-                        <tr>
-                            <td>Auditor responsable</td>
-                            <td>{{record.desc_catresponsables}}</td>
-                        </tr>
-                        <tr>
-                            <td>Rubros sujetos a revisión</td>
-                            <td>{{record.rubros}}</td>
-                        </tr>
-                        <tr>
-                            <td>Numero de auditoría</td>
-                            <td>{{record.numeroauditoria}}</td>
-                        </tr>
-                        <tr>
-                            <td>Objetivo de la auditoría</td>
-                            <td>{{record.objetivo}}</td>
-                        </tr>
-                        <tr>
-                            <td>Marco legal</td>
-                            <td>{{record.marcolegal}}</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <table class="tablaInfoSub">
-                                    <thead>
-                                        <tr>
-                                            <th>Punto</th>
-                                            <th>Observación</th>
-                                            <th>Fecha de recepción</th>
-                                            <th>Fecha límite</th>
-                                            <th>Oficio</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <ng-container *ngFor="let col of record_detalles;index as i">
-                                            <tr>
-                                                <td> {{ col.punto }} </td>
-                                                <td> {{ col.observacion }} </td>
-                                                <td> {{ col.fecharecepcion }} </td>
-                                                <td> {{ col.fechalimite }} </td>
-                                                <td> {{ col.oficio }} </td>
-                                            </tr>
-                                            <tr *ngIf="findItem(col.id).length>0">
-                                                <td colspan="5">
-                                                    <table class="tablaInfoSub">
-                                                        <thead>
-                                                            <tr>
-                                                                <th></th>
-                                                                <th>Inciso</th>
-                                                                <th>Nombre</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <ng-container *ngFor="let col2 of findItem(col.id);">
-                                                                <tr>
-                                                                    <td> </td>
-                                                                    <td> {{ col2.puntoanexo }} </td>
-                                                                    <td> {{ col2.nombre }} </td>
-                                                                </tr>
-                                                            </ng-container>
-                                                        </tbody>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </ng-container>
-                                    </tbody>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
+                                <div class="tr">
+                                    <div class="td">Fecha de inicio de la auditoría</div>
+                                    <div class="td">{{record.fecha}}</div>
+                                
+                                    <div class="td">Fecha de inicio del periodo que se informa</div>
+                                    <div class="td">{{record.periodoini}}</div>
+                                </div>
+                                <div class="tr">
+                                    <div class="td">Fecha final del periodo que se informa</div>
+                                    <div class="td">{{record.periodofin}}</div>
+                                
+                                    <div class="td">Tipo de auditoría</div>
+                                    <div class="td">{{record.desc_cattiposauditoria}}</div>
+                                </div>
+                                <div class="tr">
+                                    <div class="td">Servidor público responsable de la información</div>
+                                    <div class="td">{{record.desc_catservidores}}</div>
+                                
+                                    <div class="td">Auditor responsable</div>
+                                    <div class="td">{{record.desc_catresponsables}}</div>
+                                </div>
+                                <div class="tr">
+                                    <div class="td">Rubros sujetos a revisión</div>
+                                    <div class="td">{{record.rubros}}</div>
+                                
+                                    <div class="td">Numero de auditoría</div>
+                                    <div class="td">{{record.numeroauditoria}}</div>
+                                </div>
+                                <div class="tr">
+                                    <div class="td">Objetivo de la auditoría</div>
+                                    <div class="td">{{record.objetivo}}</div>
+                                
+                                    <div class="td">Marco legal</div>
+                                    <div class="td">{{record.marcolegal}}</div>
+                                </div>
+                            
+                                
+                                <div class="table tablaInfoSub">
+                                    <div class="tr">
+                                        <div class="th" >Punto</div>
+                                        <div class="th" >Observación</div>
+                                        <div class="th" >Fecha de recepción</div>
+                                        <div class="th" >Fecha límite</div>
+                                        <div class="th" >Oficio</div>
+                                    </div>
+                                    <ng-container *ngFor="let col of record_detalles;index as i">
+                                        <div class="tr">
+                                            <div class="td"> {{ col.punto }} </div>
+                                            <div class="td"> {{ col.observacion }} </div>
+                                            <div class="td"> {{ col.fecharecepcion }} </div>
+                                            <div class="td"> {{ col.fechalimite }} </div>
+                                            <div class="td"> {{ col.oficio }} </div>
+                                        </div>
+                                        <div *ngIf="findItem(col.id).length>0">
+                                            
+                                                <div class="table tablaInfoSubSub">
+                                                    <div class="tr">
+                                                        <div class="th" >Inciso</div>
+                                                        <div class="th" >Nombre</div>
+                                                    </div>
+                                                    <ng-container *ngFor="let col2 of findItem(col.id);">
+                                                        <div class="tr">
+                                                            <div class="td"> {{ col2.puntoanexo }} </div>
+                                                            <div class="td"> {{ col2.nombre }} </div>
+                                                        </div>
+                                                    </ng-container>
+                                                </div>
+                                            
+                                        </div>
+                                    </ng-container>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
 
                     <div class="row">
                         &nbsp;
                     </div>
+                    <div class="row">
+                        <div class="form-group col-sm-2">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-secondary" (click)="print()">Imprimir</button> 
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-8">
+                            <div class="form-group">
+                                <button *ngIf="actionForm!=='ver'" type="submit" [disabled]='userFormIsPending | async' class="btn btn-primary">
+                                    <div *ngIf="userFormIsPending | async; else elseBlock"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Procesando...</span></div>
+                                    <ng-template #elseBlock>Exportar a PDF</ng-template>
+                                  </button>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-secondary" (click)="this.close()"> 
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     <!-- [disabled]="!dataForm.form.valid" -->
-                    <button *ngIf="actionForm!=='ver'" type="submit" [disabled]='userFormIsPending | async' class="btn btn-primary">
-                        <div *ngIf="userFormIsPending | async; else elseBlock"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Procesando...</span></div>
-                        <ng-template #elseBlock>Exportar a PDF</ng-template>
-                      </button>
-                    <!--<button type="button" class="btn btn-secondary" (click)="print()">print</button>-->
                 </form>
             </div>
             <!-- <h2>Diagnostic Info</h2>

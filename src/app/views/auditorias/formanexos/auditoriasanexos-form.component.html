@@ -25,7 +25,7 @@
                             <div class="form-group">
                                 <label for="nombre">Nombre</label>
                                 <textarea [(ngModel)]="record.nombre" rows="5" cols="50" class="form-control" name="Nombre">
-                                        </textarea>
+                                </textarea>
                             </div>
                         </div>
                     </div>
@@ -48,11 +48,25 @@
                         &nbsp;
                     </div>
                     <app-validation-summary [form]="dataFormAnexos"></app-validation-summary>
-                    <!-- [disabled]="!dataForm.form.valid" -->
-                    <button *ngIf="actionForm!=='ver'" type="submit" [disabled]='userFormIsPending | async' class="btn btn-primary">
-                      <div *ngIf="userFormIsPending | async; else elseBlock"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Procesando...</span></div>
-                      <ng-template #elseBlock>{{ botonAccion }}</ng-template>
-                    </button>
+                    
+                    <div class="row">
+                        <div class="form-group col-sm-11">
+                            <div class="form-group">
+                                <!-- [disabled]="!dataForm.form.valid" -->
+                                <button *ngIf="actionForm!=='ver'" type="submit" [disabled]='userFormIsPending | async' class="btn btn-primary">
+                                    <div *ngIf="userFormIsPending | async; else elseBlock"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Procesando...</span></div>
+                                    <ng-template #elseBlock>{{ botonAccion }}</ng-template>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-1">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-secondary" (click)="this.close()"> 
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <!-- <h2>Diagnostic Info</h2>

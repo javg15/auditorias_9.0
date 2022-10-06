@@ -6,27 +6,106 @@
     background: #fff;
 }
 
+.table {
+    display: table;         
+    width: auto;         
+    /*border: 1px solid #666666;         */
+    border-spacing: 5px; /* cellspacing:poor IE support for  this */
+  }
+  .tr {
+    display: table-row;
+    width: auto;
+    clear: both;
+  }
+  .td,.th {
+    float: left; /* fix for  buggy browsers */
+    display: table-column;         
+        
+  }
+
+.tablaInfo{
+    margin-top: 0px;
+}
 .tablaInfo,
-.tablaInfoSub {
+.tablaInfoSub,
+.tablaInfoSubSub {
     border-spacing: 10px;
     border-collapse: separate;
+    font-size: 10px;
 }
 
-.tablaInfo tr,
-.tablaInfo td,
-.tablaInfoSub tr,
-.tablaInfoSub td {
+.tablaInfo .titulo {
+    border-spacing: 0px;
+    border-collapse: separate;
+}
+.tablaInfo .titulo .td {
+    text-align: center;
+    width: inherit;
+}
+
+.tablaInfo,
+.tablaInfoSub,
+.tablaInfo .tr,
+.tablaInfo .td,
+.tablaInfoSub .tr,
+.tablaInfoSub .td,
+.tablaInfoSubSub .tr,
+.tablaInfoSubSub .td {
     border: none;
+    background-color: rgb(255, 255, 255);
+    color: #000;
 }
 
-.tablaInfo td,
-.tablaInfoSub td {
-    background-color: rgb(244, 244, 244);
-    color: #333;
+.tablaInfo .td,
+.tablaInfoSub .td {
+   
     padding: 2px;
 }
 
-.tablaInfo tr td:first-child,
-.tablaInfoSub tr td:first-child {
+.tablaInfo .tr .td:nth-child(odd) {
     font-weight: bold;
+    width:15%;
+}
+
+.tablaInfo .tr .td:nth-child(even){
+    width:35%;
+}
+
+.tablaInfoSub .tr .th:nth-child(1),.tablaInfoSub .tr .th:nth-child(2),
+.tablaInfoSub .tr .th:nth-child(3),.tablaInfoSub .tr .th:nth-child(4),
+.tablaInfoSub .tr .th:nth-child(5)
+{
+    font-weight: bold !important;
+}
+.tablaInfoSub .tr .td:nth-child(1),.tablaInfoSub .td .th:nth-child(2),
+.tablaInfoSub .tr .td:nth-child(3),.tablaInfoSub .td .th:nth-child(4),
+.tablaInfoSub .tr .td:nth-child(5)
+{
+    font-weight: normal !important;
+}
+
+.tablaInfoSub .tr .td:nth-child(1),.tablaInfoSub .tr .th:nth-child(1){
+    width:10% !important;
+}
+.tablaInfoSub .tr .td:nth-child(2),.tablaInfoSub .tr .th:nth-child(2){
+    width:30% !important;
+}
+
+.tablaInfoSub .tr .td:nth-child(3),.tablaInfoSub .tr .th:nth-child(3),
+.tablaInfoSub .tr .td:nth-child(4),.tablaInfoSub .tr .th:nth-child(4),
+.tablaInfoSub .tr .td:nth-child(5),.tablaInfoSub .tr .th:nth-child(5){
+    width:20% !important;
+}
+
+
+.tablaInfoSubSub .tr .td:nth-child(1),.tablaInfoSubSub .tr .th:nth-child(1) {
+    width:15% !important;
+}
+.tablaInfoSubSub .tr .td:nth-child(2),.tablaInfoSubSub .tr .th:nth-child(2) {
+    width:75% !important;
+}
+
+.td.colspan4,.td.colspan4 .tr,.td.colspan4 .tr .td,.td.colspan4 .tr .th,
+.td.colspan5,.td.colspan5 .tr,.td.colspan5 .tr .td,.td.colspan5 .tr .th{
+    width:100% !important;
 }

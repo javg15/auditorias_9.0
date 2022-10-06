@@ -1,0 +1,59 @@
+<div class="app-body">
+    <main class="d-flex align-items-center">
+        <div class="container">
+            <div class="search-admin card">
+                <div class="card-header">
+                    Portabilidad
+                </div>
+                <div class="card-body" (collapsed)="collapsed($event)" (expanded)="expanded($event)" [collapse]="isCollapsed">
+
+                    <form #dataForm="ngForm" (ngSubmit)="submitAction(dataForm)">
+                        <input type="hidden" name="action" value="{{ actionForm }}">
+                        <div class="row">
+                            <div class="form-group col-sm-8">
+                                <div class="form-group">
+                                    <label>Paso 1. </label>
+                                    <a class="" [routerLink]="" (click)="selectFolder()">Seleccione la carpeta destino</a>
+                                    <label *ngIf="pathTarget!=''">&nbsp;&nbsp;&nbsp;Ruta seleccionada: {{pathTarget}}</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf="pathTarget!=''" class="row">
+                            <div class="form-group col-sm-8">
+                                <div class="form-group">
+                                    <label>Paso 2. </label>
+                                    <a class="" [routerLink]="" (click)="execPortabilidad()">Ejecute la portabilidad</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            &nbsp;
+                        </div>
+                        <app-validation-summary [form]="dataForm"></app-validation-summary>
+                        <!-- [disabled]="!dataForm.form.valid" -->
+                        
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<div bsModal #successModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-success" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">&nbsp;</h5>
+            </div>
+            <div class="modal-body">
+                <p>Acción realizada satisfactoriamente</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="successModal.hide()">Cerrar</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->

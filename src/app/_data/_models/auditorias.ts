@@ -15,6 +15,8 @@ export class Auditorias {
     @Column()
     id_catejercicios: string; //funciona solo para concatenar los ids y mostrarlos en el formulario
     @Column()
+    id_catestatus: number;
+    @Column()
     fecha: string;
     @Column()
     periodoini: string;

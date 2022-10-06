@@ -11,6 +11,7 @@ import {Catresponsables} from './_models/catresponsables';
 import {Catservidores} from './_models/catservidores';
 import {Cattiposauditoria} from './_models/cattiposauditoria';
 import * as path from 'path';
+import { Catestatus } from './_models/catestatus';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,7 @@ export class DatabaseService {
     this.options = {
       type: 'sqlite',
       database: './src/data/sqlite3.db',
-      entities: [Catejercicios,Catentidades,Catresponsables,Catservidores,Cattiposauditoria,Auditorias,Auditoriasdetalle,Auditoriasanexos,Auditoriasejercicios,Archivos],
+      entities: [Catejercicios,Catentidades,Catresponsables,Catservidores,Cattiposauditoria,Auditorias,Auditoriasdetalle,Auditoriasanexos,Auditoriasejercicios,Archivos,Catestatus],
       synchronize: false,
       logging: 'all'
     };

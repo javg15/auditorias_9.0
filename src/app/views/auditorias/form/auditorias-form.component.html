@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="form-group col-sm-3">
+                        <div class="form-group col-sm-2">
                             <div class="form-group">
                                 <label for="numeroauditoria">Numero de auditoría</label>
                                 <input type="text" [(ngModel)]="record.numeroauditoria" class="form-control" name="Numero de auditoría">
@@ -105,13 +105,20 @@
                         <div class="form-group col-sm-4">
                             <div class="form-group">
                                 <label for="objetivo">Objetivo de la auditoría</label>
-                                <input type="text" [(ngModel)]="record.objetivo" class="form-control" name="Objetivo de la auditoría">
+                                <textarea [(ngModel)]="record.objetivo" rows="2" cols="50" class="form-control" name="Objetivo de la auditoría">
+                                </textarea>
                             </div>
                         </div>
-                        <div class="form-group col-sm-4">
+                        <div class="form-group col-sm-3">
                             <div class="form-group">
                                 <label for="marcolegal">Marco legal</label>
                                 <input type="text" [(ngModel)]="record.marcolegal" class="form-control" name="Marco legal">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <div class="form-group">
+                                <label for="id_catestatus">Estatus</label>
+                                <select2 [overlay]="true" [(ngModel)]="record.id_catestatus" [data]="catestatusCat" name="Estatus" resettable> </select2>
                             </div>
                         </div>
                     </div>
@@ -172,10 +179,23 @@
                     </div>
                     <app-validation-summary [form]="dataForm"></app-validation-summary>
                     <!-- [disabled]="!dataForm.form.valid" -->
-                    <button *ngIf="actionForm!=='ver'" type="submit" [disabled]='userFormIsPending | async' class="btn btn-primary">
-                      <div *ngIf="userFormIsPending | async; else elseBlock"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Procesando...</span></div>
-                      <ng-template #elseBlock>{{ botonAccion }}</ng-template>
-                    </button>
+                    <div class="row">
+                        <div class="form-group col-sm-11">
+                            <div class="form-group">
+                                <button *ngIf="actionForm!=='ver'" type="submit" [disabled]='userFormIsPending | async' class="btn btn-primary">
+                                <div *ngIf="userFormIsPending | async; else elseBlock"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Procesando...</span></div>
+                                <ng-template #elseBlock>{{ botonAccion }}</ng-template>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-1">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-secondary" (click)="this.close()"> 
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
             <!-- <h2>Diagnostic Info</h2>
