@@ -1,24 +1,10 @@
 
 import { Injectable } from '@angular/core';
 
-import {DatabaseService} from 'src/app/_data/database.service';
-import {Connection} from 'typeorm';
-import { AdminQry } from 'src/app/_data/queries/admin.qry'; 
-const gral = require('src/app/_data/general.js')
-const mensajesValidacion = require("src/app/_data/config/validate.config");
-import { shell } from 'electron';
-const electron = require('electron');
+const fse = require('fs-extra');
 const fs = require('fs');
-let bdDir = './src/data';
-
-
-let Validator = require('fastest-validator');
-/* create an instance of the validator */
-let dataValidator = new Validator({
-    useNewCustomCheckerFunction: true, // using new version
-    messages: mensajesValidacion
-});
-
+const AdmZip = require("adm-zip");
+const path = require("path");
 
 
 @Injectable({
@@ -26,25 +12,81 @@ let dataValidator = new Validator({
 })
 export class PortabilidadService {
   private modals: any[] = [];
-  private conn:Connection;
   /* En el constructor creamos el objeto http de la clase HttpClient,
   que estará disponible en toda la clase del servicio.
   Se define como public, para que sea accesible desde los componentes necesarios */
-  constructor(private dbSvc: DatabaseService,private qa:AdminQry) { 
+  constructor() { 
     
   }
 
-  execPortabilidad(pathTarget:string): Promise<any> {
-    //buscar si existe el registro
-    let path = bdDir + '/sqlite3.db';
-   
-    fs.copyFile(path, pathTarget + '/sqlite3.db', (err) => {//fileSrc.name
-      if (err){ throw err;}
-      console.log('Archivo copiado a su destino');
-      return true
-    });
-    return null;
+  async execPortabilidad(pathTarget:string,zip:boolean): Promise<any> {
+    if(zip){
+      this.zipDirectory('./src/data/;./uploads/',pathTarget )
+      return Promise.resolve({"error":0,"msg":'Archivos copiados a su destino [' + 
+        pathTarget + '/auditorias.zip'
+        + ']'
+      });
+    }
+    else{
+      //base de datos
+      //si no existe el directorio auditorias en la carpeta seleccionada
+      if (!fs.existsSync(pathTarget + '/auditorias/src/data')){
+        fs.mkdirSync(pathTarget + '/auditorias/src/data', { recursive: true });
+      }
+      
+      try {
+        await fs.copyFileSync('./src/data/sqlite3.db', pathTarget + '/auditorias/src/data/sqlite3.db')
+      } catch (err) {
+        console.log("err=>",err)
+        return {"error":err,"msg":'Error'};
+      }
+
+      //uploads
+      //si no existe el directorio auditorias en la carpeta seleccionada
+      if (!fs.existsSync(pathTarget + '/auditorias/uploads')){
+        fs.mkdirSync(pathTarget + '/auditorias/uploads', { recursive: true });
+      }
+      try {
+        await fse.copySync('./uploads', pathTarget + '/auditorias/uploads', { overwrite: true})
+      } catch (err) {
+        console.log("err=>",err)
+        return {"error":err,"msg":'Error'};
+      }
+      return Promise.resolve({"error":0,"msg":'Archivos copiados a su destino [' + 
+        pathTarget + '/auditorias'
+        + ']'
+      });
+    }
+    
   }
 
-  
+  zipDirectory(sourceDir, outPath) {
+    try {
+      const zip = new AdmZip();
+      fs.chmodSync(outPath, fs.constants.S_IRUSR | fs.constants.S_IWUSR);
+      const outputFile = outPath + '/auditorias.zip' ;
+      const dirs=sourceDir.split(';')
+
+      for(let i=0;i<dirs.length;i++)
+        zip.addLocalFolder(dirs[i],dirs[i]);
+
+      zip.writeZip(outputFile);
+      console.log(`Created ${outputFile} successfully`);
+    } catch (e) {
+      console.log(`Something went wrong. ${e}`);
+    }
+  }
+
+  extractArchive(filepath) {
+    try {
+      const zip = new AdmZip(filepath);
+      //const outputDir = `${path.parse(filepath).name}_extracted`;
+      zip.extractAllTo('./');
+
+      return `Archivo desempaquetado correctamente`;
+    } catch (e) {
+      return `Algo salió mal. ${e}`;
+    }
+  }
+
 }

@@ -27,6 +27,10 @@ export class PortabilidadFormComponent implements OnInit, OnDestroy {
   @ViewChild(ValidationSummaryComponent) validSummary: ValidationSummaryComponent;
 
   pathTarget:string = '';
+  pathSource:string = '';
+  metodoPortabilidad:string='0';
+  msgRespuesta:string='';
+  msgRespuestaExtract:string='';
 
   constructor(private isLoadingService: IsLoadingService,
       private portabilidadService: PortabilidadService, private el: ElementRef,
@@ -60,8 +64,37 @@ export class PortabilidadFormComponent implements OnInit, OnDestroy {
     });
   }
 
+  async selectFile():  Promise<void> {
+    let me=this;
+    dialog.showOpenDialog({
+      filters: [
+        { name: '*.zip', extensions: ['zip'] },
+      ],
+      properties: ['openFile']
+    })
+    .then(function (response) {
+      if (!response.canceled) {
+        // handle fully qualified file name
+        me.pathSource=response.filePaths[0];
+      } else {
+        me.pathSource='';
+      }
+    });
+  }
+
   async execPortabilidad():  Promise<void> {
+    let resCopy=await this.portabilidadService.execPortabilidad(
+        this.pathTarget,
+        (this.metodoPortabilidad=="1"))
+
+    this.msgRespuesta=resCopy.msg;
     
   }
+
+  async execUnzip():  Promise<void> {
+    this.msgRespuestaExtract=await this.portabilidadService.extractArchive(
+        this.pathSource)
+  }
+  
  
 }

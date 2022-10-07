@@ -9,23 +9,62 @@
 
                     <form #dataForm="ngForm" (ngSubmit)="submitAction(dataForm)">
                         <input type="hidden" name="action" value="{{ actionForm }}">
-                        <div class="row">
-                            <div class="form-group col-sm-8">
-                                <div class="form-group">
-                                    <label>Paso 1. </label>
-                                    <a class="" [routerLink]="" (click)="selectFolder()">Seleccione la carpeta destino</a>
-                                    <label *ngIf="pathTarget!=''">&nbsp;&nbsp;&nbsp;Ruta seleccionada: {{pathTarget}}</label>
+                        <tabset>
+                            <tab heading="Enviar">
+                                <div class="row">
+                                    <div class="form-group col-sm-8">
+                                        <div class="form-group">
+                                            <label>Paso 1. </label>
+                                            <a class="" [routerLink]="" (click)="selectFolder()">Seleccione la carpeta destino</a>
+                                            <label *ngIf="pathTarget!=''">&nbsp;&nbsp;&nbsp;Ruta seleccionada: {{pathTarget}}</label>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div *ngIf="pathTarget!=''" class="row">
-                            <div class="form-group col-sm-8">
-                                <div class="form-group">
-                                    <label>Paso 2. </label>
-                                    <a class="" [routerLink]="" (click)="execPortabilidad()">Ejecute la portabilidad</a>
+                                <div *ngIf="pathTarget!=''" class="row">
+                                    <div class="form-group col-sm-8">
+                                        <div class="form-group">
+                                            <label>Paso 2. Selecciona el metodo de portabilidad</label>
+                                            <select class="form-control" [(ngModel)]="metodoPortabilidad" name="metodo">
+                                                <option value = "1">Comprimido en Zip</option>
+                                                <option value = "0">Sin comprimir</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                                <div *ngIf="pathTarget!=''" class="row">
+                                    <div class="form-group col-sm-8">
+                                        <div class="form-group">
+                                            <label>Paso 3. </label>
+                                            <a class="" [routerLink]="" [disabled]='userFormIsPending | async' (click)="execPortabilidad()">Ejecute la portabilidad</a>
+                                            <label>
+                                                <div *ngIf="userFormIsPending | async; else elseBlock"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Procesando...</span></div>
+                                                <ng-template #elseBlock>{{ msgRespuesta }}</ng-template>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </tab>
+                            <!--<tab heading="Recibir">
+                                <div class="row">
+                                    <div class="form-group col-sm-8">
+                                        <div class="form-group">
+                                            <label>Paso 1. </label>
+                                            <a class="" [routerLink]="" (click)="selectFile()">Seleccione el archivo origen</a>
+                                            <label *ngIf="pathSource!=''">&nbsp;&nbsp;&nbsp;Archivo seleccionado: {{pathSource}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div *ngIf="pathSource!=''" class="row">
+                                    <div class="form-group col-sm-8">
+                                        <div class="form-group">
+                                            <label>Paso 2. </label>
+                                            <a class="" [routerLink]="" (click)="execUnzip()">Ejecute la descompresión</a>
+                                            <label>&nbsp;&nbsp;&nbsp;{{msgRespuestaExtract}}</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </tab>-->
+                        </tabset>
                         <div class="row">
                             &nbsp;
                         </div>

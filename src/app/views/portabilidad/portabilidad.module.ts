@@ -12,6 +12,8 @@ import { DataTablesModule } from 'angular-datatables';
 import { Select2Module } from 'ng-select2-component';
 import {NgxPrintModule} from 'ngx-print';
 
+// Tabs Component
+import { TabsModule } from 'ngx-bootstrap/tabs';
 @NgModule({
   imports: [
     CommonModule,
@@ -19,6 +21,7 @@ import {NgxPrintModule} from 'ngx-print';
     FormsModule,
     DataTablesModule,
     ModalModule.forRoot(),
+    TabsModule.forRoot(),
     SharedModule,
     Select2Module,
     NgxPrintModule
