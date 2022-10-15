@@ -17,7 +17,11 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(credentials): Observable<any> {
-    return of(true).pipe();
+    if(credentials.username=="cobaevadmin"
+      && credentials.password=="c0b43v22")
+      return of(true).pipe();
+    else
+      return of(false).pipe();
   }
 
   register(user): Observable<any> {
