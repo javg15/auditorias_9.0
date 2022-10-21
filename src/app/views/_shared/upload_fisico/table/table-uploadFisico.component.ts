@@ -11,6 +11,7 @@ export class TablaUploadFisicoComponent implements OnInit {
   modalRef: BsModalRef;
   showFile = false;
   fileUploads: any[]=[{}];
+  fileUploadsAll: any[]=[{}];
   id:string;
   ruta:string;
   id_parent:number;
@@ -30,7 +31,24 @@ export class TablaUploadFisicoComponent implements OnInit {
       this.id_parent=id_parent;
       this.tabla=tabla;
       this.fileUploads = await this.uploadFisicoFileSvc.listTablaFile(id_parent,tabla);
-      console.log("this.fileUploads=>",this.fileUploads)
+      this.fileUploadsAll = this.fileUploads;
+
+      //Cuadro de busqueda
+      $('input.buscar_archivos').attr('type', 'text');//para quitar el icono de limpiar
+
+      let that = this;
+      //getting the value of search box
+      $('input.buscar_archivos').unbind().on('keyup change', function () {
+        var value = $(this).val();
+        if (value.toString().length>0) {
+          that.fileUploads = that.fileUploadsAll.filter(a=>a.nombre.toUpperCase().indexOf(this['value'].toUpperCase())>=0
+            );
+        } else {     
+            //optional, reset the search if the phrase 
+            //is less then 3 characters long
+            that.fileUploads = that.fileUploadsAll
+        }        
+      });
     }
     else
       this.fileUploads=null;

@@ -364,7 +364,7 @@ async setRecordFile(){
     //getting the value of search box
     $('.dataTables_filter input').unbind().on('keyup change', function () {
       var value = $(this).val();
-      if (value.length>=3) {
+      if (value.length>0) {
         that.Members = that.MembersAll.filter(a=>a.Nombre.toUpperCase().indexOf(this['value'].toUpperCase())>=0
           || a.Oficio.indexOf(this['value'])>=0
           );

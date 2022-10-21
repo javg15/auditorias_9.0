@@ -124,6 +124,7 @@ export class AuditoriasService {
     }
     //unir los id de ejercicios en el campo id_catejercicios del objeto Auditoria
     Auditoria.id_catejercicios=AuditoriaE.map(e=>e.id_catejercicios).join(",");
+    //console.log("Auditoria.id_catejercicios=>",Auditoria.id_catejercicios)
     return Auditoria;
   }
 

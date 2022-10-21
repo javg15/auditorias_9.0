@@ -67,9 +67,10 @@ export class AuditoriasanexosService {
               ,this.conn)
           
       }
-      
+      console.log("query=>",query)
       
       datos=await this.conn.query(query);
+      console.log("datos=>",datos)
       if (req.solocabeceras != 1) {
         for(let i=0;i<datos.length;i++){
           datos[i]["Acciones"]=this.qa.getAcciones(0,"todo",datos[i]["Acciones"]);
