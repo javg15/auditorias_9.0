@@ -209,7 +209,7 @@ export class CatresponsablesService {
     
     this.conn= await this.dbSvc.connection;
     return await this.conn.query("SELECT id,nombre as text,id as value,nombre as label "
-      +"FROM catresponsables ORDER BY nombre");
+      +"FROM catresponsables WHERE state IN('A') ORDER BY nombre");
     
   }
 

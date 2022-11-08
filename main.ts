@@ -2,6 +2,32 @@ import {app, BrowserWindow, Menu, Tray} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
+import * as fs from 'fs';
+
+const fse = require('fs-extra');
+const data = fs.readFileSync('./config.json');
+const json = data.toString('utf8');
+
+let configSrc = JSON.parse(json);
+//distribucion, version
+const dataDis = fs.readFileSync(configSrc.path_dist + '/config.json');
+const jsonDis = dataDis.toString('utf8');
+let configDis = JSON.parse(jsonDis);
+const srcDir = configSrc.path_dist;
+const destDir = configSrc.path_exe;
+
+
+if(parseFloat(configSrc.version)<parseFloat(configDis.version)){
+    //actualizar la distribucion
+      
+    // To copy a folder or file, select overwrite accordingly
+    try {
+        fse.copySync(srcDir, destDir, { overwrite: true })
+    } catch (err) {
+        console.error(err)
+    }
+}
+
 let win: BrowserWindow = null;
 
 // detect serve mode
@@ -19,8 +45,10 @@ function createWindow() {
             enableRemoteModule: true,
             //allowRunningInsecureContent: (serve) ? true : false,
         },
+        
     });
     win.maximize();
+
 
 
     if (serve) {
@@ -47,6 +75,14 @@ function createWindow() {
     win.on('closed', () => {
         win = null;
     });
+
+    win.webContents.on('did-finish-load',()=>{
+        //set title
+        let name=require('./config.json').name
+        let version= require('./config.json').version
+        console.log("name version=>",name + " " + version)
+        win.setTitle(name + " " + version)
+    })
 }
 
 try {

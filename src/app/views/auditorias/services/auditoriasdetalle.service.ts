@@ -200,18 +200,17 @@ export class AuditoriasdetalleService {
 
     if (!auditoriadetalle) {
         delete dataPack.id;
-        dataPack.created_at=moment(new Date()).format("YYYY-MM-DD");
+        dataPack.created_at=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
         try{
           const self=await rep.insert(dataPack)
         
-          console.log("self.id=>", Number(self.identifiers[0].id))
-                // here self is your instance, but updated
+              // here self is your instance, but updated
           return { message: "success", id: Number(self.identifiers[0].id) };
         }catch(err){
             return { error: true, message: [err.errors[0].message] };
         };
     } else {
-
+      dataPack.updated_at=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
       await rep.update(dataPack.id, dataPack)
       // here self is your instance, but updated
       return { message: "success", id: dataPack.id };

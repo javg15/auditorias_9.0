@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { Auditorias } from 'src/app/_data/_models/auditorias';
 import { Auditoriasejercicios } from 'src/app/_data/_models/auditoriasejercicios';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 import {DatabaseService} from 'src/app/_data/database.service';
 import {Connection} from 'typeorm';
@@ -27,7 +28,9 @@ export class AuditoriasService {
   /* En el constructor creamos el objeto http de la clase HttpClient,
   que estará disponible en toda la clase del servicio.
   Se define como public, para que sea accesible desde los componentes necesarios */
-  constructor(private dbSvc: DatabaseService,private qa:AdminQry) { 
+  constructor(private dbSvc: DatabaseService,
+        private tokenStorage:TokenStorageService,
+        private qa:AdminQry) { 
     
   }
 
@@ -64,7 +67,12 @@ export class AuditoriasService {
               ',ta.nombre AS Tipo ' +
               ',a.rubros AS Rubros ' +
               ',a.numerooficio AS "Oficio de notificación" ' +
-              ',a.state AS Acciones ' +
+              ',' + 
+              (this.tokenStorage.getUser().id_permgrupos=="AD"
+                  ?'"editar,eliminar,reporte"'
+                  :'"ver,reporte"'
+              ) +
+              ' AS Acciones ' +
               'FROM auditorias AS a ' +
               ' LEFT JOIN catentidades AS e ON a.id_catentidades=e.id ' +
               ' LEFT JOIN auditoriasejercicios AS ej ON a.id=ej.id_auditorias ' +
@@ -81,11 +89,11 @@ export class AuditoriasService {
       }
       
       datos=await this.conn.query(query);
-      if (req.solocabeceras != 1) {
+      /*if (req.solocabeceras != 1) {
         for(let i=0;i<datos.length;i++){
           datos[i]["Acciones"]=this.qa.getAcciones(0,"todo",datos[i]["Acciones"]);
         }
-      }
+      }*/
 
       var columnNames = (datos.length > 0 ? Object.keys(datos[0]).map(function(key) {
           return key;
@@ -234,7 +242,7 @@ export class AuditoriasService {
 
     if (!auditoria) {
         delete dataPack.id;
-        dataPack.created_at=moment(new Date()).format("YYYY-MM-DD");
+        dataPack.created_at=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
         try{
           const self=await rep.insert(dataPack)
           
@@ -244,7 +252,7 @@ export class AuditoriasService {
             return { error: true, message: [err.errors[0].message] };
         };
     } else {
-      
+      dataPack.updated_at=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
       await rep.update(dataPack.id, dataPack)
       // here self is your instance, but updated
       return { message: "success", id: dataPack.id };

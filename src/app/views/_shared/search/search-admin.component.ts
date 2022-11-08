@@ -16,7 +16,8 @@ declare var jQuery: any;
 export class SearchAdminComponent implements OnInit {
   @Input() nombreModulo: string;
   @Output() buscarEvent = new EventEmitter<any>();
-  
+  @Output() busquedaAvanzadaEvent = new EventEmitter<any>();
+
   private conn:Connection;
 
   isCollapsed: boolean = true;
@@ -174,6 +175,10 @@ export class SearchAdminComponent implements OnInit {
     }
     let buscarItems:any={campo:campo.join('|'),operador:operador.join('|'),valor:valor.join('|')};
     this.buscarEvent.emit(buscarItems);
+  }
+
+  onClickBusquedaAvanzada(){
+    this.busquedaAvanzadaEvent.emit();
   }
 
   onClickClear() {

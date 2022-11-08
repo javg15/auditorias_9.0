@@ -102,7 +102,6 @@ export class CatejerciciosFormComponent implements OnInit, OnDestroy {
       this.record =this.newRecord();
     } else {
       this.record=await this.catejerciciosService.getRecord(idItem);
-      console.log("this.record=>",this.record)
     }
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear
     this.basicModal.show();

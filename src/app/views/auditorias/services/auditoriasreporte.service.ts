@@ -52,7 +52,7 @@ export class AuditoriasreporteService {
             + "a.objetivo,"
             + "a.marcolegal,"
             + "GROUP_CONCAT(DISTINCT '{\"punto\":\"' || ad.punto || '\",\"observacion\":\"' || ad.observacion || '\",\"fecharecepcion\":\"' || ad.fecharecepcion || '\",\"fechalimite\":\"' || ad.fechalimite || '\",\"oficio\":\"' || ad.oficio || '\",\"id\":\"' || ad.id || '\"}') AS Detalle, "
-            + "GROUP_CONCAT('{\"puntoanexo\":\"' || aa.puntoanexo || '\",\"nombre\":\"' || aa.nombre || '\",\"id_auditoriasdetalle\":\"' || aa.id_auditoriasdetalle || '\"}') AS Anexo "
+            + "GROUP_CONCAT('{\"puntoanexo\":\"' || aa.puntoanexo || '\",\"nombre\":\"' || aa.nombre || '\",\"id_auditoriasdetalle\":\"' || aa.id_auditoriasdetalle || '\",\"id\":\"' || aa.id || '\"}') AS Anexo "
             + "FROM auditorias AS a "
             + " LEFT JOIN auditoriasdetalle AS ad ON a.id=ad.id_auditorias "
             + " LEFT JOIN auditoriasanexos AS aa ON ad.id=aa.id_auditoriasdetalle "
@@ -61,11 +61,11 @@ export class AuditoriasreporteService {
             + " LEFT JOIN cattiposauditoria AS ca ON a.id_cattiposauditoria=ca.id "
             + " LEFT JOIN catservidores AS cs ON a.id_catservidores=cs.id "
             + " LEFT JOIN catresponsables AS cr ON a.id_catresponsables=cr.id "
-            + "WHERE a.id=$1 "
+            + "WHERE (a.id=$1 OR $1=0) AND a.state in('A') "
             + "GROUP BY a.id"
             ,[id_auditoria])
       if(datos.length>0)
-        return datos[0];
+        return datos
       else
         return new Auditoriasreporte();
 

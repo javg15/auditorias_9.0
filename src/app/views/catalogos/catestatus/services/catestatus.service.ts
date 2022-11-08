@@ -203,7 +203,7 @@ export class CatestatusService {
     
     this.conn= await this.dbSvc.connection;
     return await this.conn.query("SELECT id,descripcion as text,id as value,descripcion as label "
-      +"FROM catestatus ORDER BY id");
+      +"FROM catestatus  WHERE state IN('A') ORDER BY id");
     
   }
 

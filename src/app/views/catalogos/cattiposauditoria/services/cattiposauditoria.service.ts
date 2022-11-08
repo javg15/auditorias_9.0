@@ -185,7 +185,7 @@ export class CattiposauditoriaService {
     
     this.conn= await this.dbSvc.connection;
     return await this.conn.query("SELECT id,nombre as text,id as value,nombre as label "
-      +"FROM cattiposauditoria ORDER BY nombre");
+      +"FROM cattiposauditoria  WHERE state IN('A') ORDER BY nombre");
     
   }
 

@@ -3,6 +3,27 @@ exports.__esModule = true;
 var electron_1 = require("electron");
 var path = require("path");
 var url = require("url");
+var fs = require("fs");
+var fse = require('fs-extra');
+var data = fs.readFileSync('./config.json');
+var json = data.toString('utf8');
+var configSrc = JSON.parse(json);
+//distribucion, version
+var dataDis = fs.readFileSync(configSrc.path_dist + '/config.json');
+var jsonDis = dataDis.toString('utf8');
+var configDis = JSON.parse(jsonDis);
+var srcDir = configSrc.path_dist;
+var destDir = configSrc.path_exe;
+if (parseFloat(configSrc.version) < parseFloat(configDis.version)) {
+    //actualizar la distribucion
+    // To copy a folder or file, select overwrite accordingly
+    try {
+        fse.copySync(srcDir, destDir, { overwrite: true });
+    }
+    catch (err) {
+        console.error(err);
+    }
+}
 var win = null;
 // detect serve mode
 var args = process.argv.slice(1);
@@ -38,6 +59,13 @@ function createWindow() {
     }
     win.on('closed', function () {
         win = null;
+    });
+    win.webContents.on('did-finish-load', function () {
+        //set title
+        var name = require('./config.json').name;
+        var version = require('./config.json').version;
+        console.log("name version=>", name + " " + version);
+        win.setTitle(name + " " + version);
     });
 }
 try {

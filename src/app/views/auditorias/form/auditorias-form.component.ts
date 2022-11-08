@@ -22,6 +22,7 @@ import { CatentidadesService } from '../../catalogos/catentidades/services/caten
 import { CatejerciciosService } from '../../catalogos/catejercicios/services/catejercicios.service';
 import { CatresponsablesService } from '../../catalogos/catresponsables/services/catresponsables.service';
 import { CatestatusService } from '../../catalogos/catestatus/services/catestatus.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 import { ValidationSummaryComponent } from '../../_shared/validation/validation-summary.component';
 import { environment,actionsButtonSave, titulosModal } from '../../../../../src/environments/environment';
@@ -118,6 +119,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private uploadFileSvc:UploadFisicoFileService,
     private archivosSvc:ArchivosService,
+    private tokenStorage: TokenStorageService,
   ) {
     this.elementModal = el.nativeElement;
   }
@@ -127,7 +129,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       id: 0, id_catentidades: 0, id_catservidores: 0, nombre: '', numerooficio: '', id_archivos_numerooficio:0,
       id_catejercicios: '', fecha: '', periodoini: '', periodofin: '', id_cattiposauditoria: 0,
       marcolegal: '', id_catresponsables:0, id_catestatus:0,
-      rubros: '',    numeroauditoria: '',  objetivo: '', state:'', created_at: ''
+      rubros: '',    numeroauditoria: '',  objetivo: '', state:'', created_at: '', updated_at: '', id_usuarios_r:this.tokenStorage.getUser().id
     };
   }
   ngOnInit(): void {

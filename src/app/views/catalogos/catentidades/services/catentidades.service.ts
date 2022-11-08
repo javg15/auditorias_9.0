@@ -218,7 +218,7 @@ export class CatentidadesService {
     
     this.conn= await this.dbSvc.connection;
     return await this.conn.query("SELECT id,nombrecorto as text,id as value,nombrecorto as label "
-      +"FROM catentidades ORDER BY nombrecorto");
+      +"FROM catentidades  WHERE state IN('A') ORDER BY nombrecorto");
     
   }
 

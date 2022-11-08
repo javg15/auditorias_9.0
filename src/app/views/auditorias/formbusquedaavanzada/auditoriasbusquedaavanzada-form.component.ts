@@ -5,9 +5,12 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 
 import { AuditoriasService } from '../services/auditorias.service';
 import { AuditoriasreporteService } from '../services/auditoriasreporte.service';
+import { AuditoriasdetalleService } from '../services/auditoriasdetalle.service';
+import { AuditoriasanexosService } from '../services/auditoriasanexos.service';
+
 import { Auditoriasreporte} from '../../../_data/_models/auditoriasreporte';
 import { ValidationSummaryComponent } from '../../_shared/validation/validation-summary.component';
-import { environment,actionsButtonSave, titulosModal } from '../../../../../src/environments/environment';
+import { environment,actionsButtonSave, titulosModal } from '../../../../environments/environment';
 import { Observable } from 'rxjs';
 import { IsLoadingService } from '../../../_services/is-loading/is-loading.service';
 
@@ -15,20 +18,15 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import * as html2pdf from 'html2pdf.js'
 
-
-declare var $: any;
-declare var jQuery: any;
-
 @Component({
-  selector: 'app-auditoriasreporte-form',
-  templateUrl: './auditoriasreporte-form.component.html',
-  styleUrls: ['./auditoriasreporte-form.component.css']
+  selector: 'app-auditoriasbusquedaavanzada-form',
+  templateUrl: './auditoriasbusquedaavanzada-form.component.html',
+  styleUrls: ['./auditoriasbusquedaavanzada-form.component.css']
 })
 
-export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
+export class AuditoriasbusquedaavanzadaFormComponent implements OnInit, OnDestroy {
   userFormIsPending: Observable<boolean>; //Procesando información en el servidor
   @Input() id: string; //idModal
-  @Input() botonAccion: string; //texto del boton según acción
 
   /* El decorador @ViewChild recibe la clase DataTableDirective, para luego poder
   crear el dtElement que represente la tabla que estamos creando. */
@@ -39,18 +37,21 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
   tituloForm: string;
 
   private elementModal: any;
-  @ViewChild('basicModalReporte') basicModalReporte: ModalDirective;
+
+  @ViewChild('basicModalBusquedaAvanzada') basicModalBusquedaAvanzada: ModalDirective;
   @ViewChild('successModal') public successModal: ModalDirective;
   @ViewChild(ValidationSummaryComponent) validSummary: ValidationSummaryComponent;
-  @ViewChild('content', {static: false}) pdfTable: ElementRef;
+  @ViewChild('content', {static: false}) pdfTableBusquedaAvanzada: ElementRef;
 
-  record: Auditoriasreporte;
-  record_detalles:any;
-  record_anexos:any;
+  record: Auditoriasreporte[];
+  record_detalles:any[]=[];
+  record_anexos:any[]=[];
 
   constructor(private isLoadingService: IsLoadingService,
     private el: ElementRef,
     private auditoriasService: AuditoriasService,
+    private auditoriasdetalleService: AuditoriasdetalleService,
+    private auditoriasanexosService: AuditoriasanexosService,
     private auditoriasreporteService: AuditoriasreporteService,
     private route: ActivatedRoute
       ) {
@@ -70,8 +71,6 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
 
     let modal = this;
-
-    this.record = this.newRecord();
 
     // ensure id attribute exists
     if (!modal.id) {//idModal {
@@ -100,7 +99,7 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
  
       };
     
-      doc.fromHTML(document.getElementById('pdfTable'), 15, 15, {
+      doc.fromHTML(document.getElementById('pdfTableBusquedaAvanzada'), 15, 15, {
           'width': 250,
           'margin': 1,
           'pagesplit': true,
@@ -119,7 +118,7 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
   }
 
   async makeMultiPage(){
-      var element = document.getElementById('pdfTable');
+      var element = document.getElementById('pdfTableBusquedaAvanzada');
       var opt = {
         margin:       0.5,
         filename:     `auditorias_${new Date().toISOString()}.pdf`,
@@ -135,16 +134,19 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
       //html2pdf(element, opt);
     }
 
-    findItem(valor):any{
-      const all = this.record_anexos.filter((obj) => {
-        return obj.id_auditoriasdetalle === valor;
+    findItem(valor,idx):any{
+      const all = this.record_anexos[idx].filter((obj) => {
+        if(obj!==null)
+          return obj.id_auditoriasdetalle === valor;
+        else
+          return null;
       });
 
       return all;
     }
 
     print(){
-      let element = document.getElementById('ngForm');
+      let element = document.getElementById('ngFormBusquedaAvanzada');
       const winHtml = `<!DOCTYPE html>
             <html>
                 <head>
@@ -157,7 +159,7 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
                       .table {
                         display: table;         
                         width: auto;         
-                        border-spacing: 5px; /* cellspacing:poor IE support for  this */
+                        border-spacing: 5px; 
                       }
                       .tr {
                         display: table-row;
@@ -165,7 +167,7 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
                         clear: both;
                       }
                       .td,.th {
-                        float: left; /* fix for  buggy browsers */
+                        float: left; 
                         display: table-column;         
                             
                       }
@@ -256,6 +258,7 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
                     .td.colspan5,.td.colspan5 .tr,.td.colspan5 .tr .td,.td.colspan5 .tr .th{
                         width:95% !important;
                     }
+                    .pagebreak { page-break-before: always; }
                     </style>
                 </head>
                 <body onload="window.print()">`+
@@ -272,26 +275,35 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
               "win",
               `width=800,height=400,screenX=200,screenY=200`
           );
-
     }
+
+  openModal(id: string, accion: string, idPrincipal: number, idDetalle: number, idAnexo: number) {
+    setTimeout(async ()=>{await this.auditoriasService.open(id, "ver", idPrincipal)},500)
+    if(idDetalle>0)
+      setTimeout(async ()=>{await this.auditoriasdetalleService.open("custom-modal-2", "ver", idDetalle, idPrincipal)},500)
+    if(idAnexo>0)
+      setTimeout(async ()=>{await this.auditoriasanexosService.open("custom-anexos", "ver", idAnexo, idDetalle)},500)
+  }
 
   // open modal
   async open(idItem: string, accion: string,idParent:number):  Promise<void> {
     this.actionForm=accion;
-    this.botonAccion=actionsButtonSave[accion];
-    this.tituloForm="Reporte de auditoría";
+    this.tituloForm="Auditorías";
 
-    this.record=(await this.auditoriasreporteService.getAdmin(idItem))[0];
-    this.record_detalles=JSON.parse("[" + this.record.Detalle + "]")
-    this.record_anexos=JSON.parse("[" + this.record.Anexo + "]")
+    this.record=await this.auditoriasreporteService.getAdmin(idItem);
+
+    for(let i=0;i<this.record.length;i++){
+      this.record_detalles.push(JSON.parse("[" + this.record[i].Detalle + "]"))
+      this.record_anexos.push(JSON.parse("[" + this.record[i].Anexo + "]"))
+    }
 
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear
-    this.basicModalReporte.show();
+    this.basicModalBusquedaAvanzada.show();
   }
 
   // close modal
   close(): void {
-      this.basicModalReporte.hide();
+      this.basicModalBusquedaAvanzada.hide();
   }
 
   // log contenido de objeto en formulario

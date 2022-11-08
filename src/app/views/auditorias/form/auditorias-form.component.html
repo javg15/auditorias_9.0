@@ -34,7 +34,7 @@
                                 <input type="text" [(ngModel)]="record.numerooficio" class="form-control" name="Oficio de apertura de la auditoría">
                             </div>
                         </div>
-                        <div class="form-group col-sm-3" style="left:10000px"><!-- es para que no esté visible, y no comentar las lineas de codigo correspondientes, ya que hacen efecto en el modulo de archivos-->
+                        <div class="form-group col-sm-3" style="left:10000px;position: absolute;"><!-- es para que no esté visible, y no comentar las lineas de codigo correspondientes, ya que hacen efecto en el modulo de archivos-->
                             <form-uploadFisico #id_archivos_numerooficio name="id_archivos_numerooficio" (onLoaded)="onLoadedFile($event)" [ruta]="" [selectedFiles]=""></form-uploadFisico>
                             <br/>
                             <list-uploadFisico #id_archivos_numerooficio_list name="id_archivos_numerooficio_list" (onRemove)="onRemoveFile($event)"></list-uploadFisico>

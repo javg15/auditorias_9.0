@@ -26,7 +26,7 @@
                       </ng-container>
                     </select>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                     <div *ngIf="tipoEdicion[0]==0" class="form-group">
                         <label for="cmbSearchA">a:</label>
                         <input type="text" class="form-control" [(ngModel)]="valorBuscar[0]">
@@ -59,6 +59,9 @@
                 </div>
                 <div class="col-sm-2">
                     <button type="button" class="btn btn-secondary" (click)="onClickClear()">Quitar filtro</button>
+                </div>
+                <div class="col-sm-2">
+                  <button type="button" class="btn btn-primary" (click)="onClickBusquedaAvanzada()">Busqueda avanzada</button>
                 </div>
             </div>
             <div *ngIf="cuentaVisibles>=2" class="row" data-idx="1">

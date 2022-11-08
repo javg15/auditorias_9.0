@@ -181,7 +181,7 @@ export class AuditoriasanexosService {
 
     if (!auditoriaanexos) {
         delete dataPack.id;
-        dataPack.created_at=moment(new Date()).format("YYYY-MM-DD");
+        dataPack.created_at=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
         
         try{
           const self=await rep.insert(dataPack)
@@ -193,7 +193,7 @@ export class AuditoriasanexosService {
             return { error: true, message: [err.errors[0].message] };
         };
     } else {
-
+      dataPack.updated_at=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
       await rep.update(dataPack.id, dataPack)
       // here self is your instance, but updated
       return { message: "success", id: dataPack.id };

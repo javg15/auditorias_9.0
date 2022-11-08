@@ -7,9 +7,13 @@ import { Subject } from 'rxjs';
 import { AuditoriasService } from '../services/auditorias.service';
 
 import { environment } from 'src/environments/environment';
+import { FindInPage } from 'electron-find'
+import { remote } from 'electron'
+import { JsonpClientBackend } from '@angular/common/http';
 
 declare var $: any;
 declare var jQuery: any;
+const findInPage = new FindInPage(remote.getCurrentWebContents())
 
 @Component({
   selector: 'app-auditorias-admin',
@@ -86,7 +90,7 @@ export class AuditoriasAdminComponent implements OnInit {
         
         var self = this;
         await this.auditoriasService.getAdmin(dataTablesParameters).then(function(resp:any){
-        
+        console.log("resp.data=>",resp.data)
           self.ColumnNames = resp.columnNames;
           self.Members = resp.data;
           self.NumberOfMembers = resp.data.length;
@@ -127,7 +131,6 @@ export class AuditoriasAdminComponent implements OnInit {
   }
 
   reDraw(datosBusqueda: any = null): void {
-
     this.dtElement.dtInstance.then((dtInstance: DataTables.Api) => {
       if(datosBusqueda!=null){
         this.dtOptionsAdicional.datosBusqueda = datosBusqueda;
@@ -140,5 +143,10 @@ export class AuditoriasAdminComponent implements OnInit {
         dtInstance.clear().draw(false); // viene de form, solo actualiza la vista actual (current page)
       }
     });
+  }
+
+  busquedaAvanzada(){
+    this.openModal('custom-modal-3','reporte',0)
+    setTimeout(async ()=>{ await findInPage.openFindWindow()}, 1500);
   }
 }

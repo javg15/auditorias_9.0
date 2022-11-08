@@ -20,4 +20,8 @@ export class Auditoriasanexos {
     orden: number;
     @Column()
     created_at: string;
+    @Column()
+    updated_at: string;
+    @Column()
+    id_usuarios_r: number;
 }

@@ -1,0 +1,159 @@
+<div bsModal #basicModalBusquedaAvanzada="bs-modal" [config]="{ backdrop: 'static', keyboard: false}" class="modal fade right" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-full-height modal-right" role="document">
+        <div class="modal-content modal-form modal-report">
+            <div class="modal-header">
+                <h4 class="modal-title w-100" id="myModalLabel">{{ tituloForm }}</h4>
+
+                <button type="button" class="close pull-right" aria-label="Close" (click)="close()">
+                  <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form #dataForm="ngForm" (ngSubmit)="MakePDF()" id="ngFormBusquedaAvanzada">
+                    <div id="pdfTableBusquedaAvanzada" #pdfTableBusquedaAvanzada>
+                        <ng-container *ngFor="let rec of record;index as ix">
+                            <div class="table tablaInfo">
+                                <div class="tr">
+                                    <div class="tr">
+                                        <div class="td">Organo fiscalizador</div>
+                                        <div class="td">{{rec.desc_catentidades}}</div>
+                                    
+                                        <div class="td">Nombre de la auditoría</div>
+                                        <div class="td">{{rec.nombre}}</div>
+                                    </div>
+
+                                    <div class="tr">
+                                        <div class="td">Oficio de apertura de la auditoría</div>
+                                        <div class="td">{{rec.numerooficio}}</div>
+                                
+                                        <div class="td">Ejercicios auditados</div>
+                                        <div class="td">{{rec.id_catejercicios}}</div>
+                                    </div>
+
+                                    <div class="tr">
+                                        <div class="td">Fecha de inicio de la auditoría</div>
+                                        <div class="td">{{rec.fecha}}</div>
+                                    
+                                        <div class="td">Fecha de inicio del periodo que se informa</div>
+                                        <div class="td">{{rec.periodoini}}</div>
+                                    </div>
+                                    <div class="tr">
+                                        <div class="td">Fecha final del periodo que se informa</div>
+                                        <div class="td">{{rec.periodofin}}</div>
+                                    
+                                        <div class="td">Tipo de auditoría</div>
+                                        <div class="td">{{rec.desc_cattiposauditoria}}</div>
+                                    </div>
+                                    <div class="tr">
+                                        <div class="td">Servidor público responsable de la información</div>
+                                        <div class="td">{{rec.desc_catservidores}}</div>
+                                    
+                                        <div class="td">Auditor responsable</div>
+                                        <div class="td">{{rec.desc_catresponsables}}</div>
+                                    </div>
+                                    <div class="tr">
+                                        <div class="td">Rubros sujetos a revisión</div>
+                                        <div class="td">{{rec.rubros}}</div>
+                                    
+                                        <div class="td">Numero de auditoría</div>
+                                        <div class="td">{{rec.numeroauditoria}}</div>
+                                    </div>
+                                    <div class="tr">
+                                        <div class="td">Objetivo de la auditoría</div>
+                                        <div class="td">{{rec.objetivo}}</div>
+                                    
+                                        <div class="td">Marco legal</div>
+                                        <div class="td">{{rec.marcolegal}}</div>
+                                    </div>
+                                    <div class="tr">
+                                        <div class="form-group col-sm-6">
+                                            <div class="form-group">
+                                                <button type="button" class="btn btn-secondary" (click)="openModal('custom-modal-1','principal',rec.id,0,0)">Ver auditoria</button> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="table tablaInfoSub">
+                                        <div class="tr">
+                                            <div class="th" >Punto</div>
+                                            <div class="th" >Descripción</div>
+                                            <div class="th" >Fecha de recepción</div>
+                                            <div class="th" >Fecha límite</div>
+                                            <div class="th" >Oficio</div>
+                                        </div>
+                                        <ng-container *ngFor="let col of record_detalles[ix];index as i">
+                                            <div class="tr">
+                                                <div class="td"> {{ col.punto }} </div>
+                                                <div class="td"> {{ col.observacion }} </div>
+                                                <div class="td"> {{ col.fecharecepcion }} </div>
+                                                <div class="td"> {{ col.fechalimite }} </div>
+                                                <div class="td"> {{ col.oficio }} </div>
+                                                <div class="td">
+                                                    <button class="btn btn-brand btn-sm mr-1 btn-secondary" title="ver" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','detalle',rec.id,col.id,0)">
+                                                        <i class="fa fa-search"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div *ngIf="findItem(col.id,ix).length>0">
+                                                
+                                                    <div class="table tablaInfoSubSub">
+                                                        <div class="tr">
+                                                            <div class="th" >Inciso</div>
+                                                            <div class="th" >Nombre</div>
+                                                        </div>
+                                                        <ng-container *ngFor="let col2 of findItem(col.id,ix);">
+                                                            <div class="tr">
+                                                                <div class="td"> {{ col2.puntoanexo }} </div>
+                                                                <div class="td"> {{ col2.nombre }} </div>
+                                                                <div class="td">
+                                                                    <button class="btn btn-brand btn-sm mr-1 btn-secondary" title="ver" style="margin-bottom: 4px" type="button" (click)="openModal('custom-modal-1','anexo',rec.id,col.id,col2.id)">
+                                                                        <i class="fa fa-search"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        </ng-container>
+                                                    </div>
+                                                
+                                            </div>
+                                        </ng-container>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pagebreak"> </div>
+                        </ng-container>
+                    </div>
+
+                    <div class="row">
+                        &nbsp;
+                    </div>
+                    <div class="row">
+                       <div class="form-group col-sm-2">
+                            <div class="form-group">
+                                <!--<button type="button" class="btn btn-secondary" (click)="print()">Imprimir</button> -->
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-8">
+                            <div class="form-group">
+                                <!--<button *ngIf="actionForm!=='ver'" type="submit" [disabled]='userFormIsPending | async' class="btn btn-primary">
+                                    <div *ngIf="userFormIsPending | async; else elseBlock"><span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span><span>Procesando...</span></div>
+                                    <ng-template #elseBlock>Exportar a PDF</ng-template>
+                                  </button>
+                                -->
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-2">
+                            <div class="form-group">
+                                <button type="button" class="btn btn-secondary" (click)="this.close()"> 
+                                    Cerrar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [disabled]="!dataForm.form.valid" -->
+                </form>
+            </div>
+            <!-- <h2>Diagnostic Info</h2>
+            <div [innerHtml]="diagnosticValidate"></div>-->
+        </div>
+    </div>
+</div>

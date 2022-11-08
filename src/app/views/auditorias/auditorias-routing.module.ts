@@ -10,6 +10,7 @@ import { AuditoriasdetalleIniService } from './services/auditoriasdetalle.ini.se
 import { AuditoriasanexosFormComponent } from './formanexos/auditoriasanexos-form.component';
 import { AuditoriasanexosIniService } from './services/auditoriasanexos.ini.service';
 import { AuditoriasreporteFormComponent } from './formreporte/auditoriasreporte-form.component';
+import { AuditoriasbusquedaavanzadaFormComponent } from './formbusquedaavanzada/auditoriasbusquedaavanzada-form.component';
 
 
 
@@ -62,6 +63,13 @@ const routes: Routes = [
         component: AuditoriasreporteFormComponent,
         data: {
           title: 'Auditorías reportes'
+        }
+      },
+      {
+        path: 'busquedaavanzada',
+        component: AuditoriasbusquedaavanzadaFormComponent,
+        data: {
+          title: 'busqueda avanzada'
         }
       },
     ]

@@ -15,6 +15,7 @@ import { ValidationSummaryComponent } from '../../_shared/validation/validation-
 import { environment,actionsButtonSave, titulosModal } from '../../../../../src/environments/environment';
 import { Observable } from 'rxjs';
 import { IsLoadingService } from '../../../_services/is-loading/is-loading.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 import { ModaluploadFormComponent } from '../../_shared/upload_fisico/table/modalupload-form.component';
 import { TablaUploadFisicoComponent } from '../../_shared/upload_fisico/table/table-uploadFisico.component';
@@ -95,6 +96,7 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
     private uploadFisicoFileSvc: UploadFisicoFileService,
     private route: ActivatedRoute,
     private archivosSvc:ArchivosService,
+    private tokenStorage: TokenStorageService,
       ) {
       this.elementModal = el.nativeElement;
       
@@ -104,7 +106,7 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
     return {
       id: 0,  id_auditorias:idParent, punto:'', observacion:'', fechalimite:"",fecharecepcion:"",
       original:0,simple:0,copia:0,
-      oficio:'', id_archivos:0, state: '',orden:0, created_at: ''
+      oficio:'', id_archivos:0, state: '',orden:0, created_at: '', updated_at: '', id_usuarios_r:this.tokenStorage.getUser().id
     };
   }
   ngOnInit(): void {

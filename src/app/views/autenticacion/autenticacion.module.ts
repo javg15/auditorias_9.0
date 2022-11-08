@@ -7,9 +7,6 @@ import { SharedModule } from '../_shared/shared.module';
 
 import { AutenticacionRoutingModule } from './autenticacion-routing.module';
 import { UsuariosService } from './usuarios/services/usuarios.service';
-import { UsuariosAdminComponent } from './usuarios/admin/usuarios-admin.component';
-import { UsuariosFormComponent } from './usuarios/form/usuarios-form.component';
-import { UsuariosFormdirectComponent } from './usuarios/formdirect/usuarios-formdirect.component';
 
 import { DataTablesModule } from 'angular-datatables';
 
@@ -29,9 +26,6 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
     
   ],
   declarations: [
-    UsuariosAdminComponent,
-    UsuariosFormComponent,
-    UsuariosFormdirectComponent,
   ],
   providers: [
     UsuariosService,

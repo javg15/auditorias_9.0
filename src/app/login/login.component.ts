@@ -3,6 +3,7 @@ import { AuthService } from '../_services/auth.service';
 import { TokenStorageService } from '../_services/token-storage.service';
 import { Router } from '@angular/router';
 import { LoginService } from './services/login.service';
+import { Observable } from 'rxjs';
 
 @Component({
   templateUrl: './login.component.html',
@@ -33,30 +34,75 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.authService.login(this.form).subscribe(
-      data => {
-        if(data){
-          this.tokenStorage.saveToken(data.accessToken);
-          this.tokenStorage.saveUser(data);
-          //this.tokenStorage.savePeriodo(this.form.periodo)
-
-          this.isLoginFailed = false;
-          this.isLoggedIn = true;
-
-          this.router.navigate(['home']);
-          //this.reloadPage();
-        }
-        else{
-          this.isLoginFailed = true;
-          this.isLoggedIn = false;
+      setTimeout(async () => {
+        (await this.authService.login(this.form)).subscribe(resp => {
           
-        }
+          if(resp){
+            this.tokenStorage.saveToken(resp);
+            this.tokenStorage.saveUser(resp);
+            
+            this.isLoginFailed = false;
+            this.isLoggedIn = true;
+
+            this.router.navigate(['home']);
+          }
+          else{
+            this.isLoginFailed = true;
+            this.isLoggedIn = false;
+          }
+        })
+      }, 200)
+
+
+    /*this.authService.attemptAuth(this.form).subscribe({
+      next(resp) {
+        resp((data)=>{
+          if(data){
+            this.tokenStorage.saveToken(data.accessToken);
+            this.tokenStorage.saveUser(data);
+            //this.tokenStorage.savePeriodo(this.form.periodo)
+
+            this.isLoginFailed = false;
+            this.isLoggedIn = true;
+
+            this.router.navigate(['home']);
+            //this.reloadPage();
+          }
+          else{
+            this.isLoginFailed = true;
+            this.isLoggedIn = false;
+            
+          }
+        })
       },
-      err => {
+      error(err) {
         this.errorMessage = err.error.message;
-        this.isLoginFailed = true;
-      }
-    );
+          this.isLoginFailed = true;
+      }*/
+
+      /*next(data:any):void {
+          console.log("data=>",data)
+          if(data){
+            this.tokenStorage.saveToken(data.accessToken);
+            this.tokenStorage.saveUser(data);
+            //this.tokenStorage.savePeriodo(this.form.periodo)
+
+            this.isLoginFailed = false;
+            this.isLoggedIn = true;
+
+            this.router.navigate(['home']);
+            //this.reloadPage();
+          }
+          else{
+            this.isLoginFailed = true;
+            this.isLoggedIn = false;
+            
+          }
+        },
+        err => {
+          this.errorMessage = err.error.message;
+          this.isLoginFailed = true;
+        }*/
   }
 
   reloadPage(): void {

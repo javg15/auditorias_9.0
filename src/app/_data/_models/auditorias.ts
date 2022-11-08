@@ -41,4 +41,8 @@ export class Auditorias {
     state: string;
     @Column()
     created_at: string;
+    @Column()
+    updated_at: string;
+    @Column()
+    id_usuarios_r: number;
 }

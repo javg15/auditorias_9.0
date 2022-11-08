@@ -131,6 +131,9 @@ export class ArchivosService {
   }
 
   async getRecords(id_parent:number,tabla:string){
+    //console.log("this.conn1=>",this.conn)
+    //this.conn= await this.dbSvc.connection;
+    //console.log("this.conn2=>",this.conn)
     let query = 'SELECT * ' +
       'FROM archivos ' +
       'WHERE tabla="'+ tabla +'" AND id_tabla='+id_parent;

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TokenStorageService } from './_services/token-storage.service';
 
-
-
 @Component({
   // tslint:disable-next-line
   selector: 'body',

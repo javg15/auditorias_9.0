@@ -130,3 +130,6 @@ dist
 *-win32-x64/
 dist/
 www/
+uploads/
+src/data/
+src/data/sqlite3.db

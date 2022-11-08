@@ -8,6 +8,7 @@ import { ValidationSummaryComponent } from '../../_shared/validation/validation-
 import { environment,actionsButtonSave, titulosModal } from '../../../../../src/environments/environment';
 import { Observable } from 'rxjs';
 import { IsLoadingService } from '../../../_services/is-loading/is-loading.service';
+import { TokenStorageService } from '../../../_services/token-storage.service';
 
 import { ModaluploadFormComponent } from '../../_shared/upload_fisico/table/modalupload-form.component';
 import { TablaUploadFisicoComponent } from '../../_shared/upload_fisico/table/table-uploadFisico.component';
@@ -60,7 +61,8 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
     private el: ElementRef,
     private archivosSvc:ArchivosService,
     private uploadFisicoFileSvc: UploadFisicoFileService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private tokenStorage: TokenStorageService,
   ) {
     this.elementModal = el.nativeElement;
 
@@ -69,7 +71,7 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
   newRecord(idParent: number): Auditoriasanexos {
     return {
       id: 0, id_auditoriasdetalle: idParent, puntoanexo: '', nombre:'',id_archivos: 0,
-      state:'',orden:0,created_at: ''
+      state:'',orden:0,created_at: '', updated_at: '', id_usuarios_r:this.tokenStorage.getUser().id
     };
   }
   ngOnInit(): void {

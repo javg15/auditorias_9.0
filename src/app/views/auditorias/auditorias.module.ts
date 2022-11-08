@@ -12,6 +12,7 @@ import { AuditoriasFormComponent } from './form/auditorias-form.component';
 import { AuditoriasdetalleFormComponent } from './formsub/auditoriasdetalle-form.component';
 import { AuditoriasanexosFormComponent } from './formanexos/auditoriasanexos-form.component';
 import { AuditoriasreporteFormComponent } from './formreporte/auditoriasreporte-form.component';
+import { AuditoriasbusquedaavanzadaFormComponent } from './formbusquedaavanzada/auditoriasbusquedaavanzada-form.component';
 import { DataTablesModule } from 'angular-datatables';
 import { Select2Module } from 'ng-select2-component';
 import {NgxPrintModule} from 'ngx-print';
@@ -32,7 +33,8 @@ import {NgxPrintModule} from 'ngx-print';
     AuditoriasFormComponent,
     AuditoriasdetalleFormComponent,
     AuditoriasanexosFormComponent,
-    AuditoriasreporteFormComponent
+    AuditoriasreporteFormComponent,
+    AuditoriasbusquedaavanzadaFormComponent
   ],
   providers: [
     AuditoriasService

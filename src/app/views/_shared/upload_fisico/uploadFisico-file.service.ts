@@ -3,7 +3,7 @@ import {ArchivosService} from 'src/app/views/catalogos/archivos/services/archivo
 import { shell } from 'electron';
 const electron = require('electron');
 const fs = require('fs');
-let uploadDir = './uploads';
+let uploadDir = 'C:/auditoria_files/uploads';
 
 @Injectable({
   providedIn: 'root'
@@ -47,7 +47,12 @@ export class UploadFisicoFileService {
 
   //getFile(id): Observable<any> {
   async getFile(ruta){
-    let dir=(electron.app || electron.remote.app).getAppPath()
+    //let dir=(electron.app || electron.remote.app).getAppPath()
+    const data = fs.readFileSync('./config.json');
+    const json = data.toString('utf8');
+
+    let jsonSettings = JSON.parse(json);
+    let dir=jsonSettings.path_data;
 
     //console.log("(antes)dir=>",dir)
     if(dir.indexOf("\\resources\\app")>=0)
