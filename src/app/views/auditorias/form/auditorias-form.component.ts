@@ -104,7 +104,8 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   catresponsablesCat: Catresponsables[]; 
   catestatusCat: Catestatus[]; 
   record_id_catejercicios:number[];
-  //tipofileUpload:string;//para conocer que fileupload se esta guardando
+  nombreTablaTracking:string="auditorias_track";
+  userrol:string="";
   
 
   constructor(private isLoadingService: IsLoadingService,
@@ -122,6 +123,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
     private tokenStorage: TokenStorageService,
   ) {
     this.elementModal = el.nativeElement;
+    this.userrol=this.tokenStorage.getUser().id_permgrupos;
   }
 
   newRecord(): Auditorias {
@@ -129,7 +131,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       id: 0, id_catentidades: 0, id_catservidores: 0, nombre: '', numerooficio: '', id_archivos_numerooficio:0,
       id_catejercicios: '', fecha: '', periodoini: '', periodofin: '', id_cattiposauditoria: 0,
       marcolegal: '', id_catresponsables:0, id_catestatus:0,
-      rubros: '',    numeroauditoria: '',  objetivo: '', state:'', created_at: '', updated_at: '', id_usuarios_r:this.tokenStorage.getUser().id
+      rubros: '',    numeroauditoria: '',  objetivo: '', state:'', created_at: '', updated_at: '', id_usuarios_r:0,usuarios_pc:''
     };
   }
   ngOnInit(): void {
@@ -244,7 +246,8 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
       tabla:"auditorias",
       id_tabla:0,ruta:datos.ruta,
       tipo: datos.tipo,  nombre:  datos.nombre,numero:0,
-      uuid:datos.uuid 
+      uuid:datos.uuid,state:'A',
+      created_at:'',id_usuarios_r:0,usuarios_pc:''
     };
     
     await this.setRecordFile();

@@ -1,10 +1,12 @@
 
 import { Injectable } from '@angular/core';
 import { Auditoriasdetalle } from 'src/app/_data/_models/auditoriasdetalle';
-
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import {DatabaseService} from 'src/app/_data/database.service';
 import {Connection} from 'typeorm';
 import { AdminQry } from 'src/app/_data/queries/admin.qry'; 
+
+const os=require('os')
 const gral = require('src/app/_data/general.js')
 const mensajesValidacion = require("src/app/_data/config/validate.config");
 var moment = require('moment');
@@ -26,7 +28,9 @@ export class AuditoriasdetalleService {
   /* En el constructor creamos el objeto http de la clase HttpClient,
   que estará disponible en toda la clase del servicio.
   Se define como public, para que sea accesible desde los componentes necesarios */
-  constructor(private dbSvc: DatabaseService,private qa:AdminQry) { 
+  constructor(
+    private token: TokenStorageService,
+    private dbSvc: DatabaseService,private qa:AdminQry) { 
     
   }
 
@@ -61,7 +65,12 @@ export class AuditoriasdetalleService {
               ',a.fecharecepcion AS "Fecha de recepción" ' +
               ',a.fechalimite AS "Fecha límite" ' +
               ',a.oficio AS Oficio ' +
-              ',a.state AS Acciones ' +
+              ',' + 
+              (this.token.getUser().id_permgrupos=="AD"
+                  ?'"editar,eliminar,reporte"'
+                  :'"ver,reporte"'
+              ) +
+              ' AS Acciones ' +
               'FROM auditoriasdetalle AS a ' 
               ,
               "&modo=" + req.opcionesAdicionales.modo + "&id_usuario=0" +
@@ -76,11 +85,11 @@ export class AuditoriasdetalleService {
       
       
       datos=await this.conn.query(query);
-      if (req.solocabeceras != 1) {
+      /*if (req.solocabeceras != 1) {
         for(let i=0;i<datos.length;i++){
           datos[i]["Acciones"]=this.qa.getAcciones(0,"todo",datos[i]["Acciones"]);
         }
-      }
+      }*/
 
       var columnNames = (datos.length > 0 ? Object.keys(datos[0]).map(function(key) {
           return key;
@@ -197,10 +206,12 @@ export class AuditoriasdetalleService {
     const rep = await this.conn.manager.getRepository(Auditoriasdetalle)
     const auditoriadetalle =  await rep.findOne({    id: dataPack.id })
     dataPack.state = gral.GetStatusSegunAccion(actionForm);
-
+    dataPack.id_usuarios_r=this.token.getUser().id;
+    dataPack.usuarios_pc=os.hostname();
     if (!auditoriadetalle) {
         delete dataPack.id;
         dataPack.created_at=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+        
         try{
           const self=await rep.insert(dataPack)
         

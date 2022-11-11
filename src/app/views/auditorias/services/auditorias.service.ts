@@ -7,6 +7,8 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 import {DatabaseService} from 'src/app/_data/database.service';
 import {Connection} from 'typeorm';
 import { AdminQry } from 'src/app/_data/queries/admin.qry'; 
+
+const os=require('os')
 const gral = require('src/app/_data/general.js')
 const mensajesValidacion = require("src/app/_data/config/validate.config");
 var moment = require('moment');
@@ -28,7 +30,9 @@ export class AuditoriasService {
   /* En el constructor creamos el objeto http de la clase HttpClient,
   que estará disponible en toda la clase del servicio.
   Se define como public, para que sea accesible desde los componentes necesarios */
-  constructor(private dbSvc: DatabaseService,
+  constructor(
+    private token: TokenStorageService,
+      private dbSvc: DatabaseService,
         private tokenStorage:TokenStorageService,
         private qa:AdminQry) { 
     
@@ -240,9 +244,12 @@ export class AuditoriasService {
     const auditoria =  await rep.findOne({    id: dataPack.id })
     dataPack.state = gral.GetStatusSegunAccion(actionForm);
 
+    dataPack.id_usuarios_r=this.token.getUser().id
+    dataPack.usuarios_pc=os.hostname();
     if (!auditoria) {
         delete dataPack.id;
         dataPack.created_at=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
+        
         try{
           const self=await rep.insert(dataPack)
           

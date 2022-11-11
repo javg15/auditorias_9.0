@@ -36,7 +36,8 @@ function createWindow() {
             //webSecurity: false,
             nodeIntegration: true,
             enableRemoteModule: true
-        }
+        },
+        autoHideMenuBar: true
     });
     win.maximize();
     if (serve) {

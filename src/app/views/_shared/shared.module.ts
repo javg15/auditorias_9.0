@@ -15,7 +15,7 @@ import { FormUploadFisicoComponent } from './upload_fisico/list/form-uploadFisic
 import { ListUploadFisicoComponent } from './upload_fisico/list/list-uploadFisico.component';
 import { ModaluploadFormComponent } from './upload_fisico/table/modalupload-form.component';
 import { TablaUploadFisicoComponent } from './upload_fisico/table/table-uploadFisico.component';
-
+import { TrackingFormComponent } from './tracking/tracking-form.component';
 import { Select2Module } from 'ng-select2-component';
 
 @NgModule({
@@ -39,6 +39,7 @@ import { Select2Module } from 'ng-select2-component';
     TablaUploadFisicoComponent,
     ModaluploadFormComponent,
     DetailsUploadFisicoComponent,
+    TrackingFormComponent
   ],
   providers: [
 
@@ -55,6 +56,7 @@ import { Select2Module } from 'ng-select2-component';
     DetailsUploadFisicoComponent,
     TablaUploadFisicoComponent,
     ModaluploadFormComponent,
+    TrackingFormComponent,
     CommonModule
   ]
 })

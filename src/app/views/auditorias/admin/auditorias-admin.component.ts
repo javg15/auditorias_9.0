@@ -5,7 +5,7 @@ import { DataTableDirective } from 'angular-datatables';
 import { Subject } from 'rxjs';
 
 import { AuditoriasService } from '../services/auditorias.service';
-
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import { environment } from 'src/environments/environment';
 import { FindInPage } from 'electron-find'
 import { remote } from 'electron'
@@ -42,6 +42,7 @@ export class AuditoriasAdminComponent implements OnInit {
   nombreModulo = 'Auditorias';
   tituloBotonReporte='Reporte';
   headersAdmin: any;
+  userrol:string="";
 
   /* En el constructor creamos el objeto auditoriasService,
   de la clase HttpConnectService, que contiene el servicio mencionado,
@@ -49,9 +50,9 @@ export class AuditoriasAdminComponent implements OnInit {
   El objeto es private, porque no se usará fuera de este componente. */
   constructor(
     private auditoriasService: AuditoriasService,private route: ActivatedRoute,
-
+    private tokenStorage: TokenStorageService,
   ) {
-
+    this.userrol=this.tokenStorage.getUser().id_permgrupos;
   }
 
   ngOnInit(): void {
@@ -90,7 +91,7 @@ export class AuditoriasAdminComponent implements OnInit {
         
         var self = this;
         await this.auditoriasService.getAdmin(dataTablesParameters).then(function(resp:any){
-        console.log("resp.data=>",resp.data)
+
           self.ColumnNames = resp.columnNames;
           self.Members = resp.data;
           self.NumberOfMembers = resp.data.length;

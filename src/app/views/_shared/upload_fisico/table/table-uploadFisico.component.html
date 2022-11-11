@@ -30,7 +30,7 @@
                 </button>
                 </td>
                 <td>
-                    <button title="Eliminar documento" class="btn btn-brand btn-sm mr-1 btn-reddit" style="margin-bottom: 4px" type="button" (click)="removeFile(template,file.id,file.ruta + '/'+ file.uuid + '.' + file.nombre.split('.').pop())">
+                    <button *ngIf="userrol=='AD'" title="Eliminar documento" class="btn btn-brand btn-sm mr-1 btn-reddit" style="margin-bottom: 4px" type="button" (click)="removeFile(template,file.id,file.ruta + '/'+ file.uuid + '.' + file.nombre.split('.').pop())">
                   <i class="fa fa-ban"></i>
                 </button>
                 </td>

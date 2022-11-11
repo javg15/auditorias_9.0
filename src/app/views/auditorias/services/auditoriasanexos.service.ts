@@ -1,10 +1,12 @@
 
 import { Injectable } from '@angular/core';
 import { Auditoriasanexos } from 'src/app/_data/_models/auditoriasanexos';
-
+import { TokenStorageService } from '../../../_services/token-storage.service';
 import {DatabaseService} from 'src/app/_data/database.service';
 import {Connection} from 'typeorm';
 import { AdminQry } from 'src/app/_data/queries/admin.qry'; 
+
+const os=require('os')
 const gral = require('src/app/_data/general.js')
 const mensajesValidacion = require("src/app/_data/config/validate.config");
 var moment = require('moment');
@@ -26,7 +28,9 @@ export class AuditoriasanexosService {
   /* En el constructor creamos el objeto http de la clase HttpClient,
   que estará disponible en toda la clase del servicio.
   Se define como public, para que sea accesible desde los componentes necesarios */
-  constructor(private dbSvc: DatabaseService,private qa:AdminQry) { 
+  constructor(
+    private token: TokenStorageService,
+      private dbSvc: DatabaseService,private qa:AdminQry) { 
     
   }
 
@@ -55,7 +59,12 @@ export class AuditoriasanexosService {
           query = await this.qa.getAdmin('SELECT a.id AS ID ' +
               ',a.puntoanexo AS Inciso ' +
               ',a.nombre AS Nombre ' +
-              ',a.state AS Acciones ' +
+              ',' + 
+              (this.token.getUser().id_permgrupos=="AD"
+                  ?'"editar,eliminar,reporte"'
+                  :'"ver,reporte"'
+              ) +
+              ' AS Acciones ' +
               'FROM auditoriasanexos AS a ' 
               ,
               "&modo=" + req.opcionesAdicionales.modo + "&id_usuario=0" +
@@ -70,12 +79,12 @@ export class AuditoriasanexosService {
       console.log("query=>",query)
       
       datos=await this.conn.query(query);
-      console.log("datos=>",datos)
-      if (req.solocabeceras != 1) {
+
+      /*if (req.solocabeceras != 1) {
         for(let i=0;i<datos.length;i++){
           datos[i]["Acciones"]=this.qa.getAcciones(0,"todo",datos[i]["Acciones"]);
         }
-      }
+      }*/
 
       var columnNames = (datos.length > 0 ? Object.keys(datos[0]).map(function(key) {
           return key;
@@ -178,7 +187,9 @@ export class AuditoriasanexosService {
     const rep = await this.conn.manager.getRepository(Auditoriasanexos)
     const auditoriaanexos =  await rep.findOne({    id: dataPack.id })
     dataPack.state = gral.GetStatusSegunAccion(actionForm);
-
+    dataPack.id_usuarios_r=this.token.getUser().id;
+    dataPack.usuarios_pc=os.hostname();
+    
     if (!auditoriaanexos) {
         delete dataPack.id;
         dataPack.created_at=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");

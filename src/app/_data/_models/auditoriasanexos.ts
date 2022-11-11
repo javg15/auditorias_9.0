@@ -24,4 +24,6 @@ export class Auditoriasanexos {
     updated_at: string;
     @Column()
     id_usuarios_r: number;
+    @Column()
+    usuarios_pc: string;
 }

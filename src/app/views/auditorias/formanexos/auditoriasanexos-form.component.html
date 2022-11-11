@@ -1,9 +1,11 @@
-<div bsModal #basicModalAnexos="bs-modal" [config]="{ backdrop: 'static', keyboard: false}" class="modal fade right" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+<div bsModal #basicModalAnexos="bs-modal" [config]="{ backdrop: 'static'}" class="modal fade right" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-full-height modal-right" role="document" style="background: aqua; top: 40px;">
         <div class="modal-content modal-form">
             <div class="modal-header">
                 <h4 class="modal-title w-100" id="myModalLabel">{{ tituloForm }}</h4>
-
+                <app-tracking-form id="tracking-form-3" [nombreTabla]="nombreTablaTracking" [idRecord]="record.id" [hidden]="this.userrol!='AD'" >
+                </app-tracking-form>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <button type="button" class="close pull-right" aria-label="Close" (click)="close()">
                   <span aria-hidden="true">×</span>
                 </button>
@@ -29,7 +31,7 @@
                             </div>
                         </div>
                     </div>
-                    <div *ngIf="actionForm!=='nuevo'">
+                    <div *ngIf="actionForm!=='nuevo'"  [hidden]="this.userrol!='AD'" >
                         <nav class="header-admin navbar navbar-expand-lg ">
                             <div class="collapse navbar-collapse">
                                 <ul class="navbar-nav mr-auto"></ul>

@@ -5,9 +5,12 @@ import { Archivos } from 'src/app/_data/_models/archivos';
 import {DatabaseService} from 'src/app/_data/database.service';
 import {Connection} from 'typeorm';
 import { AdminQry } from 'src/app/_data/queries/admin.qry'; 
+import { TokenStorageService } from '../../../../_services/token-storage.service';
+
+const os=require('os')
 const gral = require('src/app/_data/general.js')
 const mensajesValidacion = require("src/app/_data/config/validate.config");
-
+var moment = require('moment');
 let Validator = require('fastest-validator');
 /* create an instance of the validator */
 let dataValidator = new Validator({
@@ -27,7 +30,8 @@ export class ArchivosService {
   /* En el constructor creamos el objeto http de la clase HttpClient,
   que estará disponible en toda la clase del servicio.
   Se define como public, para que sea accesible desde los componentes necesarios */
-  constructor(private dbSvc: DatabaseService,private qa:AdminQry) { }
+  constructor(private token: TokenStorageService,
+      private dbSvc: DatabaseService,private qa:AdminQry) { }
 
   
   /* El siguiente método graba un registro nuevo, o uno editado. */
@@ -82,9 +86,11 @@ export class ArchivosService {
     const rep = await this.conn.manager.getRepository(Archivos)
     const archivos =  await rep.findOne({    id: dataPack.id, numero:dataPack.numero })
 
-
+    dataPack.id_usuarios_r=this.token.getUser().id;
+    dataPack.usuarios_pc=os.hostname();
     if (!archivos) {
         delete dataPack.id;
+        dataPack.created_at=moment(new Date()).format("YYYY-MM-DD HH:mm:ss");
         
         try{
           const self=await rep.insert(dataPack)
@@ -98,7 +104,7 @@ export class ArchivosService {
     } else {
 
       await rep.update(dataPack.id, dataPack)
-      console.log("dataPack.id=>", dataPack.id)
+      
       // here self is your instance, but updated
       return { message: "success", id: dataPack.id };
     }
@@ -131,12 +137,10 @@ export class ArchivosService {
   }
 
   async getRecords(id_parent:number,tabla:string){
-    //console.log("this.conn1=>",this.conn)
-    //this.conn= await this.dbSvc.connection;
-    //console.log("this.conn2=>",this.conn)
+    this.conn= await this.dbSvc.connection;
     let query = 'SELECT * ' +
       'FROM archivos ' +
-      'WHERE tabla="'+ tabla +'" AND id_tabla='+id_parent;
+      'WHERE state="A" AND tabla="'+ tabla +'" AND id_tabla='+id_parent;
 
     let datos=await this.conn.query(query);
 
@@ -154,7 +158,13 @@ export class ArchivosService {
     const rep = await this.conn.manager.getRepository(Archivos)
         
     try{
-      const self=await rep.delete({    id: id })
+      //const self=await rep.delete({    id: id })
+      const record=await rep.findOne({
+        id: id,
+      });
+      record.state='E';
+      await rep.save(record);
+      
       // here self is your instance, but updated
       return { message: "success" };
     }catch(err){

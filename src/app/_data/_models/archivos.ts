@@ -18,5 +18,13 @@ export class Archivos {
   numero: number;
   @Column()
   uuid: string | null;
+  @Column()
+  state: string | null;
+  @Column()
+  created_at: string;
+  @Column()
+  id_usuarios_r: number;
+  @Column()
+  usuarios_pc: string;
 }
 

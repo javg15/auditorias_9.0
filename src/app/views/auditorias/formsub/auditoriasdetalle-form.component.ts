@@ -86,7 +86,8 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
   record: Auditoriasdetalle;
   recordFile:Archivos;
   catresponsablesCat:Catresponsables[];
-
+  nombreTablaTracking:string="auditoriasdetalle_track";
+  userrol:string="";
 
   constructor(private isLoadingService: IsLoadingService,
     private el: ElementRef,
@@ -99,14 +100,14 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
     private tokenStorage: TokenStorageService,
       ) {
       this.elementModal = el.nativeElement;
-      
+      this.userrol=this.tokenStorage.getUser().id_permgrupos;
   }
 
   newRecord(idParent:number): Auditoriasdetalle {
     return {
       id: 0,  id_auditorias:idParent, punto:'', observacion:'', fechalimite:"",fecharecepcion:"",
       original:0,simple:0,copia:0,
-      oficio:'', id_archivos:0, state: '',orden:0, created_at: '', updated_at: '', id_usuarios_r:this.tokenStorage.getUser().id
+      oficio:'', id_archivos:0, state: '',orden:0, created_at: '', updated_at: '', id_usuarios_r:0,usuarios_pc:''
     };
   }
   ngOnInit(): void {

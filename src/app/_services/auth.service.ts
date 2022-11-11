@@ -6,8 +6,8 @@ import {Connection} from 'typeorm';
 import { Usuarios } from 'src/app/_data/_models/usuarios';
 
 import { environment } from '../../../src/environments/environment';
-
 import {Md5} from 'ts-md5';
+
 
 const AUTH_URL = environment.APIS_URL + '/auth/';
 
@@ -59,7 +59,6 @@ export class AuthService {
     
     //console.log("md5=>",Md5.hashStr('jaime151'))
     /************** */
-
     if(usuario)
       return of(usuario).pipe();
     else

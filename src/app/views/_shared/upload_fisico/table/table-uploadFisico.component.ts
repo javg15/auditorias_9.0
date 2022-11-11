@@ -1,6 +1,7 @@
 import { Component, OnInit,Input,Output,EventEmitter,TemplateRef } from '@angular/core';
 import { UploadFisicoFileService } from '../uploadFisico-file.service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { TokenStorageService } from '../../../../_services/token-storage.service';
 
 @Component({
   selector: 'table-uploadFisico',
@@ -16,11 +17,16 @@ export class TablaUploadFisicoComponent implements OnInit {
   ruta:string;
   id_parent:number;
   tabla:string;
+  userrol:string="";
 
   @Output() onRemoved: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private uploadFisicoFileSvc:UploadFisicoFileService
-      ,private modalService: BsModalService) { }
+  constructor(
+      private token: TokenStorageService
+      ,private uploadFisicoFileSvc:UploadFisicoFileService
+      ,private modalService: BsModalService) { 
+        this.userrol=this.token.getUser().id_permgrupos;
+      }
 
   ngOnInit() {
     this.showFiles(0,"");

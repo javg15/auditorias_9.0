@@ -103,7 +103,8 @@ export class ModaluploadFormComponent implements OnInit, OnDestroy {
       tabla:this.tabla,
       id_tabla:0,ruta:datos.ruta,
       tipo: datos.tipo,  nombre:  datos.nombre,numero:0,
-      uuid:datos.uuid
+      uuid:datos.uuid,state:'A',
+      created_at:'',id_usuarios_r:0,usuarios_pc:''
     };
     
     let respFile=await this.archivosSvc.setRecord(this.recordFile,this.actionForm);

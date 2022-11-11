@@ -53,7 +53,8 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
   keywordSearch = 'full_name';
   isLoadingSearch: boolean;
   esinterina: boolean=false;
-  //recordJsonTipodoc1:any={UltimoGradodeEstudios:0,AreadeCarrera:0,Carrera:0,Estatus:0};
+  nombreTablaTracking:string="auditoriasanexos_track";
+  userrol:string="";
 
   constructor(
     private isLoadingService: IsLoadingService,
@@ -65,13 +66,13 @@ export class AuditoriasanexosFormComponent implements OnInit, OnDestroy {
     private tokenStorage: TokenStorageService,
   ) {
     this.elementModal = el.nativeElement;
-
+    this.userrol=this.tokenStorage.getUser().id_permgrupos;
   }
 
   newRecord(idParent: number): Auditoriasanexos {
     return {
       id: 0, id_auditoriasdetalle: idParent, puntoanexo: '', nombre:'',id_archivos: 0,
-      state:'',orden:0,created_at: '', updated_at: '', id_usuarios_r:this.tokenStorage.getUser().id
+      state:'',orden:0,created_at: '', updated_at: '', id_usuarios_r:0,usuarios_pc:''
     };
   }
   ngOnInit(): void {

@@ -45,7 +45,7 @@ function createWindow() {
             enableRemoteModule: true,
             //allowRunningInsecureContent: (serve) ? true : false,
         },
-        
+        autoHideMenuBar: true,
     });
     win.maximize();
 
