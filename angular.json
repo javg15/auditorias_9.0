@@ -41,7 +41,7 @@
                             "src/scss/styles.scss"
                         ],
                         "scripts": [
-
+                            "node_modules/jquery/dist/jquery.min.js",
                             "node_modules/select2/dist/js/select2.min.js",
                             "node_modules/datatables.net-responsive/js/dataTables.responsive.js",
                             "node_modules/jszip/dist/jszip.js",

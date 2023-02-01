@@ -155,7 +155,7 @@ export class CatentidadesService {
         id: { type: "number" },
         nombrecorto: { type: "string", empty: false },
         nombrelargo: { type: "string", min: 5, max: 100 },
-        domicilio: { type: "string", max: 100 },
+        domicilio: { type: "string", max: 300 },
         id_catresponsables: { type: "number", 
           custom(value, errors) {
               if (value <= 0) errors.push({ type: "selection" })
@@ -217,8 +217,8 @@ export class CatentidadesService {
   async getCatalogo(): Promise<any> {
     
     this.conn= await this.dbSvc.connection;
-    return await this.conn.query("SELECT id,nombrecorto as text,id as value,nombrecorto as label "
-      +"FROM catentidades  WHERE state IN('A') ORDER BY nombrecorto");
+    return await this.conn.query("SELECT id,nombrelargo as text,id as value,nombrelargo as label "
+      +"FROM catentidades  WHERE state IN('A') ORDER BY nombrelargo");
     
   }
 

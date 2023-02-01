@@ -12,6 +12,7 @@ import {Catservidores} from './_models/catservidores';
 import {Cattiposauditoria} from './_models/cattiposauditoria';
 import { Catestatus } from './_models/catestatus';
 import { Usuarios } from './_models/usuarios';
+import { Procedimientos } from './_models/procedimientos';
 import * as path from 'path';
 
 
@@ -36,7 +37,7 @@ export class DatabaseService {
     this.options = {
       type: 'sqlite',
       database: jsonSettings.path_data + '/src/data/sqlite3.db',
-      entities: [Usuarios,Catejercicios,Catentidades,Catresponsables,Catservidores,Cattiposauditoria,Auditorias,Auditoriasdetalle,Auditoriasanexos,Auditoriasejercicios,Archivos,Catestatus],
+      entities: [Usuarios,Catejercicios,Catentidades,Catresponsables,Catservidores,Cattiposauditoria,Auditorias,Auditoriasdetalle,Auditoriasanexos,Auditoriasejercicios,Archivos,Catestatus,Procedimientos],
       synchronize: false,
       logging: 'all'
     };

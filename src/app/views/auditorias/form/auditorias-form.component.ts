@@ -64,7 +64,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   ColumnNames: string[];
 
   private dataTablesParameters = {
-    draw: 1, length: 100, opcionesAdicionales: {},
+    draw: 1, length: 1000, opcionesAdicionales: {},
     order: [{ column: 0, dir: "asc" }],
     search: { value: "", regex: false },
     start: 0
@@ -106,7 +106,7 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
   record_id_catejercicios:number[];
   nombreTablaTracking:string="auditorias_track";
   userrol:string="";
-  
+  conobservaciones:boolean=false;
 
   constructor(private isLoadingService: IsLoadingService,
     private auditoriasService: AuditoriasService, private el: ElementRef,
@@ -128,10 +128,10 @@ export class AuditoriasFormComponent implements OnInit, OnDestroy {
 
   newRecord(): Auditorias {
     return {
-      id: 0, id_catentidades: 0, id_catservidores: 0, nombre: '', numerooficio: '', id_archivos_numerooficio:0,
+      id: 0, modalidad:'', id_catentidades: 0, id_catservidores: 0, nombre: '', numerooficio: '', id_archivos_numerooficio:0,
       id_catejercicios: '', fecha: '', periodoini: '', periodofin: '', id_cattiposauditoria: 0,
-      marcolegal: '', id_catresponsables:0, id_catestatus:0,
-      rubros: '',    numeroauditoria: '',  objetivo: '', state:'', created_at: '', updated_at: '', id_usuarios_r:0,usuarios_pc:''
+      observaciones: '', id_catresponsables:0, id_catestatus:0,numerooficioplan:'',
+      rubros: '',    numeroauditoria: '',  cantobse: 0, state:'', created_at: '', updated_at: '', id_usuarios_r:0,usuarios_pc:''
     };
   }
   ngOnInit(): void {
@@ -313,6 +313,7 @@ async setRecordFile(){
       //inicializar
       if((this.record.id_archivos_numerooficio??0)>0){this.formUploadoficio.hideFile();this.listUploadoficio.showFiles(this.record.id_archivos_numerooficio);}
       else{this.formUploadoficio.showFile();this.listUploadoficio.showFiles(0);}
+      this.onSelectEstatus(this.record.id_catestatus)
     }
     this.reDraw(null);
 
@@ -344,9 +345,13 @@ async setRecordFile(){
     this.auditoriasdetalleService.close(id);
   }
 
+  onSelectEstatus(value:any){
+    this.conobservaciones=false
+    if(value==2)
+      this.conobservaciones=true
+  }
+
   async reDraw(parametro: any): Promise<void> {
-
-
     this.dtOptionsAdicional.raw++;
     this.dtOptionsAdicional.fkeyvalue = this.record.id;
     this.dataTablesParameters.opcionesAdicionales = this.dtOptionsAdicional;

@@ -134,6 +134,9 @@ export class AuditoriasanexosService {
       if (typeof dataPack[key] == 'number' && isNaN(parseFloat(dataPack[key]))) {
           dataPack[key] = null;
       }
+      if (typeof dataPack[key] == 'string' ) {
+        dataPack[key] = dataPack[key].replace(/\"+/g, '\\"');
+    }
     })
 
     /* customer validator shema */

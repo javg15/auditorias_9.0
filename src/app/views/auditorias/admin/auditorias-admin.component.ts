@@ -18,7 +18,7 @@ const findInPage = new FindInPage(remote.getCurrentWebContents())
 @Component({
   selector: 'app-auditorias-admin',
   templateUrl: './auditorias-admin.component.html',
-
+  styleUrls: ['./auditorias-admin.component.css']
 })
 
 

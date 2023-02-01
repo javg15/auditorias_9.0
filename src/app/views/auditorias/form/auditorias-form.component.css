@@ -1,3 +1,9 @@
 .modal-header {
     background: #c8ced3;
 }
+
+.inactiva{
+    background-color: orange ;
+    border: solid orange;
+    display: table;
+}

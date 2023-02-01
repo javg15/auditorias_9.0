@@ -1,0 +1,19 @@
+.modal-header {
+    background: #c8ced3;
+}
+
+.enproceso{
+    background-color: orange ;
+    border: solid orange;
+    display: table;
+}
+.finalizadaparcial{
+    background-color: crimson ;
+    border: solid crimson;
+    display: table;
+}
+.finalizada{
+    background-color: lightblue ;
+    border: solid lightblue;
+    display: table;
+}

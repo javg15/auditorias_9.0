@@ -3,7 +3,7 @@ import {ArchivosService} from 'src/app/views/catalogos/archivos/services/archivo
 import { shell } from 'electron';
 const electron = require('electron');
 const fs = require('fs');
-let uploadDir = 'C:/auditoria_files/uploads';
+//let uploadDir = 'C:/auditoria_files/uploads';
 
 @Injectable({
   providedIn: 'root'
@@ -20,14 +20,19 @@ export class UploadFisicoFileService {
       return v.toString(16);
     })
     //buscar si existe el registro
-    let path = uploadDir + '/' + ruta;
+    const data = fs.readFileSync('./config.json');
+    const json = data.toString('utf8');
+
+    let jsonSettings = JSON.parse(json);
+    let uploadDir=jsonSettings.path_data;
+    let path = uploadDir + '/uploads/' + ruta;
         /*nombre: req.file.originalname,
         datos: req.file.buffer*/
 
     if (!fs.existsSync(path)) {
         fs.mkdirSync(path, { recursive: true });
     }
-   
+   //console.log("file=>",path + '/' + nombreUuid + '.' + fileSrc.name.split('.').pop())
     fs.copyFile(fileSrc.path, path + '/' + nombreUuid + '.' + fileSrc.name.split('.').pop(), (err) => {//fileSrc.name
       if (err){ throw err;}
       console.log('source.txt was copied to destination.txt');

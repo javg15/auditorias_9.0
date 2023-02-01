@@ -54,8 +54,8 @@ export class AuditoriasreporteService {
             + "GROUP_CONCAT(DISTINCT '{\"punto\":\"' || ad.punto || '\",\"observacion\":\"' || ad.observacion || '\",\"fecharecepcion\":\"' || ad.fecharecepcion || '\",\"fechalimite\":\"' || ad.fechalimite || '\",\"oficio\":\"' || ad.oficio || '\",\"id\":\"' || ad.id || '\"}') AS Detalle, "
             + "GROUP_CONCAT('{\"puntoanexo\":\"' || aa.puntoanexo || '\",\"nombre\":\"' || aa.nombre || '\",\"id_auditoriasdetalle\":\"' || aa.id_auditoriasdetalle || '\",\"id\":\"' || aa.id || '\"}') AS Anexo "
             + "FROM auditorias AS a "
-            + " LEFT JOIN auditoriasdetalle AS ad ON a.id=ad.id_auditorias "
-            + " LEFT JOIN auditoriasanexos AS aa ON ad.id=aa.id_auditoriasdetalle "
+            + " LEFT JOIN auditoriasdetalle AS ad ON a.id=ad.id_auditorias AND ad.state in('A') "
+            + " LEFT JOIN auditoriasanexos AS aa ON ad.id=aa.id_auditoriasdetalle AND aa.state in('A') "
             + " LEFT JOIN auditoriasejercicios AS ae ON a.id=ae.id_auditorias "
             + " LEFT JOIN catentidades AS ce ON a.id_catentidades=ce.id "
             + " LEFT JOIN cattiposauditoria AS ca ON a.id_cattiposauditoria=ca.id "
@@ -64,6 +64,13 @@ export class AuditoriasreporteService {
             + "WHERE (a.id=$1 OR $1=0) AND a.state in('A') "
             + "GROUP BY a.id"
             ,[id_auditoria])
+/*      for(let i=0;i<datos.length;i++){
+        datos[i]["Detalle"] =datos[i]["Detalle"].replace(/\s+/g, ' ')
+        datos[i]["Anexo"] =datos[i]["Anexo"].replace(/\s+/g, ' ')
+        datos[i]["Detalle"] =datos[i]["Detalle"].replace(/\\"+/g, '-')
+        datos[i]["Anexo"] =datos[i]["Anexo"].replace(/\\"+/g, '-')
+      }
+      console.log("datos=>",datos)*/
       if(datos.length>0)
         return datos
       else

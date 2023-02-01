@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Auditoriasdetalle} from '../../../_data/_models/auditoriasdetalle';
 import { Catresponsables} from '../../../_data/_models/catresponsables';
+import { Procedimientos} from '../../../_data/_models/procedimientos';
 
 import { AuditoriasdetalleService } from '../services/auditoriasdetalle.service';
 import { AuditoriasanexosService } from '../services/auditoriasanexos.service';
@@ -22,6 +23,7 @@ import { TablaUploadFisicoComponent } from '../../_shared/upload_fisico/table/ta
 import { Archivos} from '../../../_data/_models/archivos';
 import { ArchivosService } from '../../catalogos/archivos/services/archivos.service';
 import { UploadFisicoFileService } from '../../_shared/upload_fisico/uploadFisico-file.service';
+import { Console } from 'console';
 
 declare var $: any;
 declare var jQuery: any;
@@ -50,7 +52,7 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
   MembersAll: any[];
   ColumnNames: string[];
   private dataTablesParameters = {
-    draw: 1, length: 100, opcionesAdicionales: {},
+    draw: 1, length: 1000, opcionesAdicionales: {},
     order: [{ column: 0, dir: "asc" }],
     search: { value: "", regex: false },
     start: 0
@@ -85,7 +87,11 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
   
   record: Auditoriasdetalle;
   recordFile:Archivos;
+  record_procedimiento:string="";
+  record_aplica:string="1";
   catresponsablesCat:Catresponsables[];
+  procedimientosCat:Procedimientos[];
+  
   nombreTablaTracking:string="auditoriasdetalle_track";
   userrol:string="";
 
@@ -204,15 +210,22 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
     this.tituloForm="Detalle de auditoría - " + titulosModal[accion] + " registro";
 
     this.catresponsablesCat = await this.CatresponsablesSvc.getCatalogo()
-
+    this.procedimientosCat = await this.auditoriasdetalleService.getProcedimientosCatalogo()
 
     if(idItem=="0"){
       this.record =this.newRecord(idParent);
       //inicializar
       this.tablaArchivos.showFiles(0,"auditoriasdetalle");
-      
+      this.record_aplica="1";
+      this.record_procedimiento="";
     } else {
       this.record = await this.auditoriasdetalleService.getRecord(idItem);
+
+      this.record_procedimiento=this.record.punto;
+      if(this.record.observacion.toUpperCase().indexOf("NO APLICA")>0)
+        this.record_aplica="0";
+      else
+        this.record_aplica="1";
       //inicializar
       this.tablaArchivos.showFiles(this.record.id,"auditoriasdetalle")
     }
@@ -247,6 +260,34 @@ export class AuditoriasdetalleFormComponent implements OnInit, OnDestroy {
     else
       this.auditoriasanexosService.close(id);
     
+  }
+
+  async onBlurNumero(value){
+    const procedimientosObj = await this.auditoriasdetalleService.getProcedimiento(value)
+
+    if(procedimientosObj)
+      this.record.observacion=procedimientosObj.descripcion;
+  }
+
+  onSelectProcedimiento(value){
+    this.record.punto=value;
+    if(value!=""){
+      if(this.record_aplica=="1")
+        this.record.observacion=this.procedimientosCat.find(a=>a.punto==value).descripcion;
+      else
+        this.record.observacion=this.procedimientosCat.find(a=>a.punto==value).descripcion + " (NO APLICA)";
+    }
+    else
+      this.record.observacion="";
+  }
+
+  onSelectAplica(value){
+    if(this.record.punto.length>0){
+      if(value=="0")
+        this.record.observacion=this.procedimientosCat.find(a=>a.punto==this.record.punto).descripcion + " (NO APLICA)";
+      else
+        this.record.observacion=this.procedimientosCat.find(a=>a.punto==this.record.punto).descripcion;
+    }
   }
 
   async reDraw(parametro: any): Promise<void> {

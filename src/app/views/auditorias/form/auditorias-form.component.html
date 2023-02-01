@@ -20,7 +20,18 @@
                     <div class="row">
                         <div class="form-group col-sm-3">
                             <div class="form-group">
-                                <label for="id_catentidades">Organo fiscalizador</label>
+                                <label for="original">Modalidad</label>
+                                <select class="form-control" [(ngModel)]="record.modalidad" name="Modalidad">
+                                    <option value = "AUDITORÍA">AUDITORÍA</option>
+                                    <option value = "REVISIÓN">REVISIÓN</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-3">
+                            <div class="form-group">
+                                <label for="id_catentidades">Ente fiscalizador</label>
                                 <select2 [overlay]="true" [(ngModel)]="record.id_catentidades" [data]="catentidadesCat" name="Organo fiscalizador" resettable> </select2>
                             </div>
                         </div>
@@ -34,6 +45,12 @@
                             <div class="form-group">
                                 <label for="numerooficio">Oficio de apertura de la auditoría</label>
                                 <input type="text" [(ngModel)]="record.numerooficio" class="form-control" name="Oficio de apertura de la auditoría">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <div class="form-group">
+                                <label for="numerooficio">Oficio de planeación de la auditoría</label>
+                                <input type="text" [(ngModel)]="record.numerooficioplan" class="form-control" name="Oficio de planeación de la auditoría">
                             </div>
                         </div>
                         <div class="form-group col-sm-3" style="left:10000px;position: absolute;"><!-- es para que no esté visible, y no comentar las lineas de codigo correspondientes, ya que hacen efecto en el modulo de archivos-->
@@ -57,14 +74,14 @@
                         </div>
                         <div class="form-group col-sm-3">
                             <div class="form-group">
-                                <label for="periodoini">Fecha de inicio del periodo que se informa</label>
+                                <label for="periodoini">Fecha de inicio del periodo que se audita</label>
                                 <input type="date" [(ngModel)]="record.periodoini" class="form-control" name="Fecha de inicio del periodo que se informa">
                             </div>
                         </div>
 
                         <div class="form-group col-sm-3">
                             <div class="form-group">
-                                <label for="periodofin">Fecha final del periodo que se informa</label>
+                                <label for="periodofin">Fecha final del periodo que se audita</label>
                                 <input type="date" [(ngModel)]="record.periodofin" class="form-control" name="Fecha final del periodo que se informa">
                             </div>
                         </div>
@@ -104,23 +121,27 @@
                                 <input type="text" [(ngModel)]="record.numeroauditoria" class="form-control" name="Numero de auditoría">
                             </div>
                         </div>
-                        <div class="form-group col-sm-4">
-                            <div class="form-group">
-                                <label for="objetivo">Objetivo de la auditoría</label>
-                                <textarea [(ngModel)]="record.objetivo" rows="2" cols="50" class="form-control" name="Objetivo de la auditoría">
-                                </textarea>
-                            </div>
-                        </div>
-                        <div class="form-group col-sm-3">
-                            <div class="form-group">
-                                <label for="marcolegal">Marco legal</label>
-                                <input type="text" [(ngModel)]="record.marcolegal" class="form-control" name="Marco legal">
-                            </div>
-                        </div>
                         <div class="form-group col-sm-3">
                             <div class="form-group">
                                 <label for="id_catestatus">Estatus</label>
-                                <select2 [overlay]="true" [(ngModel)]="record.id_catestatus" [data]="catestatusCat" name="Estatus" resettable> </select2>
+                                <select class="form-control" [(ngModel)]="record.id_catestatus" name="Estatus" (change)="onSelectEstatus($event.target.value)">
+                                    <ng-container *ngFor="let col of catestatusCat;index as i">
+                                      <option value = "{{ col.id }}" >{{ col.text }}</option>
+                                    </ng-container>
+                                  </select>
+                            </div>
+                        </div>
+                        <div *ngIf="conobservaciones" class="form-group col-sm-2">
+                            <div class="form-group">
+                                <label for="cantobse">Cant. Obse.</label>
+                                <input type="text" [(ngModel)]="record.cantobse" class="form-control" name="Cant. Obse.">
+                            </div>
+                        </div>
+                        <div *ngIf="conobservaciones" class="form-group col-sm-5">
+                            <div class="form-group">
+                                <label for="observaciones">Observaciones</label>
+                                <textarea [(ngModel)]="record.observaciones" rows="2" cols="50" class="form-control" name="Observaciones">
+                                </textarea>
                             </div>
                         </div>
                     </div>
@@ -165,11 +186,21 @@
                                                 </td>
                                             </div>
                                             <ng-template #elseBlock>
-                                                <ng-container *ngIf="col!='ID';else elseBlock2">
+                                                <ng-container *ngIf="col=='Oficio';else elseBlock2">
+                                                    <td>
+                                                        <span [ngClass]="member.Oficio==='' && member.Nombre.toUpperCase().indexOf('NO APLICA')<=0 ? 'inactiva':''">
+                                                            {{ (member[col]=='' ? '-' : member[col]) }}
+                                                        </span>
+                                                    </td>
+                                                </ng-container>
+                                            </ng-template>
+
+                                            <ng-template #elseBlock2>
+                                                <ng-container *ngIf="col!='ID';else elseBlock3">
                                                     <td>{{ member[col] }}</td>
                                                 </ng-container>
                                             </ng-template>
-                                            <ng-template #elseBlock2></ng-template>
+                                            <ng-template #elseBlock3></ng-template>
                                         </ng-container>
                                     </tr>
                                 </tbody>

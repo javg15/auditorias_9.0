@@ -55,22 +55,26 @@ export class AuditoriasService {
       //const rawData = DB().query(`SELECT * FROM auditoria where id=?`, [1]);
       
       if (req.solocabeceras == 1) {
-          query = await this.qa.getAdmin('SELECT 0 AS ID,"" AS ORFIS' +
+          query = await this.qa.getAdmin('SELECT 0 AS ID,"" AS Modalidad ' +
+              ',"" AS "Ente Fis" ' +
               ',"" AS Nombre ' +
               ',"" AS Ejercicio ' +
               ',"" AS Tipo ' +
-              ',"" AS Rubros ' +
-              ',"" AS "Oficio de notificación" ' +
+              ',"" AS "Rubros a revisar" ' +
+              ',"" AS Estatus ' +
+              ',"" AS Obser ' +
               ',"" AS Acciones', '&modo=10&id_usuario=0',this.conn);
             
       } else {
           query = await this.qa.getAdmin('SELECT a.id AS ID ' +
-              ',e.nombrecorto AS ORFIS ' +
+              ',a.modalidad AS "Modalidad" ' +
+              ',e.nombrelargo AS "Ente Fis" ' +
               ',a.nombre AS Nombre ' +
               ',GROUP_CONCAT(cej.ejercicio) AS Ejercicio ' +
               ',ta.nombre AS Tipo ' +
-              ',a.rubros AS Rubros ' +
-              ',a.numerooficio AS "Oficio de notificación" ' +
+              ',a.rubros AS "Rubros a revisar" ' +
+              ',ce.descripcion AS Estatus ' +
+              ',CASE WHEN a.id_catestatus=2 THEN a.cantobse ELSE "" END AS Obser ' +
               ',' + 
               (this.tokenStorage.getUser().id_permgrupos=="AD"
                   ?'"editar,eliminar,reporte"'
@@ -81,7 +85,8 @@ export class AuditoriasService {
               ' LEFT JOIN catentidades AS e ON a.id_catentidades=e.id ' +
               ' LEFT JOIN auditoriasejercicios AS ej ON a.id=ej.id_auditorias ' +
               ' 	LEFT JOIN catejercicios AS cej ON ej.id_catejercicios=cej.id ' +
-              ' LEFT JOIN cattiposauditoria AS ta ON a.id_cattiposauditoria=ta.id '
+              ' LEFT JOIN cattiposauditoria AS ta ON a.id_cattiposauditoria=ta.id ' +
+              ' LEFT JOIN catestatus AS ce ON a.id_catestatus=ce.id '
               ,
               "&modo=0&id_usuario=0" +
               "&inicio=" + (req.start!==null && req.start!==undefined ? req.start : 0) + "&largo=" + (req.length!==null && req.length!==undefined ? req.length : 0) +
@@ -155,6 +160,10 @@ export class AuditoriasService {
       if (typeof dataPack[key] == 'number' && isNaN(parseFloat(dataPack[key]))) {
           dataPack[key] = null;
       }
+
+      if (typeof dataPack[key] == 'string' ) {
+          dataPack[key] = dataPack[key].replace(/\"+/g, '\\"');
+      }
     })
 
     /* customer validator shema */
@@ -163,7 +172,14 @@ export class AuditoriasService {
 
         id: { type: "number" },
         nombre: { type: "string", empty: false},
-        numerooficio: { type: "string", empty: false},
+        numerooficio: { type: "string", 
+          custom(value, errors) {
+              console.log("value.lenght=>",value)
+              console.log("dataPack[numerooficioplan]=>",dataPack)
+              if (value=="" && dataPack["numerooficioplan"]==""){ errors.push({ type: "selection" }) }
+              return value; // Sanitize: remove all special chars except numbers
+            }
+        },
         numeroauditoria: { type: "string", empty: false},
         fecha: { type: "string", 
             custom(value, errors) {
@@ -180,7 +196,7 @@ export class AuditoriasService {
         },
         periodoini: { type: "string", empty: false},
         periodofin: { type: "string", empty: false},
-        marcolegal: { type: "string", empty: false},
+        //marcolegal: { type: "string", empty: false},
         id_catservidores: { type: "number", 
           custom(value, errors) {
               if (value <= 0) errors.push({ type: "selection" })

@@ -33,11 +33,20 @@
                                         </td>
                                     </div>
                                     <ng-template #elseBlock>
-                                        <ng-container *ngIf="col!='ID';else elseBlock2">
+                                        <ng-container *ngIf="col=='Estatus';else elseBlock2">
+                                            <td>
+                                                <span [ngClass]="member.Estatus.toUpperCase()==='EN PROCESO' ? 'enproceso':(member.Estatus.toUpperCase()==='FINALIZADA SIN OBSERVACIONES'?'finalizada':(member.Estatus.toUpperCase()==='FINALIZADA CON OBSERVACIONES'?'finalizadaparcial':''))">
+                                                    {{ (member[col]=='' ? '-' : member[col]) }}
+                                                </span>
+                                            </td>
+                                        </ng-container>
+                                    </ng-template>
+                                    <ng-template #elseBlock2>
+                                        <ng-container *ngIf="col!='ID';else elseBlock3">
                                             <td>{{ member[col] }}</td>
                                         </ng-container>
                                     </ng-template>
-                                    <ng-template #elseBlock2></ng-template>
+                                    <ng-template #elseBlock3></ng-template>
                                 </ng-container>
                             </tr>
                         </tbody>

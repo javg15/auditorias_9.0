@@ -1,6 +1,6 @@
 {
     "name":"Auditorias",
-    "path_data":"./",
+    "path_data":"C:/COBAEV/auditorias/auditorias_9.0",
     "path_dist":"C:/COBAEV/auditorias/desktop_exe/auditorias-win32-x64/desktop/resources/app/dist",
     "path_exe":"./dist",
     "version":"2.2.0"

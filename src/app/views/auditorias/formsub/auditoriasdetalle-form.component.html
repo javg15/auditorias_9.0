@@ -21,17 +21,36 @@
                     <div class="row">
                         <div class="form-group col-sm-3">
                             <div class="form-group">
-                                <label for="punto">Numero de procedimiento</label>
-                                <input type="text" [(ngModel)]="record.punto" class="form-control" name="Numero de procedimiento">
+                                <label for="punto">Procedimiento</label>
+                                <select class="form-control" [(ngModel)]="record_procedimiento" name="Procedimiento" (change)="onSelectProcedimiento($event.target.value)">
+                                    <option value = "">---</option>
+                                    <ng-container *ngFor="let col of procedimientosCat;index as i">
+                                      <option value = "{{ col.punto }}" [selected]="i===1">{{ col.punto + "-" + col.descripcion }}</option>
+                                    </ng-container>
+                                  </select>
                             </div>
                         </div>
-
-
-                        <div class="form-group col-sm-9">
+                        <div class="form-group col-sm-2">
+                            <div class="form-group">
+                                <label for="aplica">¿Aplica?</label>
+                                <select class="form-control" [(ngModel)]="record_aplica" name="Aplica" (change)="onSelectAplica($event.target.value)">
+                                    <option value = "1" default>Sí</option>
+                                    <option value = "0">No</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-3">
+                            <div class="form-group">
+                                <label for="punto">Numero de procedimiento</label>
+                                <input type="text" [(ngModel)]="record.punto" class="form-control" name="Numero de procedimiento" (blur)="onBlurNumero($event.target.value)" [disabled]="true">
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
                             <div class="form-group">
                                 <label for="observacion">Nombre del procedimiento</label>
-                                <textarea [(ngModel)]="record.observacion" rows="5" cols="50" class="form-control" name="Observación">
-                                        </textarea>
+                                <input type="text" [(ngModel)]="record.observacion" class="form-control" name="Nombre del procedimiento" (blur)="onBlurNumero($event.target.value)" [disabled]="true">
+                                <!--<textarea [(ngModel)]="record.observacion" rows="5" cols="50" class="form-control" name="Nombre del procedimiento">
+                                        </textarea>-->
                             </div>
                         </div>
                     </div>

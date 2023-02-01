@@ -48,7 +48,7 @@ export class AuthService {
       }
 
   async login(credentials): Promise<Observable<any>> {
-
+    console.log("md5=>",Md5.hashStr(credentials.password))
     this.conn=await this.dbSvc.connection
       
     const rep = await this.conn.manager.getRepository(Usuarios)
@@ -57,7 +57,7 @@ export class AuthService {
           ,password:Md5.hashStr(credentials.password)
     })
     
-    //console.log("md5=>",Md5.hashStr('jaime151'))
+    
     /************** */
     if(usuario)
       return of(usuario).pipe();

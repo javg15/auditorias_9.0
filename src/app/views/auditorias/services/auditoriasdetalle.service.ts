@@ -5,6 +5,7 @@ import { TokenStorageService } from '../../../_services/token-storage.service';
 import {DatabaseService} from 'src/app/_data/database.service';
 import {Connection} from 'typeorm';
 import { AdminQry } from 'src/app/_data/queries/admin.qry'; 
+import { Procedimientos } from 'src/app/_data/_models/procedimientos';
 
 const os=require('os')
 const gral = require('src/app/_data/general.js')
@@ -126,6 +127,24 @@ export class AuditoriasdetalleService {
     return Auditoriadetalle;
   }
 
+  async getProcedimiento(punto: any): Promise<any> {
+    
+    this.conn= await this.dbSvc.connection;
+    const rep = await this.conn.manager.getRepository(Procedimientos)
+    const Procedimiento=await rep.findOne({    punto: punto })
+    if (!Procedimiento) {
+        return { message: "Procedimiento Not found." };
+    }
+    return Procedimiento;
+  }
+
+  async getProcedimientosCatalogo(): Promise<any> {
+    
+    this.conn= await this.dbSvc.connection;
+    return await this.conn.query("SELECT punto,descripcion "
+      +"FROM procedimientos ORDER BY punto");
+  }
+
   /* El siguiente método graba un registro nuevo, o uno editado. */
   async setRecord(dataPack, actionForm): Promise<any>  {
 
@@ -140,6 +159,9 @@ export class AuditoriasdetalleService {
       if (typeof dataPack[key] == 'number' && isNaN(parseFloat(dataPack[key]))) {
           dataPack[key] = null;
       }
+      if (typeof dataPack[key] == 'string' ) {
+        dataPack[key] = dataPack[key].replace(/\"+/g, '\\"');
+    }
     })
 
     /* customer validator shema */
@@ -156,9 +178,9 @@ export class AuditoriasdetalleService {
               let dateFin = new Date()
 
               if (dateIni > dateFin)
-                  errors.push({ type: "dateMax", field: "fechaobservacion", expected: dateFin.toISOString().split('T')[0] })
+                  errors.push({ type: "dateMax", field: "fecharecepcion", expected: dateFin.toISOString().split('T')[0] })
 
-              if (!moment(value).isValid() || !moment(value).isBefore(new Date()) || !moment(value).isAfter('1900-01-01'))
+              if (dataPack["observacion"].toUpperCase().indexOf("NO APLICA")<=0 && (!moment(value).isValid() || !moment(value).isBefore(new Date()) || !moment(value).isAfter('1900-01-01')))
                   errors.push({ type: "date" })
               return value;
           },

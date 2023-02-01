@@ -5,11 +5,15 @@ export class Auditorias {
     @PrimaryGeneratedColumn()
     id: number;
     @Column()
+    modalidad: string;
+    @Column()
     id_catentidades: number;
     @Column()
     nombre: string;
     @Column()
     numerooficio: string;
+    @Column()
+    numerooficioplan: string;
     @Column()
     id_archivos_numerooficio: number;
     @Column()
@@ -32,10 +36,6 @@ export class Auditorias {
     rubros: string;
     @Column()
     numeroauditoria: string;
-    @Column()
-    objetivo: string;
-    @Column()
-    marcolegal: string;
 
     @Column()
     state: string;
@@ -47,4 +47,8 @@ export class Auditorias {
     id_usuarios_r: number;
     @Column()
     usuarios_pc: string;
+    @Column()
+    cantobse: number;
+    @Column()
+    observaciones: string;
 }

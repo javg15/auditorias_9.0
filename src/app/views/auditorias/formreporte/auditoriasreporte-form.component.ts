@@ -282,8 +282,11 @@ export class AuditoriasreporteFormComponent implements OnInit, OnDestroy {
     this.tituloForm="Reporte de auditoría";
 
     this.record=(await this.auditoriasreporteService.getAdmin(idItem))[0];
-    this.record_detalles=JSON.parse("[" + this.record.Detalle + "]")
-    this.record_anexos=JSON.parse("[" + this.record.Anexo + "]")
+    //.replace(/\s+/g, ' ') reemplaza los retornos de carro dentro de los campos
+    if(this.record.Detalle)
+      this.record_detalles=JSON.parse("[" + this.record.Detalle.replace(/\s+/g, ' ') + "]")
+    if(this.record.Anexo)
+      this.record_anexos=JSON.parse("[" + this.record.Anexo.replace(/\s+/g, ' ') + "]")
 
     // console.log($('#modalTest').html()); poner el id a algun elemento para testear
     this.basicModalReporte.show();
