@@ -23,10 +23,18 @@
                                 <input type="text" [(ngModel)]="record.puntoanexo" class="form-control" name="Inciso que responde">
                             </div>
                         </div>
-                        <div class="form-group col-sm-9">
+                        <div class="form-group col-sm-3">
                             <div class="form-group">
                                 <label for="nombre">Nombre</label>
-                                <textarea [(ngModel)]="record.nombre" rows="5" cols="50" class="form-control" name="Nombre">
+                                <input type="text" [(ngModel)]="record.nombre" class="form-control" name="Nombre">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-9">
+                            <div class="form-group">
+                                <label for="observaciones">Observaciones</label>
+                                <textarea [(ngModel)]="record.observaciones" rows="2" cols="50" class="form-control" name="Observaciones">
                                 </textarea>
                             </div>
                         </div>

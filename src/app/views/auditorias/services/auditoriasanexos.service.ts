@@ -53,12 +53,14 @@ export class AuditoriasanexosService {
       if (req.solocabeceras == 1) {
           query = await this.qa.getAdmin('SELECT 0 AS ID,"" AS Inciso' +
               ',"" AS Nombre'+
+              ',"" AS Observaciones'+
               ',"" AS Acciones', '&modo=10&id_usuario=0',this.conn);
             
       } else {
           query = await this.qa.getAdmin('SELECT a.id AS ID ' +
               ',a.puntoanexo AS Inciso ' +
               ',a.nombre AS Nombre ' +
+              ',a.observaciones AS Observaciones ' +
               ',' + 
               (this.token.getUser().id_permgrupos=="AD"
                   ?'"editar,eliminar,reporte"'

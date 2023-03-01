@@ -135,14 +135,23 @@ export class AuditoriasbusquedaavanzadaFormComponent implements OnInit, OnDestro
     }
 
     findItem(valor,idx):any{
-      const all = this.record_anexos[idx].filter((obj) => {
-        if(obj!==null)
-          return obj.id_auditoriasdetalle === valor;
-        else
-          return null;
-      });
-
-      return all;
+      try{
+        if(idx<this.record_anexos.length){
+          const all = this.record_anexos[idx].filter((obj) => {
+            if(obj!==null)
+              return obj.id_auditoriasdetalle === valor;
+            else
+              return null;
+          });
+    
+          return all;
+        }
+        return null
+      }
+      catch(e){
+        return null
+      }
+      
     }
 
     print(){
@@ -288,17 +297,23 @@ export class AuditoriasbusquedaavanzadaFormComponent implements OnInit, OnDestro
   // open modal
   async open(idItem: string, accion: string,idParent:number):  Promise<void> {
     this.actionForm=accion;
-    this.tituloForm="Auditorías";
-
-    this.record=await this.auditoriasreporteService.getAdmin(idItem);
-
-    for(let i=0;i<this.record.length;i++){
-      this.record_detalles.push(JSON.parse("[" + this.record[i].Detalle + "]"))
-      this.record_anexos.push(JSON.parse("[" + this.record[i].Anexo + "]"))
-    }
-
-    // console.log($('#modalTest').html()); poner el id a algun elemento para testear
-    this.basicModalBusquedaAvanzada.show();
+      this.tituloForm="Auditorías";
+  
+      this.record=await this.auditoriasreporteService.getAdmin(idItem);
+  
+      for(let i=0;i<this.record.length;i++){
+        try{
+          
+            this.record_detalles.push(JSON.parse("[" + this.record[i].Detalle.replace(/\n/g, " ") + "]"))
+            this.record_anexos.push(JSON.parse("[" + this.record[i].Anexo.replace(/\n/g, " ") + "]"))
+        }
+        catch(e){
+          console.log("this.record[i].Anexo=>",this.record[i].Anexo)
+        }
+      }
+      
+      // console.log($('#modalTest').html()); poner el id a algun elemento para testear
+      this.basicModalBusquedaAvanzada.show();    
   }
 
   // close modal

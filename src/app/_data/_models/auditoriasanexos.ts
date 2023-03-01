@@ -15,6 +15,8 @@ export class Auditoriasanexos {
     @Column()
     nombre: string;
     @Column()
+    observaciones: string;
+    @Column()
     state: string;
     @Column()
     orden: number;
