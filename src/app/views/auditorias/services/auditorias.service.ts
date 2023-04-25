@@ -94,7 +94,6 @@ export class AuditoriasService {
               "&ordencampo=" + req.columns[req.order[0].column].data +
               "&ordensentido=" + req.order[0].dir + "&groupby=a.id"
               ,this.conn)
-          
       }
       
       datos=await this.conn.query(query);

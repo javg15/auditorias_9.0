@@ -11,6 +11,9 @@ import { FindInPage } from 'electron-find'
 import { remote } from 'electron'
 import { JsonpClientBackend } from '@angular/common/http';
 
+import { Workbook } from 'exceljs';
+import * as fs from 'file-saver';
+
 declare var $: any;
 declare var jQuery: any;
 const findInPage = new FindInPage(remote.getCurrentWebContents())
@@ -149,5 +152,66 @@ export class AuditoriasAdminComponent implements OnInit {
   busquedaAvanzada(){
     this.openModal('custom-modal-3','reporte',0)
     setTimeout(async ()=>{ await findInPage.openFindWindow()}, 1500);
+  }
+
+  async exportExcel() {
+    let dataTablesParameters:any={"draw":1,"columns":[{"data":"id","name":"0","searchable":false,"orderable":true,"search":{"value":"","regex":false}},{"data":"modalidad","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},{"data":"ente fis","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},{"data":"nombre","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},{"data":"ejercicio","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},{"data":"tipo","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},{"data":"rubros a revisar","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},{"data":"estatus","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},{"data":"obser","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}},{"data":"acciones","name":"","searchable":true,"orderable":true,"search":{"value":"","regex":false}}],"order":[{"column":0,"dir":"asc"}],"start":0,"length":1000,"search":{"value":"","regex":false},"opcionesAdicionales":{"datosBusqueda":{"campo":0,"operador":0,"valor":""},"raw":1}};
+    dataTablesParameters.opcionesAdicionales = this.dtOptionsAdicional;
+    const that=this
+    await this.auditoriasService.getAdmin(dataTablesParameters).then(async function(resp:any){
+      
+        let workbook = new Workbook();
+        let worksheet = workbook.addWorksheet('PlantillasSheet');
+        worksheet.addTable({
+          name: "MyTable",
+          ref: "A1",
+          headerRow: true,
+          totalsRow: false,
+          style: {
+            theme: 'TableStyleLight1',
+            showRowStripes: true,
+            showColumnStripes: false,
+          },
+          columns: [
+            { name: "-" },//inicializar
+          ],
+          rows: [],
+        });
+
+
+        const table = worksheet.getTable("MyTable");
+
+        that.headersAdmin.forEach(e => {
+          if(e.title.toUpperCase()!="ACCIONES" 
+            && e.title.toUpperCase()!="ID"
+            && e.title.toUpperCase()!="FOTO"
+            )
+            table.addColumn({
+                name: e.title,
+              },[],e.index);
+
+        });
+
+        for(let e of resp.data) {
+          let row=[""];
+        
+          for(let i=0,j=0;i<that.headersAdmin.length;i++){ //=1 para quitar ID, -1 para quitar acciones
+            if(that.headersAdmin[i].title.toUpperCase()!="ACCIONES" 
+              && that.headersAdmin[i].title.toUpperCase()!="ID"
+              && that.headersAdmin[i].title.toUpperCase()!="FOTO"
+              ){
+                row[++j]=e[that.headersAdmin[i].title] //agregar dato de campo
+              }
+          }
+          table.addRow(row)
+        }
+        table.commit();
+        
+        await workbook.xlsx.writeBuffer().then((data) => {
+          let blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+          fs.saveAs(blob, 'Plantillas.xlsx');
+        })
+      })
+      
   }
 }

@@ -6,6 +6,9 @@
 
             <app-header-admin  [hidden]="this.userrol!='AD'" id="header-admin-1" [nombreModulo]="nombreModulo" (agregarEvent)="openModal('custom-modal-1','nuevo',0)">
             </app-header-admin>
+            <button class="btn btn-primary" (click)="exportExcel()">
+                <div>Excel</div>
+            </button>
             <br>
             <div class="row">
                 <div class="col-md-12 mx-auto">
